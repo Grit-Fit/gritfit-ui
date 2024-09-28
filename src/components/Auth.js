@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 const Auth = () => {
-    const [isLogin, setIsLogin] = useState(true);
+    const [isLogin, setIsLogin] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
      const [email, setEmail] = useState('');
      const [username, setUsername] = useState('')
@@ -82,7 +82,7 @@ const Auth = () => {
                         </div>
                         <button type="submit">Create Account</button>
                     </form>
-                    <button onClick={() => setIsLogin(false)}>Back</button>
+                    <button onClick={() => {setIsLogin(false); setIsSignup(false); }}>Back</button>
                 </div>
             )}
         </div>
