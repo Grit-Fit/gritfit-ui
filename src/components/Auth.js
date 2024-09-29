@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 // import axios from 'axios'
 import axios from '../axios'; 
+import logo from '../assets/Logo.png';
+import './Auth.css'
 
 const Auth = () => {
     const { login } = useContext(AuthContext);
@@ -68,67 +70,86 @@ const Auth = () => {
 
 
     return (
-        <div>
+        <div className="auth-container">
+            <div className="content-wrapper">
+             <img src={logo} alt="Logo" className="logo" />
             {!isLogin && !isSignup ? (
                 <div>
-                    <h2>Welcome!</h2>
-                    <button onClick={() => navigate('/login')}>Sign In</button>
-                    <button onClick={() => navigate('/signup')}>Create Account</button>
+                     <>
+                    <h2 className="welcome">Welcome!</h2>
+                    <div className="button-container">
+                        <button className="auth-button" onClick={() => navigate('/login')}>
+                            Sign In
+                        </button>
+                        <button className="auth-button" onClick={() => navigate('/signup')}>
+                            Create Account
+                        </button>
+                    </div>
+                    <p className="guestline">Continue as Guest</p>
+                </>
                 </div>
             ) : isLogin ? (
                 <div>
-                    <h2>Sign In</h2>
+                    <h2 className="welcome">Sign In</h2>
                     <form onSubmit={handleSubmitLogin}>
                         <div>
-                            <label>Email*</label>
+                            {/* <label>Email*</label> */}
                             <input type="email" 
                             value={email}
+                            placeholder="Email*"
                         onChange={(e) => setEmail(e.target.value)}
                             required />
                         </div>
                         <div>
-                            <label>Password*</label>
+                            {/* <label>Password*</label> */}
                             <input type="password" 
                             value={password}
+                            placeholder="Password*"
                         onChange={(e) => setPassword(e.target.value)}
                             required />
                         </div>
-                        <button type="submit">Sign In</button>
+                        <button className = "signin-button" type="submit">Sign In</button>
                     </form>
                     <button onClick={() => navigate('/')}>Back</button>
                       {message && <p>{message}</p>}
                 </div>
             ) : (
                 <div>
-                    <h2>Create Account</h2>
+                    <h2 className="welcome">Create Account</h2>
                     <form onSubmit={handleSubmitSignUp}>
                         <div>
-                            <label>Username*</label>
+                            <button  className="google">Continue with Google</button>
+                            {/* <label>Username*</label> */}
                             <input type="username" 
                             value={username}
+                            placeholder="Username*"
                         onChange={(e) => setUsername(e.target.value)}
                             required />
                         </div>
                         <div>
-                            <label>Email*</label>
+                            {/* <label>Email*</label> */}
                             <input type="email" 
                             value={email}
+                            placeholder="Email*"
                         onChange={(e) => setEmail(e.target.value)}
                             required />
                         </div>
                         <div>
-                            <label>Create Password*</label>
+                            {/* <label>Create Password*</label> */}
                             <input type="password" 
                             value={password}
+                            placeholder=" Create Password*"
                         onChange={(e) => setPassword(e.target.value)}
                             required />
+                            <p className="pwdLen">Your password must contain 7 letters</p>
                         </div>
-                        <button type="submit">Create Account</button>
+                        <button className = "signin-button" type="submit">Create Account</button>
                     </form>
                     <button onClick={() => navigate('/')}>Back</button>
                       {message && <p>{message}</p>}
                 </div>
             )}
+        </div>
         </div>
     );
 };
