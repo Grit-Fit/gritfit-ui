@@ -1,9 +1,12 @@
 // src/components/Auth.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios'
+import { AuthContext } from '../context/AuthContext';
+// import axios from 'axios'
+import axios from '../axios'; 
 
 const Auth = () => {
+    const { login } = useContext(AuthContext);
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -24,9 +27,14 @@ const Auth = () => {
                 email,
                 password,
             });
-            setMessage(response.data.message); // Display success message
-            console.log(response.data); // Log the response
-            navigate('/logo');
+            const { token, message: responseMessage } = response.data;
+             if (token) {
+                const userData = { email, username };
+                login(token, userData);
+                navigate('/logo');
+                setMessage(responseMessage); // Display success message
+                console.log(response.data); // Log the response
+            }
         } catch (error) {
             console.error(error);
             setMessage(error.response ? error.response.data.message : 'Error occurred');
@@ -41,8 +49,17 @@ const Auth = () => {
                 email,
                 password
             });
-            setMessage(res.data.message);
-            navigate('/logo');
+            const { token, message: responseMessage } = res.data;
+            setMessage(responseMessage);
+            console.log('Login Response:', res.data);
+             if (token) {
+                // Prepare user data
+                const userData = { email }; // Adjust based on your backend response
+                // Store token and user data in AuthContext
+                login(token, userData);
+                // Navigate to the logo page
+                navigate('/logo');
+            }
         }catch (error) {
             console.error(error);
             setMessage(error.response ? error.response.data.message : 'Error occurred');
@@ -79,6 +96,7 @@ const Auth = () => {
                         <button type="submit">Sign In</button>
                     </form>
                     <button onClick={() => navigate('/')}>Back</button>
+                      {message && <p>{message}</p>}
                 </div>
             ) : (
                 <div>
@@ -108,6 +126,7 @@ const Auth = () => {
                         <button type="submit">Create Account</button>
                     </form>
                     <button onClick={() => navigate('/')}>Back</button>
+                      {message && <p>{message}</p>}
                 </div>
             )}
         </div>
