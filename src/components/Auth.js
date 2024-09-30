@@ -6,6 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import axios from '../axios'; 
 import logo from '../assets/Logo.png';
 import './Auth.css'
+import back from '../assets/Back.png';
 
 const Auth = () => {
     const { login } = useContext(AuthContext);
@@ -71,6 +72,11 @@ const Auth = () => {
 
     return (
         <div className="auth-container">
+            {(isLogin || isSignup) && (
+                <button className="back-button" onClick={() => navigate('/')}>
+                    <img src = {back} alt="back"></img>
+                </button>
+            )}
             <div className="content-wrapper">
              <img src={logo} alt="Logo" className="logo" />
             {!isLogin && !isSignup ? (
@@ -89,11 +95,11 @@ const Auth = () => {
                 </>
                 </div>
             ) : isLogin ? (
-                <div>
+                <>
                     <h2 className="welcome">Sign In</h2>
+                    <div className="form-container">
                     <form onSubmit={handleSubmitLogin}>
                         <div>
-                            {/* <label>Email*</label> */}
                             <input type="email" 
                             value={email}
                             placeholder="Email*"
@@ -110,16 +116,15 @@ const Auth = () => {
                         </div>
                         <button className = "signin-button" type="submit">Sign In</button>
                     </form>
-                    <button onClick={() => navigate('/')}>Back</button>
-                      {message && <p>{message}</p>}
-                </div>
+                      {message && <p className="message">{message}</p>}
+                      </div>
+                </>
             ) : (
-                <div>
+                <>
                     <h2 className="welcome">Create Account</h2>
+                    <div className="form-container">
                     <form onSubmit={handleSubmitSignUp}>
                         <div>
-                            <button  className="google">Continue with Google</button>
-                            {/* <label>Username*</label> */}
                             <input type="username" 
                             value={username}
                             placeholder="Username*"
@@ -127,7 +132,6 @@ const Auth = () => {
                             required />
                         </div>
                         <div>
-                            {/* <label>Email*</label> */}
                             <input type="email" 
                             value={email}
                             placeholder="Email*"
@@ -135,7 +139,6 @@ const Auth = () => {
                             required />
                         </div>
                         <div>
-                            {/* <label>Create Password*</label> */}
                             <input type="password" 
                             value={password}
                             placeholder=" Create Password*"
@@ -145,9 +148,9 @@ const Auth = () => {
                         </div>
                         <button className = "signin-button" type="submit">Create Account</button>
                     </form>
-                    <button onClick={() => navigate('/')}>Back</button>
-                      {message && <p>{message}</p>}
+                      {message && <p className="message">{message}</p>}
                 </div>
+                </>
             )}
         </div>
         </div>
