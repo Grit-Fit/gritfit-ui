@@ -62,7 +62,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
+
 
 .signin-button {
     color: white;
@@ -162,11 +164,12 @@ input {
 }
 
 .icon-left {
-    margin-right: 10px; 
+    position: absolute;
+    left: 15px;
     width: 20px;
     height: auto;
-    vertical-align: middle; 
 }
+
 
 .create-account-form form > div {
     width: 100%; /* Ensure each input container spans full width */
@@ -202,11 +205,6 @@ input::placeholder {
         font-size: 2.8rem;
     }
 
-    .auth-button {
-        font-size: 1rem;
-        width: 200px;
-    }
-
     .signin-button {
         width: 140px;
     }
@@ -218,16 +216,21 @@ input::placeholder {
     .form-container {
         max-width: 350px;
     }
+    .auth-button {
+        font-size: 1rem;
+        width: 200px;
+        padding: 12px 25px;
+    }
+
+    .icon-left {
+        left: 12px;
+        width: 18px;
+    }
 }
 
 @media (max-width: 480px) {
     .welcome {
         font-size: 2.2rem;
-    }
-
-    .auth-button {
-        font-size: 0.9rem;
-        width: 180px;
     }
 
     .signin-button {
@@ -241,5 +244,16 @@ input::placeholder {
     .form-container {
         max-width: 300px;
         padding: 20px;
+    }
+
+     .auth-button {
+        font-size: 0.9rem;
+        width: 180px;
+        padding: 10px 20px;
+    }
+
+    .icon-left {
+        left: 10px;
+        width: 16px;
     }
 }

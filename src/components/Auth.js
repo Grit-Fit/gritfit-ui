@@ -83,20 +83,20 @@ const Auth = () => {
              <img src={logo} alt="Logo" className="logo" />
             {!isLogin && !isSignup ? (
                 <div>
-                     <>
-                    <h2 className="welcome">Welcome!</h2>
-                    <div className="button-container">
-                        <button className="auth-button" id="signIN" onClick={() => navigate('/login')}>
-                            <img src={signInIcon} alt="Sign In Icon" className="icon-left" />
-                            Sign In
-                        </button>
-                        <button className="auth-button" id = "signUP" onClick={() => navigate('/signup')}>
-                            <img src={signUpIcon} alt="Sign Up Icon" className="icon-left" />
-                            Create Account
-                        </button>
-                    </div>
-                    <p className="guestline">Continue as Guest</p>
-                </>
+                    <>
+                        <h2 className="welcome">Welcome!</h2>
+                        <div className="button-container">
+                            <button className="auth-button" id="signIN" onClick={() => navigate('/login')}>
+                                <img src={signInIcon} alt="Sign In Icon" className="icon-left" />
+                                Sign In
+                            </button>
+                            <button className="auth-button" id="signUP" onClick={() => navigate('/signup')}>
+                                <img src={signUpIcon} alt="Sign Up Icon" className="icon-left" />
+                                Create Account
+                            </button>
+                        </div>
+                        <p className="guestline">Continue as Guest</p>
+                    </>
                 </div>
             ) : isLogin ? (
                 <>
