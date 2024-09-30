@@ -7,6 +7,8 @@ import axios from '../axios';
 import logo from '../assets/Logo.png';
 import './Auth.css'
 import back from '../assets/Back.png';
+import signInIcon from '../assets/signInIcon.png'
+import signUpIcon from '../assets/signUpIcon.png'
 
 const Auth = () => {
     const { login } = useContext(AuthContext);
@@ -84,10 +86,12 @@ const Auth = () => {
                      <>
                     <h2 className="welcome">Welcome!</h2>
                     <div className="button-container">
-                        <button className="auth-button" onClick={() => navigate('/login')}>
+                        <button className="auth-button" id="signIN" onClick={() => navigate('/login')}>
+                            <img src={signInIcon} alt="Sign In Icon" className="icon-left" />
                             Sign In
                         </button>
-                        <button className="auth-button" onClick={() => navigate('/signup')}>
+                        <button className="auth-button" id = "signUP" onClick={() => navigate('/signup')}>
+                            <img src={signUpIcon} alt="Sign Up Icon" className="icon-left" />
                             Create Account
                         </button>
                     </div>

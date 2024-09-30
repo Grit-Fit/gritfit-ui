@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/Logo.png';
+import './Welcome.css'; 
 
 
 const WelcomePage = () => {
@@ -16,21 +18,23 @@ const WelcomePage = () => {
         navigate('/');
     };
     return (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-            <h1>Welcome!</h1>
-            <p>We are as excited as you are!</p>
-            <p>Lets start by knowing a bit about you</p>
-            <h3>What is your name?</h3>
+        <div className="container">
+            <img src={logo} alt="Logo" className="logo" />
+            <h1 className="welcome">Welcome!</h1>
+            <p className="text">We are as excited as you are!</p>
+            <p className="text">Lets start by knowing a bit about you</p>
+            <h3 className="nameprompt" >What is your name?</h3>
             <form onSubmit={handleSubmit}>
                  <input
                     type="text"
                     value={name}
+                    className="inputbx"
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name"
                     required
                 />
-                <button type="submit">Submit</button>
-                <button onClick={handleLogout} style={{ marginTop: '20px' }}>Logout</button>
+                <button type="submit" className="btn" >Submit</button>
+                <button onClick={handleLogout} className="btn">Logout</button>
             </form>
         </div>
     );
