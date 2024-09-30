@@ -77,6 +77,23 @@
     justify-content: center;
     border: none;
 }
+.createAcc-button {
+    color: white;
+    background-color: #007bff;
+    border-radius: 10px;
+    margin: 20px 0 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    width: 200px;
+    max-width: 100%;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    height: 38px; /* Set fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
 
 .guestline {
     color: rgba(150, 155, 159, 1);
@@ -106,7 +123,7 @@ form {
 input {
     margin: 10px 0;
     padding: 10px;
-    width: 100%; /* Changed from 120% to 100% */
+    width: 100%;
     border: 1.85px solid rgba(146, 177, 201, 1);
     border-radius: 10px;
     box-sizing: border-box;
@@ -117,6 +134,36 @@ input {
     margin-top: 20px;
     text-align: center;
     color: #007bff;
+}
+.create-account-form {
+    max-width: 500px;
+    width: 100%;
+}
+
+.create-account-form form {
+    width: 100%;
+}
+
+.create-account-form input {
+    width: 100%;
+    max-width: 100%;
+}
+
+.create-account-form .pwdLen {
+    text-align: left; /* Align p tag to the left */
+    align-self: flex-start; /* Align p tag to the start */
+    font-size: 0.9rem;
+    color: rgba(150, 155, 159, 1);
+    margin-top: 0px;
+}
+
+.create-account-form form > div {
+    width: 100%; /* Ensure each input container spans full width */
+}
+
+/* Ensure form-container does not interfere with Create Account styling */
+.form-container {
+    max-width: 400px; /* Existing max-width for Sign In form */
 }
 
 input::placeholder {

@@ -122,7 +122,7 @@ const Auth = () => {
             ) : (
                 <>
                     <h2 className="welcome">Create Account</h2>
-                    <div className="form-container">
+                    <div className="form-container create-account-form">
                     <form onSubmit={handleSubmitSignUp}>
                         <div>
                             <input type="username" 
@@ -144,9 +144,9 @@ const Auth = () => {
                             placeholder=" Create Password*"
                         onChange={(e) => setPassword(e.target.value)}
                             required />
-                            <p className="pwdLen">Your password must contain 7 letters</p>
+                            <p className="pwdLen">Your password must contain 7 letters....</p>
                         </div>
-                        <button className = "signin-button" type="submit">Create Account</button>
+                        <button className = "createAcc-button" type="submit">Create Account</button>
                     </form>
                       {message && <p className="message">{message}</p>}
                 </div>
