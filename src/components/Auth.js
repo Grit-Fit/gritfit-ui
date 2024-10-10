@@ -28,7 +28,7 @@ const Auth = () => {
     console.log(email, password, isLogin ? "Login" : "Signup");
     try {
       const response = await axios.post(
-        "https://grit-fit-backend-stage.vercel.app/api/createAccount",
+        "https://gritfit-backend.onrender.com/api/createAccount",
         {
           username,
           email,
@@ -55,7 +55,7 @@ const Auth = () => {
     console.log("login process started");
     try {
       const res = await axios.post(
-        "https://grit-fit-backend-stage.vercel.app/api/signIn",
+        "https://gritfit-backend.onrender.com/api/signIn",
         {
           email,
           password,
