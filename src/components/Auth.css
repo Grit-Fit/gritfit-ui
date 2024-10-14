@@ -9,7 +9,7 @@
     padding: 5vh 20px;
     box-sizing: border-box;
     background: radial-gradient(198.87% 58.95% at 53.33% 48.1%, #FFFFFF 0%, #EDF9FD 50%, #B7E9F7 100%);
-    background-image: url('../assets/background.png');
+    /* background-image: url('../assets/background.png'); */
     background-size: cover;
     background-position: center;
     position: relative;

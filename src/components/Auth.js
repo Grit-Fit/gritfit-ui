@@ -13,7 +13,6 @@ import signUpIcon from "../assets/signUpIcon.png";
 const Auth = () => {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -30,14 +29,13 @@ const Auth = () => {
       const response = await axios.post(
         "https://gritfit-backend.onrender.com/api/createAccount",
         {
-          username,
           email,
           password,
         }
       );
       const { token, message: responseMessage } = response.data;
       if (token) {
-        const userData = { email, username };
+        const userData = { email };
         login(token, userData);
         navigate("/logo");
         setMessage(responseMessage); // Display success message
@@ -158,7 +156,7 @@ const Auth = () => {
             <h2 className="welcome">Create Account</h2>
             <div className="form-container create-account-form">
               <form onSubmit={handleSubmitSignUp}>
-                <div>
+                {/* <div>
                   <input
                     type="username"
                     value={username}
@@ -166,7 +164,7 @@ const Auth = () => {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                   />
-                </div>
+                </div> */}
                 <div>
                   <input
                     type="email"
