@@ -1,5 +1,5 @@
 // src/components/WelcomePage.js
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
@@ -12,11 +12,11 @@ const WelcomePage = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  if (!authToken) {
-    // Redirect to login page if not authenticated
-    navigate("/");
-    return null;
-  }
+  // if (!authToken) {
+  //   // Redirect to login page if not authenticated
+  //   navigate("/");
+  //   return null;
+  // }
   const handleUpdateUsername = async (e) => {
     e.preventDefault();
     try {
