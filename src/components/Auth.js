@@ -68,7 +68,7 @@ const Auth = () => {
         // Store token and user data in AuthContext
         login(token, userData);
         // Navigate to the logo page
-        navigate("/logo");
+        navigate("/gritPhases");
       }
     } catch (error) {
       console.error(error);
@@ -86,7 +86,7 @@ const Auth = () => {
         </button>
       )}
       <div className="content-wrapper">
-        <img src={logo} alt="Logo" className="logo" />
+        <img src={logo} alt="Logo" className="logo-auth" />
         {!isLogin && !isSignup ? (
           <div>
             <>

@@ -31,6 +31,7 @@ const WelcomePage = () => {
       );
 
       setMessage(response.data.message);
+      navigate("/gritPhases");
       // Optionally, you can clear the input field after successful update
       setName("");
     } catch (error) {
