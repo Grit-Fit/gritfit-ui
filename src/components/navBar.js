@@ -1,5 +1,4 @@
-// NavBar.js
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { MessageSquare } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -8,15 +7,19 @@ import logo from "../assets/Logo.png";
 import homeIcon from "../assets/home.png";
 import gfitIcon from "../assets/gfit.png";
 import signout from "../assets/singout.png";
+import ContactUs from "./contactUs";
 
 const NavBar = ({ isOpen, onClose }) => {
   const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [showContactPopup, setShowContactPopup] = useState(false);
+
   const handleLogoClick = () => {
     if (onClose) {
       onClose();
     }
   };
+
   const handleHomeClick = (e) => {
     e.preventDefault();
     if (token) {
@@ -35,7 +38,7 @@ const NavBar = ({ isOpen, onClose }) => {
 
   const handleContactClick = (e) => {
     e.preventDefault();
-    // Add your contact navigation logic here
+    setShowContactPopup(true);
   };
 
   const handleSignOut = async (e) => {
@@ -47,48 +50,55 @@ const NavBar = ({ isOpen, onClose }) => {
   };
 
   return (
-    <nav className={`navbar ${isOpen ? "open" : ""}`}>
-      <div className="navbar-header">
-        <div className="logo-container-navbar">
-          <img
-            src={logo}
-            alt="Logo"
-            className="logo-image"
-            onClick={handleLogoClick}
-            style={{ cursor: "pointer" }}
-          />
+    <>
+      <nav className={`navbar ${isOpen ? "open" : ""}`}>
+        <div className="navbar-header">
+          <div className="logo-container-navbar">
+            <img
+              src={logo}
+              alt="Logo"
+              className="logo-image"
+              onClick={handleLogoClick}
+              style={{ cursor: "pointer" }}
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="navbar-separator" />
+        <div className="navbar-separator" />
 
-      <ul className="nav-items">
-        <li>
-          <a href="#home" onClick={handleHomeClick}>
-            <img src={homeIcon} alt="Home" className="nav-icon" />
-            Home
-          </a>
-        </li>
-        <li>
-          <a href="#gfit-report">
-            <img src={gfitIcon} alt="Home" className="nav-icon" />
-            GFit Report
-          </a>
-        </li>
-        <li>
-          <a href="#contact-us">
-            <MessageSquare size={20} className="nav-icon" />
-            Contact Us
-          </a>
-        </li>
-        <li>
-          <a href="#sign-out" onClick={handleSignOut}>
-            <img src={signout} alt="Home" className="nav-icon" />
-            Sign Out
-          </a>
-        </li>
-      </ul>
-    </nav>
+        <ul className="nav-items">
+          <li>
+            <a href="#home" onClick={handleHomeClick}>
+              <img src={homeIcon} alt="Home" className="nav-icon" />
+              Home
+            </a>
+          </li>
+          <li>
+            <a href="#gfit-report" onClick={handleGFitClick}>
+              <img src={gfitIcon} alt="Home" className="nav-icon" />
+              GFit Report
+            </a>
+          </li>
+          <li>
+            <a href="#contact-us" onClick={handleContactClick}>
+              <MessageSquare size={20} className="nav-icon" />
+              Contact Us
+            </a>
+          </li>
+          <li>
+            <a href="#sign-out" onClick={handleSignOut}>
+              <img src={signout} alt="Home" className="nav-icon" />
+              Sign Out
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <ContactUs
+        isOpen={showContactPopup}
+        onClose={() => setShowContactPopup(false)}
+      />
+    </>
   );
 };
 

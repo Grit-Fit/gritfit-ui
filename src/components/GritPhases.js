@@ -1,10 +1,12 @@
 /* GritPhases.js */
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown, Info } from "lucide-react";
+import { ChevronDown, Info, ChevronsLeft, ChevronsRight } from "lucide-react";
 import NavBar from "./navBar";
 import logo from "../assets/Logo.png";
 import buttonImage from "../assets/Stepping_StoneBtn.png";
-import "./GritPhases.css"; // Make sure this import is present
+import "./GritPhases.css";
+import arrowleft from "../assets/SlidingArrowLeft.png";
+import arrowright from "../assets/SlidingArrowRight.png";
 
 const GritPhase = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -67,10 +69,22 @@ const GritPhase = () => {
   const renderDayButtons = (phaseNumber) => (
     <div className="task-buttons">
       {[1, 2, 3].map((dayNumber) => (
-        <button key={dayNumber} className="task-button">
-          <img src={buttonImage} alt={`Task ${dayNumber}`} />
-          <div className="day-label">Day {dayNumber}</div>
-        </button>
+        <div key={dayNumber} className="task-button-container">
+          <img src={arrowleft} className="arrow arrow-left" alt="arrow left" />
+          <button className="task-button">
+            <img
+              src={buttonImage}
+              className="button-image"
+              alt={`Task ${dayNumber}`}
+            />
+            <div className="day-label">Day {dayNumber}</div>
+          </button>
+          <img
+            src={arrowright}
+            className="arrow arrow-right"
+            alt="arrow right"
+          />
+        </div>
       ))}
     </div>
   );
@@ -81,11 +95,13 @@ const GritPhase = () => {
 
       <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
         <header className="header">
-          <div
-            className="logo-container"
-            onClick={!isNavOpen ? handleNavOpen : undefined}
-          >
-            <img src={logo} alt="Logo" className="logo-gritPhases" />
+          <div className="logo-container">
+            <img
+              src={logo}
+              alt="Logo"
+              onClick={!isNavOpen ? handleNavOpen : undefined}
+              className="logo-gritPhases"
+            />
             <ChevronDown
               className={`chevron ${isNavOpen ? "rotated" : ""}`}
               size={24}

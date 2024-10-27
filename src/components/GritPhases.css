@@ -161,13 +161,35 @@
   gap: 2rem;
 }
 
- .task-button {
+ /* .task-button {
   position: relative;
   width: fit-content;
   margin: 1rem;
   transform-origin: center;
   background: transparent;
   border: none;
+}
+
+.task-button:hover {
+  transform: scale(1.05);
+} */
+.task-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  gap: 10px;
+}
+
+.task-button {
+  position: relative;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 0;
+  width: fit-content;
 }
 
 .task-button:hover {
@@ -179,6 +201,29 @@
   width: 150px;
   height: auto;
 }
+.button-image {
+  width: 150px;
+  height: auto;
+}
+.arrow {
+  width: 20px !important;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* .day-label {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(0.8rem, 2vw, 1.2rem);
+  font-weight: bold;
+  color: #969B9F;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  white-space: nowrap;
+} */
 
 .day-label {
   position: absolute;
@@ -191,10 +236,14 @@
   padding: 2px 10px;
   border-radius: 10px;
   font-family: 'Montserrat', sans-serif;
-  white-space: nowrap;  /*new added*/
+  white-space: nowrap;
 }
 
-.task-button:nth-child(1) {
+.arrowleft, .arrowright{
+  width:20px;
+}
+
+/* .task-button:nth-child(1) {
   align-self: flex-start;
   margin-left: 5%;
 }
@@ -207,9 +256,23 @@
 .task-button:nth-child(3) {
   align-self: flex-start;
   margin-left: 10%;
+} */
+ .task-button-container:nth-child(1) {
+  align-self: flex-start;
+  margin-left: 5%;
 }
 
-@media (max-width: 768px) {
+.task-button-container:nth-child(2) {
+  align-self: flex-end;
+  margin-right: 15%;
+}
+
+.task-button-container:nth-child(3) {
+  align-self: flex-start;
+  margin-left: 10%;
+}
+
+/* @media (max-width: 768px) {
   .task-button img {
     width: 150px;
   }
@@ -244,7 +307,7 @@
   .task-button:nth-child(3) {
     margin-left: 5%;
   }
-}
+} */
 
 @media screen and (max-width: 1023px) {
   .navbar {
@@ -280,8 +343,26 @@
     transform: translateX(0);
   }
 }
+
+@media (max-width: 768px) {
+  .button-image {
+    width: 150px;
+  }
+
+  .task-button-container:nth-child(1) {
+    margin-left: 2%;
+  }
+
+  .task-button-container:nth-child(2) {
+    margin-right: 5%;
+  }
+
+  .task-button-container:nth-child(3) {
+    margin-left: 5%;
+  }
+}
 @media screen and (min-width: 768px) and (max-width: 1028px) {
-  .task-buttons {
+  /* .task-buttons {
     width: 30%;
     min-height: 350px;
   }
@@ -307,8 +388,30 @@
   .task-button img {
     width: 140px; 
   }
+} */
+ .task-button-container:nth-child(1) {
+    align-self: flex-start;
+    margin-left: 0;
+    transform: translateX(-40px);
+  }
+
+  .task-button-container:nth-child(2) {
+    align-self: flex-end;
+    margin-right: 0;
+    transform: translateX(40px);
+  }
+
+  .task-button-container:nth-child(3) {
+    align-self: flex-start;
+    margin-left: 5%;
+    transform: translateX(-30px);
+  }
+
+  .button-image {
+    width: 140px;
+  }
 }
-@media screen and (min-width: 480px) and (max-width: 767px) {
+/* @media screen and (min-width: 480px) and (max-width: 767px) {
   .task-buttons {
     width: 40%;
     min-height: 300px;
@@ -330,10 +433,28 @@
   .task-button img {
     width: 130px;
   }
+} */
+
+@media screen and (min-width: 480px) and (max-width: 767px) {
+  .button-image {
+    width: 130px;
+  }
+
+  .task-button-container:nth-child(1) {
+    transform: translateX(-20px);
+  }
+
+  .task-button-container:nth-child(2) {
+    transform: translateX(20px);
+  }
+
+  .task-button-container:nth-child(3) {
+    transform: translateX(-15px);
+  }
 }
 
 /* Small Mobile */
-@media screen and (max-width: 479px) {
+/* @media screen and (max-width: 479px) {
   .task-buttons {
     width: 55%;
     min-height: 280px;
@@ -354,5 +475,22 @@
 
   .task-button img {
     width: 120px;
+  }
+} */
+@media screen and (max-width: 479px) {
+  .button-image {
+    width: 120px;
+  }
+
+  .task-button-container:nth-child(1) {
+    transform: translateX(-10px);
+  }
+
+  .task-button-container:nth-child(2) {
+    transform: translateX(10px);
+  }
+
+  .task-button-container:nth-child(3) {
+    transform: translateX(-5px);
   }
 }
