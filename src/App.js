@@ -10,6 +10,9 @@ import LogoPage from "./components/Logo";
 import WelcomePage from "./components/Welcome";
 import { AuthContext } from "./context/AuthContext";
 import GritPhases from "./components/GritPhases";
+import LeftSwipe from "./components/leftSwipe";
+import RightSwipe from "./components/rightSwipe";
+import GFitReport from "./components/gFitReport";
 
 const App = () => {
   const { token } = useContext(AuthContext);
@@ -36,6 +39,18 @@ const App = () => {
         <Route
           path="/gritPhases"
           element={token ? <GritPhases /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/leftSwipe"
+          element={token ? <LeftSwipe /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/rightSwipe"
+          element={token ? <RightSwipe /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/gFitReport"
+          element={token ? <GFitReport /> : <Navigate to="/" />}
         />
         {/* default for any other route */}
         <Route path="*" element={<Navigate to="/" />} />

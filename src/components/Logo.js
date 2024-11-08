@@ -16,7 +16,7 @@ const LogoPage = () => {
   }, [navigate]);
 
   return (
-    <div className="logo-container">
+    <div className="logo-container-logo">
       <img src={logo} alt="Logo" className="logo" />
       <div className="tagline">A classy tagline ;)</div>
     </div>

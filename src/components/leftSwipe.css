@@ -1,0 +1,317 @@
+/* leftSwipe.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.fullpage-left {
+    background-color: rgba(251, 220, 219, 1);
+    width: 100vw;
+    min-height: 100vh;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: clamp(15px, 5vh, 40px);
+}
+
+.logo-left {
+    width: clamp(120px, 30vw, 180px);
+    height: auto;
+    margin-bottom: 15px;
+    align-self: flex-start;
+}
+
+.body-leftSwipe {
+    max-width: 100%;
+    align-content: center;
+    padding: clamp(15px, 5vh, 40px);
+    padding-top: 0px;
+}
+
+.body_text {
+    color: rgba(153, 8, 56, 1);
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    font-weight: bold;
+    font-size: clamp(18px, 2.5vw, 30px);
+}
+
+.undo_swipe_btn {
+    display: flex;
+    flex-direction: row;
+    text-decoration: underline;
+    color: rgba(153, 8, 56, 1);
+    align-self: flex-end;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: clamp(14px, 2vw, 17px);
+    gap: 5px;
+    cursor: pointer;
+    padding: clamp(10px, 2vh, 20px);
+}
+
+.body_images {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0;
+}
+
+.body_images img {
+    position: absolute;
+    /* width: clamp(80px, 15vw, 120px); */
+    height: clamp(80px, 15vw, 120px);
+    object-fit: contain;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.body_images img:nth-child(3) {
+    z-index: 10;
+}
+
+.body_images img:nth-child(1) {
+    top: 0px;
+    left: 39%;
+    transform: translateX(-50%);
+}
+
+.body_images img:nth-child(2) {
+    top: 0px;
+    right: 31%;
+}
+
+.body_images img:nth-child(4) {
+    transform: translateY(-50%);
+    top: 75%;
+    right: 32%;
+}
+
+.body_images img:nth-child(5) {
+    bottom: -5%;
+    left: 35%;
+}
+
+.c {
+    stroke: rgba(153, 8, 56, 1);
+}
+
+/* Tablet Responsive */
+@media screen and (max-width: 768px) {
+    .body_images {
+        height: 350px;
+        min-height: 350px;
+    }
+
+    .body_images img {
+        /* width: clamp(60px, 12vw, 100px); */
+        height: clamp(60px, 12vw, 100px);
+    }
+
+    .body_images img:nth-child(1) {
+        left: 33%;
+    }
+
+    .body_images img:nth-child(2) {
+        right: 24%;
+    }
+
+    .body_images img:nth-child(4) {
+        right: 25%;
+    }
+
+    .body_images img:nth-child(5) {
+        left: 27%;
+    }
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 480px) {
+    .body_images {
+        height: 300px;
+        min-height: 300px;
+    }
+
+    .body_images img {
+        /* width: clamp(50px, 10vw, 80px); */
+        height: clamp(50px, 10vw, 80px);
+        padding: 5px;
+    }
+
+    .body_images img:nth-child(1) {
+        left: 30%;
+    }
+
+    .body_images img:nth-child(2) {
+        right: 16%;
+    }
+
+    .body_images img:nth-child(4) {
+        right: 19%;
+        top: 61%;
+    }
+
+    .body_images img:nth-child(5) {
+        left: 24%;
+        bottom: 27%;
+    }
+
+    .body_text {
+        margin-bottom: 10px;
+    }
+
+    .undo_swipe_btn {
+        padding: clamp(5px, 1vh, 10px);
+    }
+}
+
+/* Small Mobile Responsive */
+@media screen and (max-width: 360px) {
+    .body_images img {
+        /* width: clamp(40px, 8vw, 60px); */
+        height: clamp(40px, 8vw, 60px);
+    }
+
+    .body_images img:nth-child(1) {
+        left: 36%;
+    }
+
+    .body_images img:nth-child(2) {
+        right: 25%;
+    }
+
+    .body_images img:nth-child(4) {
+        right: 26%;
+        top: 65%;
+    }
+
+    .body_images img:nth-child(5) {
+        left: 32%;
+    }
+}
+/* Add these new styles to your existing CSS */
+
+.selected-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    gap: 20px;  /* Space between image and text */
+    padding-bottom: 50px;
+}
+
+.selected-button {
+    position: static !important;
+    height: clamp(80px, 20vw, 120px) !important;
+    animation: scaleUp 0.3s ease forwards;
+}
+
+.its-ok-text {
+    color: rgba(150, 155, 159, 1);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: clamp(12px, 1.7vw, 20px);
+    animation: fadeIn 0.3s ease forwards;
+    text-align: center;
+}
+.doneBtn{
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(10px, 1.7vw, 15px);
+    padding: 8px 35px;
+    color:  rgba(231, 140, 139, 1);
+    background-color: white;
+    border: 2px solid rgba(231, 140, 139, 1);
+    border-radius: 15px;
+    font-weight: light;
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .selected-button-container {
+        gap: 15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .selected-button-container {
+        gap: 10px;
+    }
+}
+/* Add these styles to your leftSwipe.css file */
+
+.other-reason-container {
+  width: 100%;
+  max-width: 500px; 
+  margin: 40px 0;
+}
+
+.other-reason-input {
+  width: 100%;
+  padding: 8px 22px;
+  border: 2px solid  rgba(150, 155, 159, 1);
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(14px, 1.5vw, 16px);
+  color: rgba(153, 8, 56, 1);
+  background-color: white;
+  outline: none;
+}
+
+.other-reason-input::placeholder {
+  color: rgba(231, 140, 139, 0.8);
+}
+
+.other-reason-input:focus {
+  border-color: rgba(150, 155, 159, 1);
+  box-shadow: 0 0 0 2px rgba(153, 8, 56, 0.1);
+}
+
+.doneBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media screen and (max-width: 480px) {
+  .other-reason-container {
+    max-width: 400px;
+  }
+}

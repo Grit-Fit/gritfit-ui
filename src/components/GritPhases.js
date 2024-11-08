@@ -1,17 +1,21 @@
-/* GritPhases.js */
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown, Info, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { ChevronDown, Info } from "lucide-react";
 import NavBar from "./navBar";
 import logo from "../assets/Logo.png";
 import buttonImage from "../assets/Stepping_StoneBtn.png";
 import "./GritPhases.css";
 import arrowleft from "../assets/SlidingArrowLeft.png";
 import arrowright from "../assets/SlidingArrowRight.png";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import axios from "../axios";
 
 const GritPhase = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [currentPhase, setCurrentPhase] = useState(1);
   const scrollableRef = useRef(null);
+  const navigate = useNavigate();
+  const { authToken } = useAuth();
 
   const handleNavClose = () => {
     setIsNavOpen(false);
@@ -39,6 +43,28 @@ const GritPhase = () => {
       description: "Have a 14 hour fasting window, for example: 8pm-10am",
     },
   ];
+
+  const handleRightArrowClick = async (phaseNumber, dayNumber, e) => {
+    e.preventDefault();
+    console.log("Navigating to RightSwipe with:", { phaseNumber, dayNumber });
+
+    navigate("/rightSwipe", {
+      state: {
+        phaseNumber,
+        dayNumber,
+      },
+    });
+  };
+
+  const renderLeftPage = (e, phaseNumber, dayNumber) => {
+    e.preventDefault();
+    navigate("/leftSwipe", {
+      state: {
+        phaseId: phaseNumber,
+        taskId: dayNumber,
+      },
+    });
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,7 +96,13 @@ const GritPhase = () => {
     <div className="task-buttons">
       {[1, 2, 3].map((dayNumber) => (
         <div key={dayNumber} className="task-button-container">
-          <img src={arrowleft} className="arrow arrow-left" alt="arrow left" />
+          <img
+            src={arrowleft}
+            className="arrow arrow-left"
+            onClick={(e) => renderLeftPage(e, phaseNumber, dayNumber)}
+            alt="arrow left"
+          />
+
           <button className="task-button">
             <img
               src={buttonImage}
@@ -82,6 +114,7 @@ const GritPhase = () => {
           <img
             src={arrowright}
             className="arrow arrow-right"
+            onClick={(e) => handleRightArrowClick(phaseNumber, dayNumber, e)}
             alt="arrow right"
           />
         </div>
@@ -115,7 +148,7 @@ const GritPhase = () => {
 
         <div className="fasting-header">Intermittent Fasting</div>
 
-        <div className="scrollable-content" ref={scrollableRef}>
+        {/* <div className="scrollable-content" ref={scrollableRef}>
           <div className="grit-phase-title">
             {phases[currentPhase - 1].title}
             <p className="grit-phase-desc">
@@ -128,6 +161,21 @@ const GritPhase = () => {
               className={`section section-${phase.number}`}
               style={{ minHeight: "calc(100vh - 70px)" }}
             >
+              {renderDayButtons(phase.number)}
+            </section>
+          ))}
+        </div> */}
+        <div className="scrollable-content" ref={scrollableRef}>
+          {phases.map((phase) => (
+            <section
+              key={phase.number}
+              className={`section section-${phase.number}`}
+              style={{ minHeight: "calc(100vh - 70px)" }}
+            >
+              <div className="grit-phase-title">
+                {phase.title}
+                <p className="grit-phase-desc">{phase.description}</p>
+              </div>
               {renderDayButtons(phase.number)}
             </section>
           ))}

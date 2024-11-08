@@ -32,7 +32,7 @@ const NavBar = ({ isOpen, onClose }) => {
   const handleGFitClick = (e) => {
     e.preventDefault();
     if (token) {
-      navigate("/gfit-report"); // Adjust the path as needed
+      navigate("/gfit-report");
     }
   };
 
