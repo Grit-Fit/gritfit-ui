@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/red_logo.png";
 import sick from "../assets/sick.png";
 import cheatDay from "../assets/cheat_day.png";
@@ -14,12 +14,22 @@ import axios from "axios";
 const LeftSwipe = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { authToken } = useAuth();
+  const { accessToken, refreshAuthToken } = useAuth();
   const [selectedButton, setSelectedButton] = useState(null);
+  const [selectedGoal, setSelectedGoal] = useState(null);
   const [otherReason, setOtherReason] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Get phase and task from navigation state
   const { phaseId, taskId } = location.state || {};
+
+  useEffect(() => {
+    // If there is no accessToken, try to refresh it by calling the backend refresh route
+    if (!accessToken) {
+      refreshAuthToken(); // Refresh token by making API call to the backend
+    }
+  }, [accessToken, refreshAuthToken]);
 
   const undoSwipe = (e) => {
     e.preventDefault();
@@ -28,6 +38,10 @@ const LeftSwipe = () => {
 
   const handleButtonClick = (buttonName, image) => {
     setSelectedButton({ name: buttonName, image: image });
+  };
+
+  const handleGoalSelection = (goal) => {
+    setSelectedGoal(goal);
   };
 
   const getReasonText = (buttonName) => {
@@ -49,26 +63,79 @@ const LeftSwipe = () => {
 
   const doneBtnClick = async (e) => {
     e.preventDefault();
+    console.log("Leftswipe done button clicked.");
+    const { phaseNumber, dayNumber } = location.state || {};
 
+    if (!phaseNumber || !dayNumber) {
+      setError("Missing required information");
+      return;
+    }
+    if (phaseId === 3 && !selectedGoal) {
+      setError("Please select a goal you were unable to achieve.");
+      return;
+    }
+    console.log("Phase and Day, ", phaseNumber);
+    setIsLoading(true);
+    setError(null);
     try {
       const reason = getReasonText(selectedButton.name);
 
+      const requestData = {
+        phaseId: parseInt(phaseNumber),
+        taskId: parseInt(dayNumber),
+        reasonForNonCompletion: reason,
+        failedGoal: null,
+      };
+
+      if (phaseId === 3) {
+        requestData.failedGoal = selectedGoal; // Include goal in phase 3
+      }
+
       const response = await axios.post(
-        "http://localhost:5000/api/userprogressNC",
-        {
-          phaseId,
-          taskId,
-          reasonForNonCompletion: reason,
-        },
+        "http://localhost:5050/api/userprogressNC",
+        requestData,
         {
           headers: {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
 
       console.log("Success:", response.data);
-      navigate("/gritPhases");
+      // let phaseNumb,
+      //   dayNumb = 0;
+      // if (
+      //   (parseInt(phaseNumber) % 3 !== 0 && parseInt(dayNumber) === 5) ||
+      //   (parseInt(phaseNumber) % 3 === 0 && parseInt(dayNumber) === 4)
+      // ) {
+      //   phaseNumb = parseInt(phaseNumber) + 1;
+      //   dayNumb = 1;
+      // } else {
+      //   phaseNumb = parseInt(phaseNumber);
+      //   dayNumb = parseInt(dayNumber) + 1;
+      // }
+
+      // const startProgressResponse = await axios.post(
+      //   "http://localhost:5050/api/userprogressStart",
+      //   {
+      //     phaseId: phaseNumb,
+      //     taskId: dayNumb,
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
+      // console.log("Start Progress: ", startProgressResponse.data);
+      navigate("/gritPhases", {
+        state: {
+          phase: parseInt(phaseNumber),
+          day: parseInt(dayNumber),
+          rightSwipe: false,
+          leftSwipe: true,
+        },
+      });
     } catch (error) {
       console.error("Error:", error);
     }
@@ -88,75 +155,97 @@ const LeftSwipe = () => {
       </header>
 
       <div className="body-leftSwipe">
-        <div className="body_text">
-          What prevented you from completing your goal?
-        </div>
-
-        {!selectedButton ? (
-          <div className="body_images">
-            <img
-              src={sick}
-              alt="sick"
-              onClick={() => handleButtonClick("sick", sick)}
-            />
-            <img
-              src={lm}
-              alt="less_motivation"
-              onClick={() => handleButtonClick("less_motivation", lm)}
-            />
-            <img
-              src={cheatDay}
-              alt="cheatDay"
-              onClick={() => handleButtonClick("cheatDay", cheatDay)}
-            />
-            <img
-              src={busy}
-              alt="busy"
-              onClick={() => handleButtonClick("busy", busy)}
-            />
-            <img
-              src={other}
-              alt="other"
-              onClick={() => handleButtonClick("other", other)}
-            />
-          </div>
-        ) : (
-          <div className="selected-button-container">
-            {selectedButton.name !== "other" && (
-              <img
-                src={selectedButton.image}
-                alt={selectedButton.name}
-                className="selected-button"
-              />
-            )}
-            <div className="its-ok-text">
-              {selectedButton.name === "other" ? (
-                <div className="other-reason-container">
-                  <input
-                    type="text"
-                    value={otherReason}
-                    onChange={handleOtherReasonChange}
-                    placeholder="Please specify your reason..."
-                    className="other-reason-input"
-                    autoFocus
-                  />
-                </div>
-              ) : (
-                <>
-                  That's OK!
-                  <br />
-                  Let us try again tomorrow!
-                </>
-              )}
+        {!selectedGoal && phaseId === 3 ? (
+          <div className="goal-selection">
+            <div className="body_text">
+              <h2>Which goal were you unable to achieve?</h2>
             </div>
             <button
               className="doneBtn"
-              onClick={doneBtnClick}
-              disabled={selectedButton.name === "other" && !otherReason.trim()}
+              onClick={() => handleGoalSelection("Protein Goal")}
             >
-              Done
+              Protein Goal
+            </button>
+            <button
+              className="doneBtn"
+              onClick={() => handleGoalSelection("Fat Goal")}
+            >
+              Fat Goal
             </button>
           </div>
+        ) : (
+          <>
+            <div className="body_text">
+              What prevented you from completing your goal?
+            </div>
+
+            {!selectedButton ? (
+              <div className="body_images">
+                <img
+                  src={sick}
+                  alt="sick"
+                  onClick={() => handleButtonClick("sick", sick)}
+                />
+                <img
+                  src={lm}
+                  alt="less_motivation"
+                  onClick={() => handleButtonClick("less_motivation", lm)}
+                />
+                <img
+                  src={cheatDay}
+                  alt="cheatDay"
+                  onClick={() => handleButtonClick("cheatDay", cheatDay)}
+                />
+                <img
+                  src={busy}
+                  alt="busy"
+                  onClick={() => handleButtonClick("busy", busy)}
+                />
+                <img
+                  src={other}
+                  alt="other"
+                  onClick={() => handleButtonClick("other", other)}
+                />
+              </div>
+            ) : (
+              <div className="selected-button-container">
+                {selectedButton.name !== "other" && (
+                  <img
+                    src={selectedButton.image}
+                    alt={selectedButton.name}
+                    className="selected-button"
+                  />
+                )}
+                <div className="its-ok-text">
+                  {selectedButton.name === "other" ? (
+                    <div className="other-reason-container">
+                      <input
+                        type="text"
+                        value={otherReason}
+                        onChange={handleOtherReasonChange}
+                        placeholder="Please specify your reason..."
+                        className="other-reason-input"
+                        autoFocus
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      That's OK!
+                      <br />
+                      Let us try again tomorrow!
+                    </>
+                  )}
+                </div>
+                <button
+                  className="doneBtn"
+                  onClick={doneBtnClick}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Updating..." : "Done"}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -1,50 +1,95 @@
-// src/context/AuthContext.js
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import axios from '../axios';
 
-// Create the context
 export const AuthContext = createContext();
 
-// Create the provider component
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(() => localStorage.getItem('token') || null);
-    const [user, setUser] = useState(() => {
-        const userData = localStorage.getItem('user');
-        return userData ? JSON.parse(userData) : null;
-    });
+  const [user, setUser] = useState(null); // Stores decoded user info
+  const [accessToken, setAccessToken] = useState(() => localStorage.getItem('accessToken') || null); // Access token stored only in localStorage
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // Flag to track manual logout
 
-    useEffect(() => {
-        if (token) {
-            localStorage.setItem('token', token);
-        } else {
-            localStorage.removeItem('token');
-        }
-    }, [token]);
+  useEffect(() => {
+    if (accessToken) {
+        localStorage.setItem('accessToken', accessToken);
+    } else {
+        localStorage.removeItem('accessToken');
+    }
+}, [accessToken]);
+  // Decode the access token and update the user state
+  const decodeToken = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      setUser(decoded);
+      return decoded;
+    } catch (error) {
+      console.error('Failed to decode token', error);
+      setUser(null);
+      return null;
+    }
+  };
 
-    useEffect(() => {
-        if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-        } else {
-            localStorage.removeItem('user');
-        }
-    }, [user]);
+  // Login function
+  const login = async (_ , credentials) => {
+    try {
+      const response = await axios.post('/signIn', credentials, {
+        withCredentials: true, // Include cookies
+      });
+      const { token } = response.data;
+      setAccessToken(token);
+      decodeToken(token);
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
 
-    const login = (token, userData) => {
-        setToken(token);
-        setUser(userData);
-    };
+  // Logout function
+  // Logout function
+  const logout = async () => {
+    try {
+      setIsLoggingOut(true); // Set the flag to true when logging out
+      await axios.post('/logout', {}, { withCredentials: true }); // Backend should clear the refresh token
+      setAccessToken(null);
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoggingOut(true); // Reset the flag after logout process
+    }
+  };
+  // Fetch the token from the backend via a refresh route
+  const refreshAuthToken = async () => {
+    try {
+      const response = await axios.post('/refreshToken', {}, { withCredentials: true });
+      const { accessToken } = response.data; // New access token from backend
+      setAccessToken(accessToken);
+      decodeToken(accessToken); // Decode the new token
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      logout(); // Handle logout if refresh fails
+    }
+  };
 
-    const logout = () => {
-        setToken(null);
-        setUser(null);
-    };
 
-    return (
-        <AuthContext.Provider value={{ token, user, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
-    
+  // Check token validity on app load
+  useEffect(() => {
+    if (accessToken && !isLoggingOut) {
+      const decoded = jwtDecode(accessToken);
+      const expiryTime = decoded.exp * 1000; // Convert to milliseconds
+      console.log("expired: ", new Date(expiryTime).toUTCString());
+      const timeout = expiryTime - Date.now() - 60000; // Refresh 1 minute before expiry
+      console.log("today: ", new Date(Date.now() - 60000).toUTCString());
+  
+      const refreshTimer = setTimeout(refreshAuthToken, timeout);
+      return () => clearTimeout(refreshTimer); // Cleanup on unmount
+    }
+  }, [accessToken, isLoggingOut]);
+
+  return (
+    <AuthContext.Provider value={{ user, accessToken, refreshAuthToken, login, logout  }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
+
+export const useAuth = () => useContext(AuthContext);

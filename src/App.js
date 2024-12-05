@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  // useLocation,
 } from "react-router-dom";
 import Auth from "./components/Auth";
 import LogoPage from "./components/Logo";
@@ -15,42 +16,44 @@ import RightSwipe from "./components/rightSwipe";
 import GFitReport from "./components/gFitReport";
 
 const App = () => {
-  const { token } = useContext(AuthContext);
+  const { accessToken } = useContext(AuthContext);
+  // const location = useLocation();
+  console.log("Token in APP: ", accessToken)
   return (
     <Router>
       <Routes>
-        <Route path="/" element={!token ? <Auth /> : <Navigate to="/logo" />} />
+        <Route path="/" element={!accessToken ? <Auth /> : <Navigate to="/gritPhases" />} />
         <Route
           path="/login"
-          element={!token ? <Auth /> : <Navigate to="/logo" />}
+          element={!accessToken ? <Auth /> : <Navigate to="/gritPhases" />}
         />
         <Route
           path="/signup"
-          element={!token ? <Auth /> : <Navigate to="/logo" />}
+          element={!accessToken ? <Auth /> : <Navigate to="/logo" />}
         />
         <Route
           path="/logo"
-          element={token ? <LogoPage /> : <Navigate to="/" />}
+          element={accessToken ? <LogoPage /> : <Navigate to="/" />}
         />
         <Route
           path="/welcome"
-          element={token ? <WelcomePage /> : <Navigate to="/" />}
+          element={accessToken ? <WelcomePage /> : <Navigate to="/" />}
         />
         <Route
           path="/gritPhases"
-          element={token ? <GritPhases /> : <Navigate to="/" />}
+          element={accessToken ? <GritPhases /> : <Navigate to="/" />}
         />
         <Route
           path="/leftSwipe"
-          element={token ? <LeftSwipe /> : <Navigate to="/" />}
+          element={accessToken ? <LeftSwipe /> : <Navigate to="/" />}
         />
         <Route
           path="/rightSwipe"
-          element={token ? <RightSwipe /> : <Navigate to="/" />}
+          element={accessToken ? <RightSwipe /> : <Navigate to="/" />}
         />
         <Route
           path="/gFitReport"
-          element={token ? <GFitReport /> : <Navigate to="/" />}
+          element={accessToken ? <GFitReport /> : <Navigate to="/" />}
         />
         {/* default for any other route */}
         <Route path="*" element={<Navigate to="/" />} />

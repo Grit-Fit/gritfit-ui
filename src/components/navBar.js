@@ -10,7 +10,7 @@ import signout from "../assets/singout.png";
 import ContactUs from "./contactUs";
 
 const NavBar = ({ isOpen, onClose }) => {
-  const { token, logout } = useContext(AuthContext);
+  const { accessToken, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [showContactPopup, setShowContactPopup] = useState(false);
 
@@ -22,7 +22,7 @@ const NavBar = ({ isOpen, onClose }) => {
 
   const handleHomeClick = (e) => {
     e.preventDefault();
-    if (token) {
+    if (accessToken) {
       navigate("/gritPhases");
     } else {
       navigate("/");
@@ -31,8 +31,8 @@ const NavBar = ({ isOpen, onClose }) => {
 
   const handleGFitClick = (e) => {
     e.preventDefault();
-    if (token) {
-      navigate("/gfit-report");
+    if (accessToken) {
+      navigate("/gFitReport");
     }
   };
 

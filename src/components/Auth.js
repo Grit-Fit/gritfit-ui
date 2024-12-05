@@ -27,7 +27,7 @@ const Auth = () => {
     console.log(email, password, isLogin ? "Login" : "Signup");
     try {
       const response = await axios.post(
-        "https://gritfit-backend.onrender.com/api/createAccount",
+        "http://localhost:5050/api/createAccount",
         {
           email,
           password,
@@ -35,7 +35,7 @@ const Auth = () => {
       );
       const { token, message: responseMessage } = response.data;
       if (token) {
-        const userData = { email };
+        const userData = { email, password };
         login(token, userData);
         navigate("/logo");
         setMessage(responseMessage); // Display success message
@@ -53,7 +53,7 @@ const Auth = () => {
     console.log("login process started");
     try {
       const res = await axios.post(
-        "https://gritfit-backend.onrender.com/api/signIn",
+        "http://localhost:5050/api/signIn",
         {
           email,
           password,
@@ -64,11 +64,12 @@ const Auth = () => {
       console.log("Login Response:", res.data);
       if (token) {
         // Prepare user data
-        const userData = { email }; // Adjust based on your backend response
+        const userData = { email, password }; // Adjust based on your backend response
         // Store token and user data in AuthContext
         login(token, userData);
+        console.log("Navigating to...")
         // Navigate to the logo page
-        navigate("/gritPhases");
+        navigate("/gritPhases", { state: { from: "/gritPhases" } });
       }
     } catch (error) {
       console.error(error);

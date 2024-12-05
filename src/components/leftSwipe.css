@@ -80,30 +80,31 @@ html, body {
     padding: 10px;
 }
 
-.body_images img:nth-child(3) {
-    z-index: 10;
-}
 
 .body_images img:nth-child(1) {
-    top: 0px;
-    left: 39%;
-    transform: translateX(-50%);
+    top: 10%;
+    left: 25%;
 }
 
 .body_images img:nth-child(2) {
-    top: 0px;
-    right: 31%;
+    top: 10%;
+    right: 20%;
+}
+
+.body_images img:nth-child(3) {
+    top: 60%;
 }
 
 .body_images img:nth-child(4) {
-    transform: translateY(-50%);
+    position: relative;
     top: 75%;
-    right: 32%;
+    left: 20%;
 }
 
 .body_images img:nth-child(5) {
-    bottom: -5%;
-    left: 35%;
+    position: relative;
+    top: 75%;
+    right: 25%;
 }
 
 .c {
@@ -118,24 +119,34 @@ html, body {
     }
 
     .body_images img {
-        /* width: clamp(60px, 12vw, 100px); */
-        height: clamp(60px, 12vw, 100px);
+        width: clamp(120px, 12vw, 150px);
+        height: clamp(120px, 12vw, 150px);
     }
 
     .body_images img:nth-child(1) {
-        left: 33%;
+        top: 10%;
+        left: 25%;
     }
-
+    
     .body_images img:nth-child(2) {
-        right: 24%;
+        top: 10%;
+        right: 20%;
     }
-
+    
+    .body_images img:nth-child(3) {
+        top: 60%;
+    }
+    
     .body_images img:nth-child(4) {
-        right: 25%;
+        position: relative;
+        top: 75%;
+        left: 20%;
     }
-
+    
     .body_images img:nth-child(5) {
-        left: 27%;
+        position: relative;
+        top: 75%;
+        right: 25%;
     }
 }
 
@@ -147,27 +158,34 @@ html, body {
     }
 
     .body_images img {
-        /* width: clamp(50px, 10vw, 80px); */
-        height: clamp(50px, 10vw, 80px);
-        padding: 5px;
+        width: clamp(90px, 12vw, 100px);
+        height: clamp(90px, 12vw, 100px);
     }
 
     .body_images img:nth-child(1) {
-        left: 30%;
+        top: 10%;
+        left: 15%;
     }
-
+    
     .body_images img:nth-child(2) {
-        right: 16%;
+        top: 10%;
+        right: 10%;
     }
-
+    
+    .body_images img:nth-child(3) {
+        top: 50%;
+    }
+    
     .body_images img:nth-child(4) {
-        right: 19%;
-        top: 61%;
+        position: relative;
+        top: 55%;
+        left: 40%;
     }
-
+    
     .body_images img:nth-child(5) {
-        left: 24%;
-        bottom: 27%;
+        position: relative;
+        top: 55%;
+        right: 45%;
     }
 
     .body_text {
@@ -182,25 +200,34 @@ html, body {
 /* Small Mobile Responsive */
 @media screen and (max-width: 360px) {
     .body_images img {
-        /* width: clamp(40px, 8vw, 60px); */
-        height: clamp(40px, 8vw, 60px);
+        width: clamp(90px, 12vw, 100px);
+        height: clamp(90px, 12vw, 100px);
     }
 
     .body_images img:nth-child(1) {
-        left: 36%;
+        top: 10%;
+        left: 15%;
     }
-
+    
     .body_images img:nth-child(2) {
-        right: 25%;
+        top: 10%;
+        right: 10%;
     }
-
+    
+    .body_images img:nth-child(3) {
+        top: 50%;
+    }
+    
     .body_images img:nth-child(4) {
-        right: 26%;
-        top: 65%;
+        position: relative;
+        top: 55%;
+        left: 40%;
     }
-
+    
     .body_images img:nth-child(5) {
-        left: 32%;
+        position: relative;
+        top: 55%;
+        right: 45%;
     }
 }
 /* Add these new styles to your existing CSS */

@@ -1,5 +1,5 @@
 // src/components/WelcomePage.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
@@ -7,7 +7,7 @@ import "./Welcome.css";
 import axios from "../axios";
 
 const WelcomePage = () => {
-  const { logout, authToken } = useAuth();
+  const { logout, accessToken, refreshAuthToken } = useAuth();
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -17,15 +17,21 @@ const WelcomePage = () => {
   //   navigate("/");
   //   return null;
   // }
+  useEffect(() => {
+    // If there is no accessToken, try to refresh it by calling the backend refresh route
+    if (!accessToken) {
+      refreshAuthToken(); // Refresh token by making API call to the backend
+    }
+  }, [accessToken, refreshAuthToken]);
   const handleUpdateUsername = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://gritfit-backend.onrender.com/api/updateUsername",
+        "http://localhost:5050/api/updateUsername",
         { newUsername: name },
         {
           headers: {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );

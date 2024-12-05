@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { ChevronDown, Info } from "lucide-react";
+import NavBar from "./navBar";
+import logo from "../assets/Logo.png";
 import "./gFitReport.css";
 
 const Calendar = () => {
@@ -84,7 +87,7 @@ const PieChartComponent = () => {
     { name: "Physical discomfort", value: 5 },
   ];
 
-  const COLORS = ["#FF8042", "#00C49F", "#FFBB28", "#FF8042", "#0088FE"];
+  const COLORS = ["#FF8042", "#00C49F", "#FFBB28", "#D0ED57", "#0088FE"];
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -99,29 +102,31 @@ const PieChartComponent = () => {
   };
 
   return (
-    <div className="pie-chart-container">
-      <ResponsiveContainer>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            outerRadius={150}
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-        </PieChart>
-      </ResponsiveContainer>
-
+    <div>
+      <div className="pie-chart-container">
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              outerRadius={100}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      
       <div className="pie-legend">
         {data.map((entry, index) => (
           <div key={`legend-${index}`} className="legend-item">
@@ -140,33 +145,64 @@ const PieChartComponent = () => {
 };
 
 const GFitReport = () => {
+  const [isNavOpen, setIsNavOpen] = useState(false);
+  const handleNavClose = () => {
+    setIsNavOpen(false);
+  };
+
+  const handleNavOpen = () => {
+    setIsNavOpen(true);
+  };
   return (
-    <div className="fullpage-report">
-      <div className="report_header">
-        <div className="report_header-text">
-          Hello there,
-          <br />
-          This is your GFit Report
-        </div>
-      </div>
-      <div className="body_page">
-        <div className="calendar_section">
-          <div className="heading-calendar">Consistency Calendar</div>
-          <div className="header_line">
-            Are you team Green or Red? Get a bird's eye view of your consistency
-            this month!
+    <div>
+      <NavBar isOpen={isNavOpen} onClose={handleNavClose} />
+
+      <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
+        <header className="gfit-report-header">
+          <div className="logo-container">
+            <img
+              src={logo}
+              alt="Logo"
+              onClick={!isNavOpen ? handleNavOpen : undefined}
+            />
+            <ChevronDown
+              className={`chevron ${isNavOpen ? "rotated" : ""}`}
+              size={24}
+            />
           </div>
-          <Calendar />
-        </div>
-        <div className="pie_section">
-          <div className="pie-heading">Inconsistency Pie</div>
-          <div className="pie-text">
-            Discover what's been keeping you from hitting your daily goals.
-            Hover over each part of the pie to see which reasons have been the
-            biggest and smallest hurdles on your journey to a healthier
-            lifestyle!
+
+          <button className="profile-button">
+            <Info size={24} />
+          </button>
+        </header>
+        <div className="fullpage-report">
+          <div className="report_header">
+            <div className="report_header-text">
+              Hello there,
+              <br />
+              This is your GFit Report
+            </div>
           </div>
-          <PieChartComponent />
+          <div className="body_page">
+            <div className="calendar_section">
+              <div className="heading-calendar">Consistency Calendar</div>
+              <div className="header_line">
+                Are you team Green or Red? Get a bird's eye view of your consistency
+                this month!
+              </div>
+              <Calendar />
+            </div>
+            <div className="pie_section">
+              <div className="pie-heading">Inconsistency Pie</div>
+              <div className="pie-text">
+                Discover what's been keeping you from hitting your daily goals.
+                Hover over each part of the pie to see which reasons have been the
+                biggest and smallest hurdles on your journey to a healthier
+                lifestyle!
+              </div>
+              <PieChartComponent />
+            </div>
+          </div>
         </div>
       </div>
     </div>
