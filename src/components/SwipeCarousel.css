@@ -1,0 +1,137 @@
+.carousel-container {
+    top: 50px;
+    position: relative;
+    width: 85%; /* Add some margin around the carousel */
+    max-width: 500px;
+    margin: 20px auto; /* Center the carousel */
+    text-align: center;
+    overflow: hidden; /* Ensures content doesn't overflow when animating */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background-color: #fff; /* Optional background */
+    padding: 20px;
+  }
+  
+  .carousel-slide-wrapper {
+    position: relative;
+    height: auto; /* Adjust height for the carousel */
+    display: flex; /* To horizontally align slides */
+    align-items: center;
+  }
+  
+  .carousel-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 90%;
+    margin-left: 15px;
+    will-change: transform, opacity;
+    border-radius: 10px;
+    padding: 25px;
+    transition: transform 0.3s ease;
+  }
+  
+  .carousel-chevron {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 3rem;
+    color: #333;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    transition: background 0.3s, color 0.3s;
+  }
+  
+  .carousel-chevron.left {
+    left: 20px; /* Increase spacing from the carousel edge */
+  }
+  
+  .carousel-chevron.right {
+    right: 20px; /* Increase spacing from the carousel edge */
+  }
+  
+  .carousel-chevron:hover {
+    color: #000;
+    background: rgba(255, 255, 255, 1);
+  }
+  
+  .carousel-dots {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .carousel-dot {
+    width: 12px;
+    height: 12px;
+    background: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .carousel-dot.active {
+    background: #333;
+  }
+  
+  .carousel-dot:hover {
+    background: #555;
+  }
+
+/* Responsive Adjustments for Smaller Screens */
+ @media screen and (max-width: 767px) and (max-width: 480px) and (max-width: 520px){
+    .carousel-container {
+        top: 50px;
+        position: relative;
+        width: 85%; /* Add some margin around the carousel */
+        max-width: 500px;
+        margin: 20px auto; /* Center the carousel */
+        text-align: center;
+        overflow: hidden; /* Ensures content doesn't overflow when animating */
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        background-color: #fff; /* Optional background */
+        padding: 20px;
+      }
+  }
+  
+  @media (max-width: 480px) {
+    .carousel-container {
+        top: 50px;
+        position: relative;
+        width: 85%; /* Add some margin around the carousel */
+        max-width: 500px;
+        margin: 20px auto; /* Center the carousel */
+        text-align: center;
+        overflow: hidden; /* Ensures content doesn't overflow when animating */
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        background-color: #fff; /* Optional background */
+        padding: 20px;
+      }
+  }
+  
+  :focus {
+    outline: 2px solid rgba(34, 93, 169, 0.5);
+    outline-offset: 2px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-container {
+        top: 50px;
+        position: relative;
+        width: 85%; /* Add some margin around the carousel */
+        max-width: 500px;
+        margin: 20px auto; /* Center the carousel */
+        text-align: center;
+        overflow: hidden; /* Ensures content doesn't overflow when animating */
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        background-color: #fff; /* Optional background */
+        padding: 20px;
+      }
+  }

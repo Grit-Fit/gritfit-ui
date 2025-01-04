@@ -1,0 +1,93 @@
+html, body {
+    height: 100%; /* Full height of the viewport */
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(
+      90.87% 58.95% at 53.33% 50.1%, 
+      #FFFFFF 0%, 
+      #EDF9FD 20%, 
+      #B7E9F7 200%
+    );
+    background-repeat: no-repeat; /* Prevent tiling */
+    background-attachment: fixed; /* Makes the gradient stay fixed on scroll */
+  }
+  
+.nextStepsContainer {
+    display: flex;
+    max-width: 100%;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    font-family: Montserrat, sans-serif;
+    color: rgba(40, 73, 100, 1);
+    margin: 0 auto;
+    padding: 49px 31px;
+  }
+  
+  .logoWrapper {
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    aspect-ratio: 3.16;
+    object-fit: contain;
+    width: 152px;
+  }
+
+  .next-steps-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .step-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .step-content {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .icon-row {
+    display: flex;
+    justify-content: center; /* Center the icons horizontally */
+    gap: 1rem; /* Space between the icons */
+    margin-top: 1rem; /* Optional: Add space above the row */
+  }
+  
+  .app-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .app-icon:hover {
+    transform: scale(1.1); /* Optional: Add hover effect */
+  }  
+
+  .nextButton {
+    display: block;
+    border-radius: 10px;
+    background-color: #fff;
+    margin: 100px auto 0;
+    padding: 14px 35px;
+    color: rgba(34, 93, 169, 1);
+    font: 700 12px Montserrat, sans-serif;
+    border: 1px solid rgba(34, 93, 169, 1);
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }    
+  
+  @media (max-width: 480px) {}
+  
+  :focus {
+    outline: 2px solid rgba(34, 93, 169, 0.5);
+    outline-offset: 2px;
+  }

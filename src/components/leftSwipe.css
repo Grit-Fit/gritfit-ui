@@ -30,6 +30,12 @@ html, body {
     align-self: flex-start;
 }
 
+.goal-buttons{
+    padding-top: 200px;
+    display: grid;
+    place-items: center;
+}
+
 .body-leftSwipe {
     max-width: 100%;
     align-content: center;
@@ -258,6 +264,17 @@ html, body {
     animation: fadeIn 0.3s ease forwards;
     text-align: center;
 }
+.goalBtn{
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(10px, 1.7vw, 15px);
+    padding: 8px 35px;
+    color:  rgba(231, 140, 139, 1);
+    background-color: white;
+    border: 2px solid rgba(231, 140, 139, 1);
+    border-radius: 15px;
+    font-weight: bold;
+}
+
 .doneBtn{
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(10px, 1.7vw, 15px);

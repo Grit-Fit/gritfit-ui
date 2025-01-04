@@ -1,0 +1,192 @@
+html, body {
+    height: 100%; /* Full height of the viewport */
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(
+      90.87% 58.95% at 53.33% 50.1%, 
+      #FFFFFF 0%, 
+      #EDF9FD 20%, 
+      #B7E9F7 200%
+    );
+    background-repeat: no-repeat; /* Prevent tiling */
+    background-attachment: fixed; /* Makes the gradient stay fixed on scroll */
+}
+
+.macroDetailsContainer {
+    display: flex;
+    max-width: 480px;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    font-family: Montserrat, sans-serif;
+    color: rgba(40, 73, 100, 1);
+    margin: 0 auto;
+    padding: 49px 31px;
+}
+
+.logo {
+  aspect-ratio: 3.16;
+  object-fit: contain;
+  width: 152px;
+}
+
+.targetCalories {
+  color: rgba(150, 155, 159, 1);
+  font-size: 15px;
+  font-weight: 400;
+  text-align: center;
+  margin-top: 85px;
+}
+
+.calorieAmount {
+  font-size: 35px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 17px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 15px;
+  color: rgba(34, 93, 169, 1);
+  font-weight: 500;
+  margin-top: 55px;
+  margin-left: 20px;
+  align-self: flex-start;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.backButton:hover {
+  background-color: rgba(34, 93, 169, 0.1);
+}
+
+.backButton:focus {
+  outline: 2px solid rgba(34, 93, 169, 0.5);
+  outline-offset: 2px;
+}
+
+.backIcon {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.5;
+}
+
+.backText {
+    font-size: 16px;
+    color: #333;
+}
+
+.macro-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 1);
+    width: 80%;
+    align-self: center;
+    padding: 41px 25px;
+    border: 1px solid rgba(34, 93, 169, 1);
+  }
+  
+  .accordion-header {
+    display: flex;
+    gap: 40px 46px;
+  }
+  
+  .nutrientName {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .amount {
+    font-size: 20px;
+    font-weight: 500;
+    text-align: right;
+  }
+  
+  .calorieInfo {
+    color: rgba(150, 155, 159, 1);
+    font-size: 13px;
+    font-weight: 400;
+    text-align: right;
+    margin: 4px 0;
+  }
+  
+  .divider {
+    margin: 10px 0;
+    width: 100%;
+    border: 1px solid rgba(34, 93, 169, 1);
+  }
+  
+  .accordionItem {
+    margin-top: 18px;
+  }
+  
+  .accordionButton {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 400;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+  }
+  
+  .accordionButton:hover {
+    background-color: rgba(34, 93, 169, 0.05);
+  }
+  
+  .accordionButton:focus {
+    outline: 2px solid rgba(34, 93, 169, 0.5);
+    outline-offset: 2px;
+  }
+  
+  .icon {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2;
+    color: rgba(34, 93, 169, 1);
+  }
+  
+  .accordionContent {
+    max-height: 500px;
+    /* overflow: hidden; */
+    transition: max-height 0.3s ease-out;
+  }
+  
+  .accordionContent.expanded {
+    max-height: 500px;
+  }
+  
+  .answer {
+    color: rgba(150, 155, 159, 1);
+    font-size: 14px;
+    font-weight: 400;
+    margin: 6px 12px 12px;
+    line-height: 1.5;
+  }
+
+  
+  @media (max-width: 480px) {}
+  
+  :focus {
+    outline: 2px solid rgba(34, 93, 169, 0.5);
+    outline-offset: 2px;
+  }

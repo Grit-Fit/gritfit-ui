@@ -1,0 +1,253 @@
+import React, { useState } from "react";
+import { ChevronLeft } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import logo from "../assets/Logo.png";
+import female_icon from "../assets/female.png";
+import male_icon from "../assets/male.png";
+import "./CalorieCalculator.css";
+
+const CalorieCalculator = () => {
+  const [age, setAge] = useState(27);
+  const [gender, setGender] = useState("male");
+  const [weight, setWeight] = useState(100); // Default weight in lbs
+  const [weightUnit, setWeightUnit] = useState("lbs"); // Default unit for weight
+  const [height, setHeight] = useState("5' 7\""); // Default height in feet/inches
+  const [heightUnit, setHeightUnit] = useState("feet"); // Default unit for height
+  const [activity, setActivity] = useState(2);
+  const [maintenanceCalories, setMaintenanceCalories] = useState(null);
+  const [macros, setMacros] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { calGoal } = location.state || {};
+
+  const genderIcons = {
+    male: male_icon,
+    female: female_icon,
+  };
+
+  const activityLabels = [
+    "Sedentary",
+    "Nearly Sedentary",
+    "Average",
+    "Active",
+    "Pro Active",
+  ];
+
+  const handleActivityChange = (e) => {
+    setActivity(parseInt(e.target.value, 10));
+  };
+
+  const handleCalculate = () => {
+    if (!age || !gender || !weight || !height || !activity) {
+      alert("Please fill in all fields");
+      return;
+    } else {
+      console.log("Age:", age);
+      console.log("Gender:", gender);
+      console.log("Weight: ", weight);
+      console.log("Height: ", height);
+      console.log("activity: ", activity);
+      const weightKg = weightUnit === "lbs" ? weight * 0.453592 : weight;
+      let heightCm;
+      if (heightUnit === "feet") {
+        const [feet, inches] = height.split("'").map((v) => parseFloat(v));
+        heightCm = feet * 30.48 + inches * 2.54;
+      } else {
+        heightCm = parseFloat(height);
+      }
+
+      const bmr =
+        gender === "male"
+          ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
+          : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+
+      const activityMultiplier = [1.2, 1.375, 1.55, 1.725, 1.9];
+      const maintenanceCal = Math.round(bmr * activityMultiplier[activity - 1]);
+
+      const proteinCalories = maintenanceCal * 0.25;
+      const carbCalories = maintenanceCal * 0.5;
+      const fatCalories = maintenanceCal * 0.25;
+
+      const macrosData = {
+        protein: Math.round(proteinCalories / 4),
+        carbs: Math.round(carbCalories / 4),
+        fats: Math.round(fatCalories / 9),
+      };
+
+      setMaintenanceCalories(maintenanceCal);
+      setMacros(macrosData);
+      console.log("Maintenance Calories: ", maintenanceCal);
+      console.log("Macros: ", macrosData);
+      navigate("/displayCalculation", {
+        state: {
+            maintenanceCal,
+            macrosData,
+            calGoal
+        },
+      });
+      // setPage('maintenance'); // Navigate to MaintenanceCaloriesPage
+    }
+  };
+
+  return (
+    <div className="calculatorContainer">
+      <div className="contentWrapper">
+        <div className="calc-header">
+          <div>
+            <ChevronLeft
+              className="chevron-left"
+              onClick={() => window.history.back()} // Use your routing method for navigation
+            />
+          </div>
+          <div className="logo-container">
+            <img src={logo} alt="Logo" className="logo-gritPhases" />
+          </div>
+        </div>
+
+        <h1 className="cal-title">Custom Calorie Calculator</h1>
+        <p className="description">
+          Give us the info below, and we'll calculate your Maintenance Calories
+          – that's the amount of energy you need each day to keep your weight
+          steady!
+        </p>
+
+        <div className="inputGrid">
+          <div className="inputContainer">
+            <div className="inputBox">
+              <input
+                type="number"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                min="0"
+                className="inputValue"
+                aria-label="Age"
+              />
+              <div className="unitWrapper">
+                <div className="unitText">Years</div>
+              </div>
+            </div>
+            <div className="inputLabel">Age</div>
+          </div>
+          {/* Gender Selector */}
+          <div className="inputContainer">
+            <div className="inputBox">
+              <img
+                src={genderIcons[gender || "male"]}
+                alt="gender"
+                className="genderImage"
+              />
+              <div className="genderWrapper">
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="selectGender"
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+            </div>
+            <div className="inputLabel">Gender</div>
+          </div>
+          <div className="inputContainer">
+            <div className="inputBox">
+              <input
+                type="number"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                min="0"
+                className="inputValue"
+                aria-label="Weight"
+              />
+              <div className="unitWrapper">
+                <select
+                  value={weightUnit}
+                  onChange={(e) => setWeightUnit(e.target.value)}
+                  className="unitText"
+                >
+                  <option value="lbs">lbs</option>
+                  <option value="kg">kg</option>
+                </select>
+              </div>
+            </div>
+            <div className="inputLabel">Weight</div>
+          </div>
+          <div className="inputContainer">
+            <div className="inputBox">
+              {heightUnit === "feet" ? (
+                <input
+                  type="text"
+                  value={height}
+                  onChange={(e) => setHeight(e.target.value)}
+                  className="inputValue"
+                  aria-label="Height"
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={height}
+                  onChange={(e) => setHeight(e.target.value)}
+                  min="0"
+                  className="inputValue"
+                  placeholder="e.g., 170"
+                  aria-label="Height"
+                />
+              )}
+              <div className="unitWrapper">
+                <select
+                  value={heightUnit}
+                  onChange={(e) => setHeightUnit(e.target.value)}
+                  className="unitText"
+                >
+                  <option value="feet">feet</option>
+                  <option value="cm">cm</option>
+                </select>
+              </div>
+            </div>
+            <div className="inputLabel">Height</div>
+          </div>
+        </div>
+
+        {/* Activity Scale */}
+        <div className="activity-scale">
+          <h3 className="activityTitle">Activity Scale</h3>
+          <p className="activityDescription">
+            On a scale of 1-5, how active are you?
+          </p>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value={activity}
+            onChange={handleActivityChange}
+            className="activity-slider"
+          />
+          <div className="activity-labels">
+            {activityLabels.map((label, index) => (
+              <div
+                key={index}
+                className={`label ${
+                  activity === index + 1 ? "active-label" : ""
+                }`}
+              >
+                <span className="label-number">{index + 1}</span> <br />
+                <span className="label-text">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button
+          className="calculateButton"
+          onClick={handleCalculate}
+          aria-label="Calculate calories"
+        >
+          Calculate
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default CalorieCalculator;

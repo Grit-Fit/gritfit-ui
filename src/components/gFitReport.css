@@ -122,7 +122,9 @@
 }
 
 .calendar-header {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  /* text-align: center; */
   margin-bottom: 1rem;
 }
 
@@ -255,4 +257,112 @@
   .navbar.open {
     transform: translateX(0);
   }
+}
+
+/* Calendar section styles */
+/* .calendar-container {
+  padding: 1rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+} */
+
+/* Header section for the month navigation */
+/* .calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 20px;
+} */
+
+/* Arrow buttons for previous and next */
+.arrow-button {
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.arrow-button:hover {
+  transform: scale(1.2);
+}
+
+/* Left and right arrow buttons */
+.previous {
+  margin-right: 20px;
+}
+
+.next {
+  margin-left: 20px;
+}
+
+/* Grid for calendar days */
+/* .calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+} */
+
+/* Header for the days of the week (M, T, W, etc.) */
+/* .days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+} */
+
+/* .days-header div {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #666;
+} */
+
+/* Grid of calendar days */
+/* .days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+} */
+
+/* Individual calendar day style */
+/* .calendar-day {
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  transition: all 0.2s;
+  cursor: pointer;
+} */
+
+/* .calendar-day:not(:empty):hover {
+  background-color: #f3f4f6;
+} */
+
+/* Highlight the current day */
+/* .calendar-day.current-day {
+  background-color: #dbeafe;
+  font-weight: bold;
+} */
+
+/* Background color for completed tasks */
+.calendar-day .green {
+  background-color: #00c49f;
+  color: white;
+}
+
+/* Background color for not completed tasks */
+.calendar-day .red {
+  background-color: #ff4040;
+  color: white;
 }

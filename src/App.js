@@ -14,6 +14,13 @@ import GritPhases from "./components/GritPhases";
 import LeftSwipe from "./components/leftSwipe";
 import RightSwipe from "./components/rightSwipe";
 import GFitReport from "./components/gFitReport";
+import CalorieCalculator from "./components/CalorieCalculator";
+import CalorieDisplay from "./components/CalorieDisplay";
+import CalorieTarget from "./components/CalorieTarget";
+import CalorieMacro from "./components/CalorieMacro";
+import NextStepsCarousel from "./components/NextStepsCarousel";
+import NutritionTheory from "./components/NutritionTheory";
+import GymGoal from "./components/GymGoal";
 
 const App = () => {
   const { accessToken } = useContext(AuthContext);
@@ -42,6 +49,34 @@ const App = () => {
         <Route
           path="/gritPhases"
           element={accessToken ? <GritPhases /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/selectTheory"
+          element={accessToken ? <NutritionTheory /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/selectGoal"
+          element={accessToken ? <GymGoal /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/calorieCalc"
+          element={accessToken ? <CalorieCalculator /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/displayCalculation"
+          element={accessToken ? <CalorieDisplay /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/displayTargetCalories"
+          element={accessToken ? <CalorieTarget /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/macros"
+          element={accessToken ? <CalorieMacro /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/nextSteps"
+          element={accessToken ? <NextStepsCarousel /> : <Navigate to="/" />}
         />
         <Route
           path="/leftSwipe"

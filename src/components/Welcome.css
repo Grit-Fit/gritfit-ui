@@ -81,6 +81,10 @@ form {
     background-color: #0056b3;
 }
 
+.message {
+    color: rgba(150, 155, 159, 1);
+}
+
 /* Media query for responsiveness */
 @media (max-width: 768px) {
     .container {

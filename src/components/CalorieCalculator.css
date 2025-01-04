@@ -1,0 +1,396 @@
+html, body {
+  height: 100%; /* Full height of the viewport */
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(
+    90.87% 58.95% at 53.33% 50.1%, 
+    #FFFFFF 0%, 
+    #EDF9FD 20%, 
+    #B7E9F7 200%
+  );
+  background-repeat: no-repeat; /* Prevent tiling */
+  background-attachment: fixed; /* Makes the gradient stay fixed on scroll */
+}
+
+.calculatorContainer {
+    /* background: radial-gradient(198.87% 58.95% at 53.33% 48.1%, #FFFFFF 0%, #EDF9FD 20%, #B7E9F7 100%); */
+    display: flex;
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    padding: 45px 0;
+  }
+  
+  .contentWrapper {
+    width: 100%;
+    padding: 0 22px;
+  }
+  
+  .calc-header {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0;
+    position: fixed;
+    background-color: #cdeff8;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 70px;
+    width:100%;
+    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+  }
+  
+  
+  .logo-container {
+    padding-left: 1rem;
+  }
+
+  .logo-gritPhases {
+    width: auto;
+    height: auto;
+  }
+
+
+  .logo-container {
+    display: flex;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+    transition: background-color 0.2s;
+    height: 100%;
+    flex-direction: row; 
+    gap: 4px;
+    justify-content: flex-start;
+    padding-left: 2.2rem;
+    opacity: 1;
+  }
+
+  .main-content.nav-open .logo-container {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .logo-container.active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .logo-gritPhases {
+    margin-right: 0.5rem;
+  }
+  .chevron-left {
+    margin-left: 10px;
+    width: 24px; /* Adjust size of the chevron */
+    height: 24px; /* Ensure it matches the width */
+    color: #003366; /* Dark blue color */
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out; /* Add hover effect */
+  }
+  
+  .chevron-left:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+  }
+
+  .activity-scale {
+    margin: 20px 0;
+  }
+  
+  .activity-slider {
+    width: 100%;
+    margin: 10px 0;
+    height: 10px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+  
+  .activity-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #2c3e50;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .activity-labels {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Evenly space the labels in 5 columns */
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .label {
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    text-wrap: wrap;
+  }
+  
+  .label-text {
+    text-wrap: wrap;
+    width: 20%;
+  }
+  .active-label {
+    color: #2c3e50;
+    font-weight: bold;
+    text-wrap: wrap;
+  }
+  
+  
+  .cal-title {
+    color: rgba(40, 73, 100, 1);
+    text-align: center;
+    margin-top: 82px;
+    font: 700 25px Montserrat, sans-serif;
+    font-weight: bold !important;
+  }
+  
+  .description {
+    color: rgba(150, 155, 159, 1);
+    text-align: center;
+    margin-top: 16px;
+    font: 500 14px Montserrat, sans-serif;
+  }
+  
+  .genderContainer {
+    flex: 1;
+  }
+  
+  .genderBox {
+    border-radius: 20px;
+    background-color: #fff;
+    height: 99px;
+    border: 1px solid rgba(34, 93, 169, 1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+  }
+  
+  .genderBox.selected {
+    background-color: rgba(34, 93, 169, 0.1);
+  }
+  
+  .genderLabel {
+    color: rgba(34, 93, 169, 1);
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 22px;
+  }
+  
+  .activityTitle {
+    color: rgba(34, 93, 169, 1);
+    text-align: center;
+    margin-top: 69px;
+    font: 700 18px Montserrat, sans-serif;
+  }
+  
+  .activityDescription {
+    color: rgba(150, 155, 159, 1);
+    text-align: center;
+    margin-top: 11px;
+    font: 500 12px Montserrat, sans-serif;
+  }
+  
+  .activityScale {
+    display: flex;
+    margin-top: 47px;
+    width: 100%;
+    max-width: 364px;
+    align-items: start;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  
+  .activityContainer {
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .activityContainer.selected {
+    background-color: rgba(34, 93, 169, 0.1);
+  }
+  
+  .activityLevel {
+    color: rgba(40, 73, 100, 1);
+    font-size: 20px;
+    font-weight: 700;
+  }
+  
+  .activityLabel {
+    color: rgba(34, 93, 169, 1);
+    font-size: 10px;
+    font-weight: 400;
+    margin-top: 15px;
+  }
+  
+  .calculateButton {
+    display: block;
+    border-radius: 10px;
+    background-color: #fff;
+    margin: 38px auto 0;
+    padding: 14px 35px;
+    color: rgba(34, 93, 169, 1);
+    font: 700 12px Montserrat, sans-serif;
+    border: 1px solid rgba(34, 93, 169, 1);
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .calculateButton:hover {
+    background-color: rgba(34, 93, 169, 1);
+    color: #fff;
+  }
+
+  .inputGrid {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    margin-top: 30px;
+    gap: 9px;
+  }
+  
+  .inputContainer {
+    flex: 1; /* Allow inputs to shrink proportionally */
+    min-width: 50px; /* Set a small minimum width for extreme cases */
+  }
+  
+  .inputBox {
+    border-radius: 20px;
+    background-color: #fff;
+    padding: 20px 12px; /* Adjust padding for smaller screens */
+    border: 1px solid rgba(34, 93, 169, 1);
+    font-size: 16px; /* Responsive font size */
+  }
+  
+  .inputValue {
+    font-size: 20px; /* Adjust font size for better fit */
+    font-weight: 700;
+    background: var(--Gradient-niice, linear-gradient(90deg, rgba(203, 13, 76, 0.7) 20.51%, rgba(40, 73, 100, 0.7) 46.29%, rgba(34, 93, 169, 0.7) 73.56%));
+    -webkit-background-clip: text;
+    text-align: center;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .genderImage {
+    align-items: center;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-bottom: 5px;
+  }
+  
+  .unitWrapper {
+    display: flex;
+    gap: 3px; /* Smaller gap for mobile */
+    margin-top: 10px; /* Adjust spacing */
+    border-radius: 5px;
+    border: 0.5px solid var(--Gradient-niice, #cb0d4c);
+    padding: 3px 5px;
+  }
+
+  .genderWrapper {
+    display: flex;
+    gap: 3px; /* Smaller gap for mobile */
+    margin-top: 10px; /* Adjust spacing */
+    border-radius: 5px;
+    border: 0.5px solid var(--Gradient-niice, #cb0d4c);
+    padding: 3px 7px;
+    padding-top: 8px;
+
+  }
+  
+  .unitText {
+    font-size: 11px; /* Adjust font size for mobile */
+    font-weight: 500;
+    background: var(--Gradient-niice, linear-gradient(90deg, rgba(203, 13, 76, 0.7) 20.51%, rgba(40, 73, 100, 0.7) 46.29%, rgba(34, 93, 169, 0.7) 73.56%));
+    -webkit-background-clip: text;
+    text-align: center;
+    -webkit-text-fill-color: transparent;
+  }
+  .select {
+    direction: ltr;
+  }
+
+  .selectGender {
+    font-size: 9px; /* Adjust font size for mobile */
+    font-weight: 500;
+    background: var(--Gradient-niice, linear-gradient(90deg, rgba(203, 13, 76, 0.7) 20.51%, rgba(40, 73, 100, 0.7) 46.29%, rgba(34, 93, 169, 0.7) 73.56%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .unitIcon {
+    width: 12px; /* Smaller icon size for mobile */
+    height: auto;
+  }
+  
+  .inputLabel {
+    color: rgba(34, 93, 169, 1);
+    font-size: 13px; /* Smaller font for labels */
+    font-weight: 500;
+    text-align: center;
+    margin-top: 18px;
+  }
+  
+  /* Responsive Adjustments for Smaller Screens */
+  @media screen and (max-width: 767px) and (max-width: 480px) and (max-width: 520px){
+    .inputGrid {
+      gap: 5px; /* Reduce gap for mobile */
+      flex-direction: row;
+    }
+  
+    .inputBox {
+      padding: 16px 8px; /* Smaller padding for inputs */
+      font-size: 14px; /* Adjust font size further */
+    }
+  
+    .inputValue {
+      font-size: 18px; /* Smaller font size for input values */
+    }
+  
+    .unitText {
+      font-size: 11px; /* Smaller font size for unit text */
+    }
+  
+    .inputLabel {
+      font-size: 12px; /* Adjust label font size */
+    }
+    .genderImage {
+        align-items: center;
+        padding-top: 20px;
+        padding-left: 20px;
+        padding-bottom: 5px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .activityScale {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+  
+  :focus {
+    outline: 2px solid rgba(34, 93, 169, 0.5);
+    outline-offset: 2px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .calculateButton,
+    .genderBox,
+    .activityContainer {
+      transition: none;
+    }
+  }

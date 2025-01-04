@@ -177,22 +177,31 @@ const GritPhase = () => {
           // Phase 3: No left swipes are allowed, reset immediately
           const lastSwipeDate =
             leftSwipes[leftSwipes.length - 1]?.lastswipedat || null;
-          if (new Date(lastSwipeDate).toLocaleDateString() !== currentDate){
+          if (new Date(lastSwipeDate).toLocaleDateString() !== currentDate) {
             const task = leftSwipes[leftSwipes.length - 1];
             try {
-              await axios.post(
-                "http://localhost:5050/api/userprogressStart",
-                {
-                  phaseId: task.phaseid,
-                  taskId: task.taskid,
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                  },
-                }
+              // await axios.post(
+              //   "http://localhost:5050/api/userprogressStart",
+              //   {
+              //     phaseId: task.phaseid,
+              //     taskId: task.taskid,
+              //   },
+              //   {
+              //     headers: {
+              //       Authorization: `Bearer ${accessToken}`,
+              //     },
+              //   }
+              // );
+              const index = taskData.findIndex(
+                (t) => t.taskdetailsid === task.taskdetailsid
               );
 
+              if (index !== -1) {
+                taskData[index].taskstatus = "Not Started";
+              } else {
+                console.log("Record not found!");
+              }
+              console.log("TASK DATA: ", taskData, " \n Task: ", task);
               // Update local task data
               task.taskstatus = "Not Started";
               task.lastswipedat = new Date().toLocaleString();
@@ -203,29 +212,44 @@ const GritPhase = () => {
               );
             }
           }
+          // return true;
         } else if (leftSwipes.length > 1) {
           // Other phases: Handle swipes logic
           const lastSwipeDate =
             leftSwipes[leftSwipes.length - 1]?.lastswipedat || null;
-          console.log("Last Swipe Date: ", new Date(lastSwipeDate).toLocaleDateString(), "\n Current Date: ", currentDate);
+          console.log(
+            "Last Swipe Date: ",
+            new Date(lastSwipeDate).toLocaleDateString(),
+            "\n Current Date: ",
+            currentDate
+          );
           if (new Date(lastSwipeDate).toLocaleDateString() !== currentDate) {
             // If swipes occurred on different days, reset the tasks
             const task = leftSwipes[leftSwipes.length - 1];
             try {
-              await axios.post(
-                "http://localhost:5050/api/userprogressStart",
-                {
-                  phaseId: task.phaseid,
-                  taskId: task.taskid,
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                  },
-                }
+              // await axios.post(
+              //   "http://localhost:5050/api/userprogressStart",
+              //   {
+              //     phaseId: task.phaseid,
+              //     taskId: task.taskid,
+              //   },
+              //   {
+              //     headers: {
+              //       Authorization: `Bearer ${accessToken}`,
+              //     },
+              //   }
+              // );
+              const index = taskData.findIndex(
+                (t) => t.taskdetailsid === task.taskdetailsid
               );
 
+              if (index !== -1) {
+                taskData[index].taskstatus = "Not Started";
+              } else {
+                console.log("Record not found!");
+              }
               // Update local task data
+              console.log("TASK DATA: ", taskData, " \n Task: ", task);
               task.taskstatus = "Not Started";
               task.lastswipedat = new Date().toLocaleString();
             } catch (err) {
@@ -354,9 +378,16 @@ const GritPhase = () => {
   useEffect(() => {
     if (taskData !== undefined) {
       console.log("Updated Task Data: ", taskData);
-      handleTaskResets();
-      activateNextTask();
-      setTimeout(scrollToActiveTask, 1000);
+      // handleTaskResets();
+      // activateNextTask();
+      // setTimeout(scrollToActiveTask, 1000);
+      const processTasks = async () => {
+        await handleTaskResets();
+        await activateNextTask();
+        setTimeout(scrollToActiveTask, 1000);
+      };
+
+      processTasks();
     }
   }, [taskData]); // Logs whenever taskData changes
 

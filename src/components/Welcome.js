@@ -1,5 +1,6 @@
 // src/components/WelcomePage.js
 import React, { useState, useEffect } from "react";
+import StatusCard from "./StatusCard";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
@@ -11,6 +12,24 @@ const WelcomePage = () => {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
+  const [clickedIndex, setClickedIndex] = useState(null);
+
+  const cardData = [
+    { text: "Progress in the gym", locked: false },
+    { text: "Overall health and longevity", locked: true },
+  ];
+  const handleCardClick = (index) => {
+    if(!name){
+      setMessage("Please enter your name first!");
+    } else {
+      setClickedIndex(index);
+      navigate("/selectTheory", {})
+      // navigate("/calorieCalc", {});
+      // Optionally, you can clear the input field after successful update
+      setName("");
+    }
+  };
 
   // if (!authToken) {
   //   // Redirect to login page if not authenticated
@@ -37,9 +56,6 @@ const WelcomePage = () => {
       );
 
       setMessage(response.data.message);
-      navigate("/gritPhases");
-      // Optionally, you can clear the input field after successful update
-      setName("");
     } catch (error) {
       console.error(error);
       setMessage(
@@ -72,10 +88,24 @@ const WelcomePage = () => {
           Submit
         </button>
       </form>
-      {message && <p className="message">{message}</p>}
-      <button onClick={handleLogout} className="btn">
+      {message && <p className="message">{message} !</p>}
+      <br />
+      <br />
+      <h3 className="nameprompt">Tell us what brings you here?</h3>
+      <div style={{ padding: "20px", marginTop: "20px" }}>
+        {cardData.map((card, index) => (
+          <StatusCard
+            key={index}
+            text={card.text}
+            locked={card.locked}
+            onClick={() => handleCardClick(index)}
+            className={clickedIndex === index && !card.locked ? "clicked" : ""}
+          />
+        ))}
+      </div>
+      {/* <button onClick={handleLogout} className="btn">
         Logout
-      </button>
+      </button> */}
     </div>
   );
 };

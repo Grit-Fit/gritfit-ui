@@ -22,7 +22,9 @@ const LeftSwipe = () => {
   const [error, setError] = useState(null);
 
   // Get phase and task from navigation state
-  const { phaseId, taskId } = location.state || {};
+  const { phaseNumber, taskId } = location.state || {};
+  const phaseId = parseInt(phaseNumber);
+  // Check its type and value
 
   useEffect(() => {
     // If there is no accessToken, try to refresh it by calling the backend refresh route
@@ -153,25 +155,29 @@ const LeftSwipe = () => {
           Undo Swipe <ChevronRight className="c" />
         </div>
       </header>
-
       <div className="body-leftSwipe">
         {!selectedGoal && phaseId === 3 ? (
           <div className="goal-selection">
             <div className="body_text">
               <h2>Which goal were you unable to achieve?</h2>
             </div>
-            <button
-              className="doneBtn"
-              onClick={() => handleGoalSelection("Protein Goal")}
-            >
-              Protein Goal
-            </button>
-            <button
-              className="doneBtn"
-              onClick={() => handleGoalSelection("Fat Goal")}
-            >
-              Fat Goal
-            </button>
+            <div className="goal-buttons">
+              <button
+                className="goalBtn"
+                onClick={() => handleGoalSelection("Protein Goal")}
+              >
+                Protein Goal
+              </button>
+              <br />
+              <h3> OR </h3>
+              <br />
+              <button
+                className="goalBtn"
+                onClick={() => handleGoalSelection("Fat Goal")}
+              >
+                Fat Goal
+              </button>
+            </div>
           </div>
         ) : (
           <>
