@@ -4,7 +4,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/Logo.png";
 import female_icon from "../assets/female.png";
 import male_icon from "../assets/male.png";
-import "./CalorieCalculator.css";
+import "../css/CalorieCalculator.css";
+import "../css/NutritionTheory.css";
 
 const CalorieCalculator = () => {
   const [age, setAge] = useState(27);
@@ -27,11 +28,11 @@ const CalorieCalculator = () => {
   };
 
   const activityLabels = [
-    "Sedentary",
-    "Nearly Sedentary",
-    "Average",
-    "Active",
-    "Pro Active",
+    "🛋️ Couch Potato",
+    "🐢 Slow & Steady",
+    "🚶‍♂️ Daily Walker",
+    "🏋️ Gym Regular",
+    "🏃‍♂️💨 Non-Stop Hustler",
   ];
 
   const handleActivityChange = (e) => {
@@ -93,23 +94,21 @@ const CalorieCalculator = () => {
   return (
     <div className="calculatorContainer">
       <div className="contentWrapper">
-        <div className="calc-header">
+        <div className="theory-header">
           <div>
             <ChevronLeft
               className="chevron-left"
               onClick={() => window.history.back()} // Use your routing method for navigation
             />
           </div>
-          <div className="logo-container">
-            <img src={logo} alt="Logo" className="logo-gritPhases" />
+          <div className="logo-container-nut">
+            <img src={logo} alt="Logo" className="logo-gritPhases-nut" />
           </div>
         </div>
 
-        <h1 className="cal-title">Custom Calorie Calculator</h1>
+        <h3 className="cal-title">Set Your Fuel!</h3>
         <p className="description">
-          Give us the info below, and we'll calculate your Maintenance Calories
-          – that's the amount of energy you need each day to keep your weight
-          steady!
+        We’ll help you discover your daily target calorie , tailored just for you!
         </p>
 
         <div className="inputGrid">

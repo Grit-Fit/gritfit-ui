@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import logo from "../assets/Logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./CalorieTarget.css";
+import "../css/CalorieTarget.css";
+import "../css/NutritionTheory.css";
 
 const CalorieTarget = () => {
   const navigate = useNavigate();
@@ -36,15 +37,15 @@ const CalorieTarget = () => {
   return (
     <div className="calDisplayContainer">
       <div className="contentWrapper">
-        <div className="target-header">
+        <div className="theory-header">
           <div>
             <ChevronLeft
               className="chevron-left"
               onClick={() => window.history.back()} // Use your routing method for navigation
             />
           </div>
-          <div className="logo-container">
-            <img src={logo} alt="Logo" className="logo-gritPhases" />
+          <div className="logo-container-nut">
+            <img src={logo} alt="Logo" className="logo-gritPhases-nut" />
           </div>
         </div>
 

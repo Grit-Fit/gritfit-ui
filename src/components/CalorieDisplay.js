@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import logo from "../assets/Logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./CalorieDisplay.css";
+import "../css/CalorieDisplay.css";
+import "../css/NutritionTheory.css";
 
 const CalorieDisplay = () => {
   const navigate = useNavigate();
@@ -78,15 +79,15 @@ const CalorieDisplay = () => {
   return (
     <div className="calDisplayContainer">
       <div className="contentWrapper">
-        <div className="cal-display-header">
+        <div className="theory-header">
           <div>
             <ChevronLeft
               className="chevron-left"
               onClick={() => window.history.back()} // Use your routing method for navigation
             />
           </div>
-          <div className="logo-container">
-            <img src={logo} alt="Logo" className="logo-gritPhases" />
+          <div className="logo-container-nut">
+            <img src={logo} alt="Logo" className="logo-gritPhases-nut" />
           </div>
         </div>
 
@@ -99,7 +100,7 @@ const CalorieDisplay = () => {
           <NumberFormatter number={maintenanceCal} />
         </div>
 
-        <h1 className="cal-title">{title}</h1>
+        <h1 className="title">{title}</h1>
         <p className="description">{paragraph}</p>
         <div className="calorieValue">
           <NumberFormatter number={adjustedCalories} />

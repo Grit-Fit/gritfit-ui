@@ -11,7 +11,6 @@ html, body {
   background-repeat: no-repeat; /* Prevent tiling */
   background-attachment: fixed; /* Makes the gradient stay fixed on scroll */
 }
-
 .calDisplayContainer {
     display: flex;
     max-width: 100%;
@@ -28,13 +27,13 @@ html, body {
     padding: 0 22px;
   }
   
-  .cal-display-header{
+  .target-header {
     display: flex;
     align-items: center;
     flex-direction: row;
     justify-content: flex-start;
     padding: 0;
-    background-color: #cdeff8;
+    background-color: transparent;
     position: fixed;
     top: 0;
     left: 0;
@@ -42,6 +41,7 @@ html, body {
     z-index: 1000;
     height: 70px;
     width:100%;
+    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
   }
   
   
@@ -61,7 +61,8 @@ html, body {
     padding: 0.5rem;
     border-radius: 0 0.5rem 0.5rem 0;
     transition: background-color 0.2s;
-    height: 100%;
+    height: 84%;
+    margin-left: 50px;
     flex-direction: row; 
     gap: 4px;
     justify-content: flex-start;
@@ -103,7 +104,8 @@ html, body {
   .cal-title {
     color: rgba(40, 73, 100, 1);
     text-align: center;
-    margin-top: 75px;
+    margin-top: 100px;
+    margin-right: 10px;
     font: 400 25px Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
   }
   
@@ -111,7 +113,7 @@ html, body {
     color: rgba(150, 155, 159, 1);
     text-align: center;
     margin-top: 16px;
-    font: 500 14px Montserrat, sans-serif;
+    font: 700 14px Montserrat, sans-serif;
   }
 
   .calorieValue {
@@ -121,20 +123,87 @@ html, body {
     font: 700 35px Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
   }
 
+  .macroTitle {
+    color: rgb(34, 93, 169);
+    text-align: center;
+    width: 100%;
+    margin-top: 85px;
+    font: 400 15px Montserrat, sans-serif;
+  }
+
+  .macroCardsContainer {
+    display: flex;
+    width: 100%;
+    margin-top: 29px;
+    gap: 36px;
+    font-family: Montserrat, sans-serif;
+    text-align: center;
+  }
+  
+  .macroCardWrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  
+  .macroCard {
+    border-radius: 20px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 16px 10px;
+    border: 1px solid rgb(34, 93, 169);
+  }
+  
+  .macroValue {
+    font-size: 24px;
+    font-weight: 700;
+    background: var(--Gradient-niice, linear-gradient(90deg, rgba(203, 13, 76, 0.7) 20.51%, rgba(40, 73, 100, 0.7) 46.29%, rgba(34, 93, 169, 0.7) 73.56%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .macroUnit {
+    font-size: 16px;
+    font-weight: 500;
+    background: var(--Gradient-niice, linear-gradient(90deg, rgba(203, 13, 76, 0.7) 20.51%, rgba(40, 73, 100, 0.7) 46.29%, rgba(34, 93, 169, 0.7) 73.56%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 28px;
+  }
+  
+  .macroLabel {
+    color: rgb(34, 93, 169);
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 22px;
+  }
+  
+  .helperText {
+    color: rgb(150, 155, 159);
+    text-align: center;
+    margin-top: 24px;
+    font: 400 14px Montserrat, sans-serif;
+  }
+
   .calculateButton {
     display: block;
     border-radius: 10px;
     background-color: #fff;
-    margin: 50px auto 0;
+    margin-top: 145px;
     padding: 14px 35px;
     color: rgba(34, 93, 169, 1);
     font: 700 12px Montserrat, sans-serif;
     border: 1px solid rgba(34, 93, 169, 1);
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
+    background: linear-gradient(135deg, #3599f0, #00f2fe);
+    width: 200px;
   }
 
-  /* Responsive Adjustments for Smaller Screens */
   
   @media (max-width: 480px) {}
   
@@ -142,4 +211,3 @@ html, body {
     outline: 2px solid rgba(34, 93, 169, 0.5);
     outline-offset: 2px;
   }
-  

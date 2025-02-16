@@ -6,17 +6,18 @@ import buttonImage from "../assets/Stepping_StoneBtn.png";
 import rightSwipeButtonImage from "../assets/RightSwipe_SteppingStoneBtn.png";
 import leftSwipeButtonImage from "../assets/LeftSwipe_SteppingStoneBtn.png";
 import activeButtonImage from "../assets/Active_SteppingStoneBtn.png";
-import "./GritPhases.css";
+import "../css/GritPhases.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import SwipeImageWithSpring from "./SwipeImageWithSpring";
 import axios from "../axios";
+import "../css/NutritionTheory.css";
 
 const GritPhase = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [currentPhase, setCurrentPhase] = useState(1);
   const scrollableRef = useRef(null);
-  const taskRefs = useRef({}); // Array of refs for each task button
+  const taskRefs = useRef({}); 
   const navigate = useNavigate();
   const location = useLocation();
   const { accessToken, refreshAuthToken } = useAuth();
@@ -24,46 +25,21 @@ const GritPhase = () => {
   const [phases, setPhases] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [requestTime, setRequestTime] = useState(null); // Track request time
+  const [requestTime, setRequestTime] = useState(null); 
 
+  const { phase, day } = location.state || {};
+
+  // Toggle Nav
+  const handleNavClose = () => setIsNavOpen(false);
+  const handleNavOpen = () => setIsNavOpen(true);
+
+  // Make sure we have an access token. If not, try to refresh.
   useEffect(() => {
-    // If there is no accessToken, try to refresh it by calling the backend refresh route
     if (!accessToken) {
-      refreshAuthToken(); // Refresh token by making API call to the backend
+      refreshAuthToken();
     }
   }, [accessToken, refreshAuthToken]);
-  const handleNavClose = () => {
-    setIsNavOpen(false);
-  };
 
-  const handleNavOpen = () => {
-    setIsNavOpen(true);
-  };
-  console.log("State Values: ", location.state);
-  const { phase, day } = location.state || {};
-  const nutritiontheoryRef = useRef(null);
-
-  //Swipe logic:
-  const handleSwipe = (direction, phaseNumber, dayNumber, e) => {
-    // e.preventDefault();
-    console.log("Navigating to Swipe with:", { phaseNumber, dayNumber });
-
-    if (direction === "right") {
-      navigate("/rightSwipe", {
-        state: {
-          phaseNumber,
-          dayNumber,
-        },
-      });
-    } else if (direction === "left") {
-      navigate("/leftSwipe", {
-        state: {
-          phaseNumber,
-          dayNumber,
-        },
-      });
-    }
-  };
 
   useEffect(() => {
     const fetchTaskData = async () => {
@@ -71,8 +47,7 @@ const GritPhase = () => {
       setError(null);
       setRequestTime(null);
 
-      console.time("Fetch User Data"); // Start timing the request
-      const startTime = Date.now(); // Alternative timing method
+      const startTime = Date.now();
 
       try {
         const response = await axios.post(
@@ -84,17 +59,19 @@ const GritPhase = () => {
             },
           }
         );
-        // console.log("Merged Data: ", response.data.data)
-        const elapsed = Date.now() - startTime; // Calculate elapsed time
-        setRequestTime(elapsed); // Set request time in state
+        const elapsed = Date.now() - startTime;
+        setRequestTime(elapsed);
 
-        console.timeEnd("Fetch User Data"); // End timing the request
         const mergedData = response.data.data;
-        const allTasksNotStarted = !mergedData.some(
-          (task) => task.taskstatus !== "Not Started"
+        console.log("[GritPhases] Merged Data from server:", mergedData);
+
+
+        const allTasksNotStarted = mergedData.every(
+          (task) => task.taskstatus === "Not Started"
         );
-        if (allTasksNotStarted) {
-          const startProgressResponse = await axios.post(
+        if (allTasksNotStarted && mergedData.length > 0) {
+         
+          await axios.post(
             "http://localhost:5050/api/userprogressStart",
             {
               phaseId: 1,
@@ -106,23 +83,50 @@ const GritPhase = () => {
               },
             }
           );
-          console.log("Start Progress: ", startProgressResponse.data);
-          fetchTaskData();
-        } else {
-          setTaskData(mergedData); // Set the user data
-          nutritiontheoryRef.current = mergedData[0].nutritiontheory;
-          const groupedByPhase = groupTasksByPhase(mergedData);
-          setPhases(groupedByPhase);
+          // Refetch to see the updated status
+          return fetchTaskData();
         }
+
+    
+        const now = new Date();
+        const updatedData = mergedData.map((task) => {
+          console.log("Fetched Task Data:", mergedData);
+
+          if (
+            (task.taskstatus === "Not Started" || task.taskstatus === "Not Completed") &&
+            task.task_activation_date
+          ) {
+            const activationDate = new Date(task.task_activation_date);
+            if (now >= activationDate) {
+              return { ...task, taskstatus: "In Progress" };
+            }
+          }
+          return task;
+        });
+        
+
+        setTaskData(updatedData);
+
+       
+        const groupedByPhase = groupTasksByPhase(updatedData);
+        setPhases(groupedByPhase);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("[GritPhases] Error fetching data:", err);
         setError("Failed to fetch user data. Please try again later.");
       } finally {
         setLoading(false);
-        console.log("Task Data: ", taskData);
       }
     };
+
     fetchTaskData();
+
+    
+    const interval = setInterval(fetchTaskData, 60000);
+    return () => clearInterval(interval);
+  }, [accessToken]);
+
+ 
+  useEffect(() => {
     const handleScroll = () => {
       if (!scrollableRef.current) return;
 
@@ -133,7 +137,6 @@ const GritPhase = () => {
       for (let i = 0; i < sections.length; i++) {
         const section = sections[i];
         const sectionTop = section.offsetTop;
-
         if (scrollPosition >= sectionTop - windowHeight / 3) {
           setCurrentPhase(i + 1);
         }
@@ -144,256 +147,13 @@ const GritPhase = () => {
     if (scrollableElement) {
       scrollableElement.addEventListener("scroll", handleScroll);
       return () =>
-        // clearTimeout(timer); // Cleanup timeout if the component unmounts
         scrollableElement.removeEventListener("scroll", handleScroll);
     }
   }, []);
 
-  const handleTaskResets = async () => {
-    const now = new Date();
-    const currentDate = now.toLocaleDateString(); // Get current local date in local time zone
-    if (taskData) {
-      // Group tasks by phaseid and taskdetailid
-      const groupedTasks = taskData.reduce((acc, task) => {
-        const { phaseid, taskdetailid, taskstatus } = task;
-        const groupKey = `${phaseid}-${taskdetailid}`;
-
-        if (!acc[groupKey]) {
-          acc[groupKey] = [];
-        }
-
-        acc[groupKey].push(task);
-        return acc;
-      }, {});
-
-      // Process grouped tasks for reset logic
-      for (const taskGroup of Object.values(groupedTasks)) {
-        const phaseId = taskGroup[0]?.phaseid;
-        const leftSwipes = taskGroup.filter(
-          (task) => task.taskstatus === "Not Completed"
-        );
-        console.log("Left Swipes: ", leftSwipes);
-        if (phaseId === 3 && leftSwipes.length > 0) {
-          // Phase 3: No left swipes are allowed, reset immediately
-          const lastSwipeDate =
-            leftSwipes[leftSwipes.length - 1]?.lastswipedat || null;
-          if (new Date(lastSwipeDate).toLocaleDateString() !== currentDate) {
-            const task = leftSwipes[leftSwipes.length - 1];
-            try {
-              // await axios.post(
-              //   "http://localhost:5050/api/userprogressStart",
-              //   {
-              //     phaseId: task.phaseid,
-              //     taskId: task.taskid,
-              //   },
-              //   {
-              //     headers: {
-              //       Authorization: `Bearer ${accessToken}`,
-              //     },
-              //   }
-              // );
-              const index = taskData.findIndex(
-                (t) => t.taskdetailsid === task.taskdetailsid
-              );
-
-              if (index !== -1) {
-                taskData[index].taskstatus = "Not Started";
-              } else {
-                console.log("Record not found!");
-              }
-              console.log("TASK DATA: ", taskData, " \n Task: ", task);
-              // Update local task data
-              task.taskstatus = "Not Started";
-              task.lastswipedat = new Date().toLocaleString();
-            } catch (err) {
-              console.error(
-                `Failed to reset task ${task.taskid} for phase 3:`,
-                err
-              );
-            }
-          }
-          // return true;
-        } else if (leftSwipes.length > 1) {
-          // Other phases: Handle swipes logic
-          const lastSwipeDate =
-            leftSwipes[leftSwipes.length - 1]?.lastswipedat || null;
-          console.log(
-            "Last Swipe Date: ",
-            new Date(lastSwipeDate).toLocaleDateString(),
-            "\n Current Date: ",
-            currentDate
-          );
-          if (new Date(lastSwipeDate).toLocaleDateString() !== currentDate) {
-            // If swipes occurred on different days, reset the tasks
-            const task = leftSwipes[leftSwipes.length - 1];
-            try {
-              // await axios.post(
-              //   "http://localhost:5050/api/userprogressStart",
-              //   {
-              //     phaseId: task.phaseid,
-              //     taskId: task.taskid,
-              //   },
-              //   {
-              //     headers: {
-              //       Authorization: `Bearer ${accessToken}`,
-              //     },
-              //   }
-              // );
-              const index = taskData.findIndex(
-                (t) => t.taskdetailsid === task.taskdetailsid
-              );
-
-              if (index !== -1) {
-                taskData[index].taskstatus = "Not Started";
-              } else {
-                console.log("Record not found!");
-              }
-              // Update local task data
-              console.log("TASK DATA: ", taskData, " \n Task: ", task);
-              task.taskstatus = "Not Started";
-              task.lastswipedat = new Date().toLocaleString();
-            } catch (err) {
-              console.error(`Failed to reset task ${task.taskid}:`, err);
-            }
-          }
-        }
-      }
-    }
-  };
-
-  // Function to scroll to the active task
-  const scrollToActiveTask = () => {
-    if (taskData) {
-      // Group tasks by phase
-      const groupedTasks = groupTasksByPhase(taskData);
-
-      let activeTaskIndex = -1;
-      let activeTaskFound = false;
-      // Loop through each phase and find the active task
-      Object.keys(groupedTasks).forEach((phaseId) => {
-        if (activeTaskFound) return;
-        const tasksInPhase = groupedTasks[phaseId];
-        const inProgressIndex = tasksInPhase.findIndex(
-          (task) => task.taskstatus === "In Progress"
-        );
-
-        // If no task is "In Progress", find the first "Not Started" task
-        if (inProgressIndex !== -1) {
-          activeTaskIndex = inProgressIndex; // Task found in this phase
-        } else {
-          const notStartedIndex = tasksInPhase.findIndex(
-            (task) => task.taskstatus === "Not Started"
-          );
-          activeTaskIndex = notStartedIndex;
-        }
-
-        // If an active task is found in this phase, scroll to it
-        if (activeTaskIndex !== -1) {
-          const activeTask = tasksInPhase[activeTaskIndex];
-          const taskRefKey = `${activeTask.phaseid}-${activeTask.taskid}`;
-          if (taskRefs.current[taskRefKey]) {
-            taskRefs.current[taskRefKey].scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-          }
-          activeTaskFound = true;
-        }
-      });
-    }
-  };
-
-  const activateNextTask = async () => {
-    const now = new Date();
-    const currentLocalDate = now.toLocaleDateString(); // Get current local date in local time zone
-    if (taskData) {
-      // Find the first task with "Not Started" status
-      const notStartedTaskIndex = taskData.findIndex(
-        (task) => task.taskstatus === "Not Started"
-      );
-
-      const inProgressIndex = taskData.findIndex(
-        (task) => task.taskstatus === "In Progress"
-      );
-
-      if (inProgressIndex !== -1) {
-        console.log("The required task is already active.");
-        return;
-      }
-
-      if (notStartedTaskIndex === -1) {
-        console.log("All tasks are either completed.");
-        return;
-      }
-
-      const previousTask = taskData[notStartedTaskIndex - 1];
-      const notStartedTask = taskData[notStartedTaskIndex];
-
-      // Check if the task has been swiped today
-      const lastSwipeDate = previousTask.lastswipedat
-        ? new Date(previousTask.lastswipedat).toLocaleDateString()
-        : null;
-
-      // If the task was swiped today, don't activate it
-      if (lastSwipeDate === currentLocalDate) {
-        console.log(
-          "This task was already swiped today, waiting for the next day."
-        );
-        return;
-      }
-
-      // It is after midnight, activate the task
-      console.log("Activating next task...");
-
-      // Set task status to "In Progress"
-      notStartedTask.taskstatus = "In Progress";
-
-      try {
-        // Update backend to set task status as "In Progress"
-        await axios.post(
-          "http://localhost:5050/api/userprogressStart",
-          {
-            phaseId: notStartedTask.phaseid,
-            taskId: notStartedTask.taskid,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        // Update frontend state
-        const updatedTasks = [...taskData];
-        updatedTasks[notStartedTaskIndex] = notStartedTask; // Update the specific task
-        setTaskData(updatedTasks);
-
-        console.log("Task activated successfully.");
-      } catch (err) {
-        console.error("Failed to activate the task:", err);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (taskData !== undefined) {
-      console.log("Updated Task Data: ", taskData);
-      // handleTaskResets();
-      // activateNextTask();
-      // setTimeout(scrollToActiveTask, 1000);
-      const processTasks = async () => {
-        await handleTaskResets();
-        await activateNextTask();
-        setTimeout(scrollToActiveTask, 1000);
-      };
-
-      processTasks();
-    }
-  }, [taskData]); // Logs whenever taskData changes
-
+  // Utility function to group tasks by phase
   const groupTasksByPhase = (tasks) => {
     return tasks.reduce((acc, task) => {
-      // If the phase does not exist, create an empty array for that phaseid
       if (!acc[task.phaseid]) {
         acc[task.phaseid] = [];
       }
@@ -402,7 +162,28 @@ const GritPhase = () => {
     }, {});
   };
 
-  // Flipable Button Component
+  // On swipe or button press, we navigate to rightSwipe or leftSwipe
+  const handleSwipe = (direction, phaseNumber, dayNumber) => {
+    if (direction === "right") {
+      
+      navigate("/rightSwipe", {
+        state: {
+          phaseNumber,
+          dayNumber,
+        },
+      });
+    } else if (direction === "left") {
+     
+      navigate("/leftSwipe", {
+        state: {
+          phaseNumber,
+          dayNumber,
+        },
+      });
+    }
+  };
+
+  // Flipable Button (used for phases like 3, 6, etc.)
   const FlipableButton = ({ dayNumber, taskDesc, buttonImage, taskRefKey }) => {
     const [isFlipped, setIsFlipped] = useState(false);
 
@@ -443,6 +224,7 @@ const GritPhase = () => {
     );
   };
 
+  // Render phases and their days
   const renderPhasesWithDays = (phases) => {
     const phaseKeys = Object.keys(phases); // Get all phase IDs
 
@@ -450,7 +232,7 @@ const GritPhase = () => {
       const tasks = phases[phaseId]; // Get tasks for the current phase
       const phaseTitle = tasks[0]?.title || `GritPhase ${phaseId}`; // Use the title from the first task
       let phaseDescription =
-        phaseId % 3 === 0 ? "Flip the Day to see the task!" : tasks[0].taskdesc; // Use the description from the first task
+        phaseId % 3 === 0 ? "Flip the Day to see the task!" : tasks[0].taskdesc; 
       return (
         <section key={phaseId} className={`section section-${phaseId}`}>
           <div className="grit-phase-title">
@@ -463,48 +245,36 @@ const GritPhase = () => {
     });
   };
 
+  
   const renderDayButtons = (phaseId, tasks) => {
-    // const days = phaseId % 3 === 0 ? [1, 2, 3, 4] : [1, 2, 3, 4, 5];
-    const task_index = Object.keys(tasks);
-    //index is the index of the tasks object.
     return (
       <div className="task-buttons">
-        {task_index.map((index) => {
-          const taskRefKey = `${tasks[index].phaseid}-${tasks[index].taskid}`;
-          const dayNumber = tasks[index].taskid;
-          const taskStatus = tasks[index].taskstatus;
-          const taskDescription = tasks[index].taskdesc;
-          // Default class for the button image
-          let dayButton = buttonImage; // Default button image class
+        {tasks.map((task) => {
+          const taskRefKey = `${task.phaseid}-${task.taskid}`;
+          const dayNumber = task.taskid;
+          const taskStatus = task.taskstatus;
+          const taskDescription = task.taskdesc || "";
 
-          // If rightSwipe is true, add the green button class
+          
+          let dayButton = buttonImage;
           if (taskStatus === "Completed") {
-            dayButton = rightSwipeButtonImage; // Append green-button class
-          }
-          // If leftSwipe is true, add the red button class
-          else if (taskStatus === "Not Completed") {
-            dayButton = leftSwipeButtonImage; // Append red-button class
+            dayButton = rightSwipeButtonImage; 
+          } else if (taskStatus === "Not Completed") {
+            dayButton = leftSwipeButtonImage; 
           } else if (taskStatus === "In Progress") {
-            // If task is in progress add the active button.
-            dayButton = activeButtonImage;
+            dayButton = activeButtonImage; 
           }
 
-          // Condition to decide whether to wrap with SwipeImageWithSpring
-          const shouldWrapWithSpring = !(
-            taskStatus === "Completed" ||
-            taskStatus === "Not Completed" ||
-            taskStatus !== "In Progress"
-          );
+          const shouldEnableSwipe = taskStatus === "In Progress";
 
           return (
             <div key={dayNumber} className="task-button-container">
-              {shouldWrapWithSpring ? (
+              {shouldEnableSwipe ? (
                 <SwipeImageWithSpring
                   onSwipe={handleSwipe}
                   phaseNumber={phaseId}
                   dayNumber={dayNumber}
                 >
-                  {/* Check if phaseNumber is divisible by 3 */}
                   {phaseId % 3 === 0 ? (
                     <FlipableButton
                       dayNumber={dayNumber}
@@ -527,13 +297,14 @@ const GritPhase = () => {
                   )}
                 </SwipeImageWithSpring>
               ) : (
+            
                 <button
                   ref={(el) => (taskRefs.current[taskRefKey] = el)}
                   className="task-button"
                 >
                   <img
-                    src={dayButton} // Keep your image source
-                    className="button-image" // Apply dynamic CSS class
+                    src={dayButton}
+                    className="button-image"
                     alt={`Task ${dayNumber}`}
                   />
                   <div className="day-label">{dayNumber}</div>
@@ -552,41 +323,31 @@ const GritPhase = () => {
 
       <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
         <header className="header">
-          <div className="logo-container">
+          <div className="logo-container-task">
             <img
               src={logo}
               alt="Logo"
               onClick={!isNavOpen ? handleNavOpen : undefined}
-              className="logo-gritPhases"
+              className="logo-gritPhases-task"
             />
             <ChevronDown
-              className={`chevron ${isNavOpen ? "rotated" : ""}`}
+              className={`chevron-task ${isNavOpen ? "rotated" : ""}`}
               size={24}
             />
           </div>
-
           <button className="profile-button">
             <Info size={24} />
           </button>
         </header>
-        {loading && (
-          <div>
-            <h3>Loading...</h3>
-          </div>
-        )}
 
-        {error && (
-          <div style={{ color: "red" }}>
-            <p>{error}</p>
-          </div>
-        )}
+        {/* Show loading or errors */}
+        {loading && <h3>Loading...</h3>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
+        {/* Render phases + tasks if we have them */}
         {taskData && !loading && !error && (
-          <div>
-            <div className="fasting-header">{nutritiontheoryRef.current}</div>
-            <div className="scrollable-content" ref={scrollableRef}>
-              {renderPhasesWithDays(phases)}
-            </div>
+          <div className="scrollable-content" ref={scrollableRef}>
+            {renderPhasesWithDays(phases)}
           </div>
         )}
       </div>

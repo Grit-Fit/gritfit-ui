@@ -12,7 +12,7 @@ html, body {
     background-attachment: fixed; /* Makes the gradient stay fixed on scroll */
   }
   
-  .theoryContainer {
+  .goalContainer {
       display: flex;
       max-width: 100%;
       width: 100%;
@@ -28,7 +28,7 @@ html, body {
       padding: 0 22px;
     }
     
-    .theory-header{
+    .goal-header{
       display: flex;
       align-items: center;
       flex-direction: row;
@@ -44,7 +44,17 @@ html, body {
       width:100%;
     }
     
-    
+    .goal-selection-header {
+        display: flex;
+        grid-template-columns: 1fr auto;
+        /* align-items: center; */
+        /* gap: 10px; */
+        /* margin-top: 20px; */
+        justify-content: center;
+        position:relative;
+        top:24px;
+    }     
+
     .logo-container {
       padding-left: 1rem;
     }
@@ -61,12 +71,15 @@ html, body {
       padding: 0.5rem;
       border-radius: 0 0.5rem 0.5rem 0;
       transition: background-color 0.2s;
-      height: 100%;
+      height: 84%;
+      margin-left: 50px;
       flex-direction: row; 
       gap: 4px;
       justify-content: flex-start;
       padding-left: 2.2rem;
       opacity: 1;
+      left: 0px;
+      position: absolute;
     }
   
     .main-content.nav-open .logo-container {
@@ -79,6 +92,8 @@ html, body {
     
     .logo-gritPhases {
       margin-right: 0.5rem;
+      width: 168px;
+      height: 62px;
     }
     .chevron-left {
       margin-left: 10px;
@@ -92,13 +107,54 @@ html, body {
     .chevron-left:hover {
       transform: scale(1.1); /* Slightly enlarge on hover */
     }
+
+.title{
+    color: rgba(40, 73, 100, 1);
+    text-align: center;
+    margin-top: 100px;
+    margin-right: 10px;
+    font: 400 25px Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.info-icon {
+    background-color: transparent;
+    border: 2px solid #333;
+    border-radius: 50%;
+    /* padding: 5px 10px; */
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 4px;
+    margin-top: 103px;
+    height: 25px;
+    width: 25px;
+  }
   
-    /* Responsive Adjustments for Smaller Screens */
+  .info-icon:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .info-text {
+    margin-top: 35px;
+    background-color: #ffffff;
+    padding: 5px;
+    border-radius: 5px;
+    border: 2px solid rgb(34, 93, 169);
+    font-size: 14px;
+    color: rgb(34, 93, 169);
+  }
+
+   /* Responsive Adjustments for Smaller Screens */
     
-    @media (max-width: 480px) {}
-    
-    :focus {
-      outline: 2px solid rgba(34, 93, 169, 0.5);
-      outline-offset: 2px;
+   @media (max-width: 480px) {
+    .logo-gritPhases {
+      margin-right: 0.5rem;
+      width: 168px;
+      height: 62px;
     }
+   }
     
+   :focus {
+     outline: 2px solid rgba(34, 93, 169, 0.5);
+     outline-offset: 2px;
+   }
+  

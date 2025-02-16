@@ -33,7 +33,7 @@ html, body {
 .targetCalories {
   color: rgba(150, 155, 159, 1);
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 700;
   text-align: center;
   margin-top: 85px;
 }
@@ -96,6 +96,7 @@ html, body {
     align-self: center;
     padding: 41px 25px;
     border: 1px solid rgba(34, 93, 169, 1);
+    margin-top: 12px;
   }
   
   .accordion-header {

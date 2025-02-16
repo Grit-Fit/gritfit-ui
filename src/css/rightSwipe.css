@@ -11,7 +11,7 @@ html, body {
 }
 
 .fullpage {
-    background-color: #F8FEF9;
+    background: linear-gradient(to bottom, #E8F5E9, #C8E6C9); /* Soft green fade */
     width: 100vw;
     height: 100vh;
     max-height: 100vh;
@@ -23,20 +23,32 @@ html, body {
 }
 
 .header-rightSwipe {
-    display: flex;
-    flex-direction: column;
-    padding: clamp(15px, 5vh, 40px);
     width: 100%;
-}
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #bde5c8;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    z-index: 1000;
+  }
+  
 
-.btn-rightSwipe {
-    text-decoration: underline;
-    color: rgba(72, 159, 88, 1);
-    font-family: 'Montserrat', sans-serif;
-    padding: clamp(10px, 2vh, 20px);
+  .btn-rightSwipe {
+    font-size: 16px;
     font-weight: bold;
+    color: #2b7a4b;
+    padding: 8px 12px;
+    border-radius: 20px;
     cursor: pointer;
-}
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
 
 .body-text {
     color: rgba(89, 153, 101, 1);
@@ -51,22 +63,23 @@ html, body {
     max-width: 100%;
     padding: 0 20px;
     line-height: 1.4;
+    margin-top: 66px;
 }
+
+.swipe-icon {
+    margin-right: 10px;
+    animation: bounceLeft 1.5s infinite;
+  }
 
 .logo-rightSwipe {
-    width: clamp(120px, 30vw, 180px);
-    height: auto;
-    margin-bottom: 15px;
-    align-self: flex-start;
-}
-
-.btn-right {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
+    width: 120px;
     cursor: pointer;
-}
+  }
+
+  .btn-right {
+    display: flex;
+    align-items: center;
+  }
 
 .chev {
     stroke: rgba(72, 159, 88, 1);
@@ -98,7 +111,7 @@ html, body {
 } */
  @media screen and (max-width: 767px) {
   .header-rightSwipe {
-    padding: 10px;
+    /* padding: 10px; */
   }
 
   .body-text {
@@ -106,10 +119,28 @@ html, body {
   }
 
   .doneBtnRight {
-    width: auto;
-    font-size: 14px;
-    padding: 8px 35px;
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(to right, #42c966, #2b7a4b);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   }
+  .pulse-button {
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+  
 }
 
 @media screen and (min-width: 768px) {
@@ -133,15 +164,17 @@ html, body {
 
 .doneBtnRight{
     font-family: 'Montserrat', sans-serif;
-    font-size: clamp(10px, 1.7vw, 15px);
+    font-size: clamp(17px, 1.7vw, 15px);
     padding: 8px 35px;
-    color:  rgba(72, 159, 88, 1);
+    /* color:  rgba(72, 159, 88, 1); */
     background-color: white;
     border: 2px solid rgba(72, 159, 88, 1);
     border-radius: 15px;
     font-weight: light;
     display: block;
     margin: 0 auto;
+    background: linear-gradient(to right, #66BB6A, #43A047);
+    width: 150px;
 }
 
 /* Hover and Transition Effects */

@@ -18,8 +18,9 @@
 }
 
 .welcome {
-    font-size: 3.5rem;
-    margin-bottom: 20px;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    margin-top: 30px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     color: rgba(40, 73, 100, 1);
@@ -108,13 +109,46 @@ form {
     }
 }
 
+.theory-header1 {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0;
+    background-color: #cdeff8;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 70px;
+    width:100%;
+  }
+
+.logo-container-welcome {
+    display: flex;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+    transition: background-color 0.2s;
+    height: 110%;
+    margin-left: 50px;
+    flex-direction: row; 
+    gap: 4px;
+    justify-content: flex-start;
+    padding-left: 2.5rem;
+    opacity: 1;
+  }
+
 @media (max-width: 480px) {
     .container {
         padding: 5% 10px;
+        border-radius: 10px;
+        margin-top: 70px;
     }
 
     .welcome {
-        font-size: 2.2rem;
+        font-size: 1.5rem;
     }
 
     .text {
@@ -123,6 +157,7 @@ form {
 
     .nameprompt {
         font-size: 1rem;
+        margin-top: 70px;
     }
 
     .logo {
@@ -138,7 +173,15 @@ form {
     }
 
     .btn {
-        font-size: 0.9rem;
+        font-size: 1rem;
         height: 34px;
+        margin-top: 28px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #3599f0, #00f2fe);
     }
+    .logo-gritPhases1 {
+        margin-right: 0.5rem;
+        width: 200px;
+        height: 55px;
+      }
 }

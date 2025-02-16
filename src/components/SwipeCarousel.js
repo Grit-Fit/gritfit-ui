@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react'; // Navigation icons
-import './SwipeCarousel.css'; // Updated styles
+import '../css/SwipeCarousel.css'; // Updated styles
 
 const SwipeCarousel = ({ slides }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [props, set] = useSpring(() => ({
       x: 0,
-      config: { tension: 300, friction: 30 }, // Smooth animation
+      config: { tension: 200, friction: 20 }, // Smooth animation
     }));
   
     const goToSlide = (index) => {
