@@ -3,7 +3,7 @@ import StatusCard from "./StatusCard";
 import { ChevronLeft } from "lucide-react";
 import logo from "../assets/Logo.png";
 import { useNavigate } from "react-router-dom";
-import "./NutritionTheory.css";
+import "../css/NutritionTheory.css";
 
 const NutritionTheory = () => {
   const navigate = useNavigate();
@@ -34,12 +34,12 @@ const NutritionTheory = () => {
               onClick={() => window.history.back()} // Use your routing method for navigation
             />
           </div>
-          <div className="logo-container">
-            <img src={logo} alt="Logo" className="logo-gritPhases" />
+          <div className="logo-container-nut">
+            <img src={logo} alt="Logo" className="logo-gritPhases-nut" />
           </div>
         </div>
 
-        <h1 className="title">Select a nutrition theory</h1>
+        <h1 className="title-nut">Select a nutrition theory</h1>
         <div style={{ padding: "20px", marginTop: "20px" }}>
           {cardData.map((card, index) => (
             <StatusCard

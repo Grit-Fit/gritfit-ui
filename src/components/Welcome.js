@@ -4,7 +4,7 @@ import StatusCard from "./StatusCard";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
-import "./Welcome.css";
+import "../css/Welcome.css";
 import axios from "../axios";
 
 const WelcomePage = () => {
@@ -21,7 +21,7 @@ const WelcomePage = () => {
   ];
   const handleCardClick = (index) => {
     if(!name){
-      setMessage("Please enter your name first!");
+      setMessage("Please enter your name first");
     } else {
       setClickedIndex(index);
       navigate("/selectTheory", {})
@@ -71,10 +71,16 @@ const WelcomePage = () => {
 
   return (
     <div className="container">
-      <img src={logo} alt="Logo" className="logo" />
-      <h1 className="welcome">Welcome!</h1>
-      <p className="text">We are as excited as you are!</p>
-      <p className="text">Let's start by knowing a bit about you</p>
+              <div className="theory-header1">
+          <div>
+          </div>
+          <div className="logo-container-welcome">
+            <img src={logo} alt="Logo" className="logo-gritPhases1" />
+          </div>
+        </div>
+      {/* <h1 className="welcome">Welcome!</h1> */}
+      {/* <p className="text">We are as excited as you are!</p>
+      <p className="text">Let's start by knowing a bit about you</p> */}
       <h3 className="nameprompt">What is your name?</h3>
       <form onSubmit={handleUpdateUsername}>
         <input
@@ -85,7 +91,7 @@ const WelcomePage = () => {
           required
         />
         <button type="submit" className="btn">
-          Submit
+          That's Me!
         </button>
       </form>
       {message && <p className="message">{message} !</p>}

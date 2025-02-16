@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { MessageSquare } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import "./navBar.css";
+import "../css/navBar.css";
 import logo from "../assets/Logo.png";
 import homeIcon from "../assets/home.png";
 import gfitIcon from "../assets/gfit.png";
@@ -38,6 +38,9 @@ const NavBar = ({ isOpen, onClose }) => {
 
   const handleContactClick = (e) => {
     e.preventDefault();
+    if (onClose) {
+      onClose(); // Close the navbar when Contact Us is clicked
+    }
     setShowContactPopup(true);
   };
 

@@ -4,8 +4,9 @@ import { ChevronDown, Info } from "lucide-react";
 import NavBar from "./navBar";
 import { useAuth } from "../context/AuthContext";
 import logo from "../assets/Logo.png";
-import "./gFitReport.css";
+import "../css/gFitReport.css";
 import axios from "../axios";
+import nutritionPdf from "../assets/Nutrition101PDF.pdf";
 
 const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -313,16 +314,16 @@ const GFitReport = () => {
 
       <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
         <header className="gfit-report-header">
-          <div className="logo-container">
+          <div className="logo-container1">
             <img
               src={logo}
               alt="Logo"
               onClick={!isNavOpen ? handleNavOpen : undefined}
             />
-            <ChevronDown
+            {/* <ChevronDown
               className={`chevron ${isNavOpen ? "rotated" : ""}`}
               size={24}
-            />
+            /> */}
           </div>
 
           <button className="profile-button">
@@ -359,6 +360,16 @@ const GFitReport = () => {
                     to a healthier lifestyle!
                   </div>
                   <PieChartComponent userProgress={taskData} />
+                </div>
+                <div className="pie_section">
+                  <div className="pie-heading">Fitness Guide</div>
+                  <p>
+                   Ready to dive deeper into your nutrition? Download our comprehensive "Nutrition 101" guide to learn all you need to start eating healthier today!
+                  </p>
+                        <a href={nutritionPdf} download className="downloadButton">
+                          Nutrition 101 PDF ⬇️
+                        </a>
+                    
                 </div>
               </>
             )}

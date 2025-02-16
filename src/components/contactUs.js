@@ -1,6 +1,6 @@
 // ContactUs.js
 import React from "react";
-import "./contactUs.css";
+import "../css/contactUs.css";
 
 const ContactUs = ({ isOpen, onClose }) => {
   if (!isOpen) return null;

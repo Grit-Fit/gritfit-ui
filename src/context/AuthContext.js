@@ -29,19 +29,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login function
-  const login = async (_ , credentials) => {
-    try {
+// Login function
+const login = async (_, credentials) => {
+  try {
       const response = await axios.post('/signIn', credentials, {
-        withCredentials: true, // Include cookies
+          withCredentials: true, // Include cookies
       });
       const { token } = response.data;
-      setAccessToken(token);
-      decodeToken(token);
-    } catch (error) {
+
+      console.log("✅ Signup Successful. Storing token...");
+      
+      // ✅ Delay setting token to allow navigation to complete
+      setTimeout(() => {
+          setAccessToken(token);
+          decodeToken(token);
+          console.log("🛑 Token set after delay.");
+      }, 1000); // 1-second delay prevents race conditions
+
+  } catch (error) {
       console.error('Login failed:', error);
-    }
-  };
+  }
+};
+
 
   // Logout function
   // Logout function

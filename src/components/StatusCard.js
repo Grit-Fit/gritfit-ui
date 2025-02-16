@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ChevronRight } from "lucide-react"; // Import ChevronRight
-import "./StatusCard.css";
+import "../css/StatusCard.css";
 
 const StatusCard = ({ text, locked, onClick }) => {
   

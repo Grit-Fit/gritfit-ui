@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ChevronLeft, ChevronDown, ChevronRight } from "lucide-react";
 import logo from "../assets/Logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./CalorieMacro.css";
+import "../css/CalorieMacro.css";
 
 const CalorieMacro = () => {
   const macroData = {
@@ -71,7 +71,7 @@ const CalorieMacro = () => {
       <div className="macro-header">
         <img src={logo} alt="Logo" className="logo-centered" />
       </div>
-      <p className="targetCalories">Content to trgt cal</p>
+      <p className="targetCalories">Target Calorie</p>
       <h1 className="calorieAmount">
         <NumberFormatter number={calorie} />
       </h1>
