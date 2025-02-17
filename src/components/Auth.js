@@ -7,6 +7,7 @@ import "../css/Auth.css";
 import back from "../assets/Back.png";
 import signInIcon from "../assets/signInIcon.png";
 import signUpIcon from "../assets/signUpIcon.png";
+const API_URL = process.env.REACT_APP_API_URL || "https://api.gritfit.site/api";
 
 const Auth = () => {
   const { login } = useContext(AuthContext);
@@ -24,7 +25,7 @@ const Auth = () => {
     console.log("Signup initiated...");
 
     try {
-        const response = await axios.post("http://localhost:5050/api/createAccount", {
+        const response = await axios.post(`${API_URL}/createAccount`, {
             email,
             password,
         });
