@@ -14,12 +14,20 @@ self.addEventListener("install", (event) => {
 
 // Fetch event: Serve cached content when offline
 self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+
+  // 🔥 Bypass cache for API requests
+  if (url.origin === "https://api.gritfit.site") {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((response) => {
       return response || fetch(event.request);
     })
   );
 });
+
 
 // Activate event: Clean up old caches
 self.addEventListener("activate", (event) => {
