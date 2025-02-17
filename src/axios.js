@@ -3,7 +3,7 @@ import axios from "axios";
 import { useAuth } from "./context/AuthContext";
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:5050/api", // Use environment variable for base URL
+  baseURL: process.env.REACT_APP_API_URL || "https://api.gritfit.site/api", // Use environment variable for base URL
   withCredentials: true, // Send cookies for authentication
 });
 
