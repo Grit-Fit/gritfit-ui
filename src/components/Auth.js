@@ -7,7 +7,7 @@ import "../css/Auth.css";
 import back from "../assets/Back.png";
 import signInIcon from "../assets/signInIcon.png";
 import signUpIcon from "../assets/signUpIcon.png";
-const API_URL = process.env.REACT_APP_API_URL || "https://api.gritfit.site/api";
+const API_URL =  "https://api.gritfit.site/api";
 
 const Auth = () => {
   const { login } = useContext(AuthContext);
