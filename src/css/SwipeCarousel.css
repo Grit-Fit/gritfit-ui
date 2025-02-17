@@ -1,0 +1,84 @@
+.carousel-container {
+    position: relative;
+    top: 110px;
+    width: 85%;
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: center;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 32px;
+}
+
+.carousel-slide-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.carousel-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    transition: transform 0.7s ease-in-out;
+}
+
+.carousel-chevron {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 3rem;
+    color: #333;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    transition: background 0.3s, color 0.3s;
+}
+
+.carousel-chevron.left {
+    left: 10px;
+}
+
+.carousel-chevron.right {
+    right: 10px;
+}
+
+.carousel-chevron:hover {
+    color: #000;
+    background: rgba(255, 255, 255, 1);
+}
+
+.carousel-dots {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.carousel-dot.active {
+    background: #007bff;
+}
+
+.carousel-dot:hover {
+    background: #555;
+}
+
+/* Ensure smooth transitions */
+.carousel-slide-wrapper {
+    transition: transform 0.5s ease-in-out;
+}

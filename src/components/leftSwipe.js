@@ -6,7 +6,7 @@ import lm from "../assets/less_motivation.png";
 import busy from "../assets/busy.png";
 import other from "../assets/other.png";
 import { ChevronRight } from "lucide-react";
-import "./leftSwipe.css";
+import "../css/leftSwipe.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
@@ -93,6 +93,9 @@ const LeftSwipe = () => {
         requestData.failedGoal = selectedGoal; // Include goal in phase 3
       }
 
+      console.log("🚀 Sending request to:", "http://localhost:5050/api/userprogressNC");
+      console.log("📦 Request Data:", requestData);
+      
       const response = await axios.post(
         "http://localhost:5050/api/userprogressNC",
         requestData,
@@ -182,7 +185,7 @@ const LeftSwipe = () => {
         ) : (
           <>
             <div className="body_text">
-              What prevented you from completing your goal?
+            It's okay! What was your biggest hurdle today?
             </div>
 
             {!selectedButton ? (
@@ -243,7 +246,7 @@ const LeftSwipe = () => {
                   )}
                 </div>
                 <button
-                  className="doneBtn"
+                  className="doneBtn pulse-button"
                   onClick={doneBtnClick}
                   disabled={isLoading}
                 >

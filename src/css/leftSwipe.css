@@ -8,20 +8,36 @@
 html, body {
     max-width: 100%;
     overflow-x: hidden;
+    background: rgba(251, 220, 219, 1);
+}
+
+.chev {
+    stroke: rgba(72, 159, 88, 1);
+    width: clamp(18px, 4vw, 24px);
+    height: auto;
 }
 
 .fullpage-left {
-    background-color: rgba(251, 220, 219, 1);
+    background: linear-gradient(to bottom, #ffdde1, #ee9ca7);
     width: 100vw;
     min-height: 100vh;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 .header-left {
-    display: flex;
-    flex-direction: column;
     width: 100%;
-    padding: clamp(15px, 5vh, 40px);
-}
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    z-index: 1000;
+  }
 
 .logo-left {
     width: clamp(120px, 30vw, 180px);
@@ -44,25 +60,26 @@ html, body {
 }
 
 .body_text {
-    color: rgba(153, 8, 56, 1);
+    /* color: rgba(153, 8, 56, 1); */
     font-family: 'Montserrat', sans-serif;
     text-align: center;
     font-weight: bold;
     font-size: clamp(18px, 2.5vw, 30px);
+    margin-top:100px;
 }
 
 .undo_swipe_btn {
     display: flex;
-    flex-direction: row;
-    text-decoration: underline;
-    color: rgba(153, 8, 56, 1);
-    align-self: flex-end;
-    font-family: 'Montserrat', sans-serif;
+    align-items: center;
+    font-size: 16px;
     font-weight: bold;
-    font-size: clamp(14px, 2vw, 17px);
-    gap: 5px;
+    color: #a50632;
+    padding: 8px 12px;
+    border-radius: 20px;
     cursor: pointer;
-    padding: clamp(10px, 2vh, 20px);
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
 }
 
 .body_images {
@@ -88,13 +105,13 @@ html, body {
 
 
 .body_images img:nth-child(1) {
-    top: 10%;
-    left: 25%;
+    top: 12%;
+    left: 24%;
 }
 
 .body_images img:nth-child(2) {
-    top: 10%;
-    right: 20%;
+    top: 12%;
+    right: 24%;
 }
 
 .body_images img:nth-child(3) {
@@ -102,15 +119,13 @@ html, body {
 }
 
 .body_images img:nth-child(4) {
-    position: relative;
-    top: 75%;
-    left: 20%;
+    top: 64%;
+    left: 8%;
 }
 
 .body_images img:nth-child(5) {
-    position: relative;
-    top: 75%;
-    right: 25%;
+    top: 64%;
+    right: 8%;
 }
 
 .c {
@@ -136,7 +151,7 @@ html, body {
     
     .body_images img:nth-child(2) {
         top: 10%;
-        right: 20%;
+        right: 25%;
     }
     
     .body_images img:nth-child(3) {
@@ -146,7 +161,7 @@ html, body {
     .body_images img:nth-child(4) {
         position: relative;
         top: 75%;
-        left: 20%;
+        left: 25%;
     }
     
     .body_images img:nth-child(5) {
@@ -169,37 +184,48 @@ html, body {
     }
 
     .body_images img:nth-child(1) {
-        top: 10%;
-        left: 15%;
+        top: 70%;
+        left: -30%;
+        width: 100%;
     }
     
     .body_images img:nth-child(2) {
-        top: 10%;
-        right: 10%;
+        top: 70%;
+        right: -30%;
+        width: 100%;
     }
     
     .body_images img:nth-child(3) {
-        top: 50%;
+        top: 30%;
+        width: 100%;
+        right: -26%;
     }
     
     .body_images img:nth-child(4) {
-        position: relative;
-        top: 55%;
-        left: 40%;
+        /* position: relative; */
+        top: -5%;
+        left: -2%;
+        width: 100%;
     }
     
     .body_images img:nth-child(5) {
-        position: relative;
-        top: 55%;
-        right: 45%;
+        /* position: relative; */
+        top: 70%;
+        left: -22%;
+        width: 100%;
     }
 
     .body_text {
         margin-bottom: 10px;
+        padding-top: 34px;
     }
 
     .undo_swipe_btn {
         padding: clamp(5px, 1vh, 10px);
+        margin-top: -44px;
+        position: fixed;
+        top: 57px;
+        right: 12px;
     }
 }
 
@@ -212,7 +238,7 @@ html, body {
 
     .body_images img:nth-child(1) {
         top: 10%;
-        left: 15%;
+        left: 10%;
     }
     
     .body_images img:nth-child(2) {
@@ -233,7 +259,7 @@ html, body {
     .body_images img:nth-child(5) {
         position: relative;
         top: 55%;
-        right: 45%;
+        right: 40%;
     }
 }
 /* Add these new styles to your existing CSS */
@@ -263,6 +289,7 @@ html, body {
     font-size: clamp(12px, 1.7vw, 20px);
     animation: fadeIn 0.3s ease forwards;
     text-align: center;
+    margin-top: 24px;
 }
 .goalBtn{
     font-family: 'Montserrat', sans-serif;
@@ -277,13 +304,16 @@ html, body {
 
 .doneBtn{
     font-family: 'Montserrat', sans-serif;
-    font-size: clamp(10px, 1.7vw, 15px);
+    font-size: clamp(16px, 1.7vw, 15px);
     padding: 8px 35px;
-    color:  rgba(231, 140, 139, 1);
+    /* color:  rgba(231, 140, 139, 1); */
     background-color: white;
     border: 2px solid rgba(231, 140, 139, 1);
     border-radius: 15px;
     font-weight: light;
+    margin-top: 30px;
+    background: linear-gradient(to right, #FF9A9E, #FAD0C4);
+    width: 150px;
 }
 
 @keyframes scaleUp {
@@ -318,6 +348,7 @@ html, body {
 @media screen and (max-width: 480px) {
     .selected-button-container {
         gap: 10px;
+        margin-top: 90px;
     }
 }
 /* Add these styles to your leftSwipe.css file */
@@ -359,3 +390,29 @@ html, body {
     max-width: 400px;
   }
 }
+
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .pulse-button {
+    animation: pulse 1.5s infinite;
+  }
+  

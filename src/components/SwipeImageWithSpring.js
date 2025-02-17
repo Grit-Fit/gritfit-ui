@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
-import './SwipeImageWithSpring.css';  // Import the component-specific styles
+import '../css/SwipeImageWithSpring.css';  // Import the component-specific styles
 
 const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => {
     const [gone, setGone] = React.useState(0); // Tracks whether the task was swiped

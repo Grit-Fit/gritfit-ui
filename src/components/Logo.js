@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
-import "./Logo.css";
+import "../css/Logo.css";
 
 const LogoPage = () => {
   const navigate = useNavigate();

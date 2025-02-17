@@ -1,13 +1,14 @@
 import React from "react";
 import SwipeCarousel from "./SwipeCarousel";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/Logo.png"; // Replace with your logo path
-import myFitnessPal from "../assets/myFitnessPal.png"; // App icon 1
-import healthifyMe from "../assets/healthifyMe.png"; // App icon 2
+import logo from "../assets/Logo.png"; 
+import myFitnessPal from "../assets/myFitnessPal.png"; 
+import healthifyMe from "../assets/healthifyMe.png"; 
 import nutritionPdf from "../assets/Nutrition101PDF.pdf";
-import "./NextStepsCarousel.css"; // Custom styles for your layout
-import { getDeviceType } from "./deviceDetection"; // Import device detection utility
-import "./NextStepsCarousel.css"; // Custom styles for your layout
+import "../css/NextStepsCarousel.css"; 
+import { getDeviceType } from "./deviceDetection"; 
+import "../css/NutritionTheory.css";
+
 
 const NextStepsCarousel = () => {
   const deviceType = getDeviceType();
@@ -25,6 +26,11 @@ const NextStepsCarousel = () => {
       ios: "https://apps.apple.com/in/app/healthifyme-weight-loss-plan/id943712366",
       desktop: "https://www.healthifyme.com/app/",
     },
+  };
+
+  
+  const handleNext = () => {
+    navigate("/gritPhases", {});
   };
 
   const slides = [
@@ -45,22 +51,23 @@ const NextStepsCarousel = () => {
           HealthifyMe for tracking nutrition value of food items.
           <br />
         </p>
-        <div className="icon-row">
+        <div className="button-column">
           <a
             href={appLinks.fitnessPal[deviceType]}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src={myFitnessPal} alt="App 1 Icon" className="app-icon" />
-          </a>
+            <button className="app-button">MyFitnessPal</button>
+          </a><br />
           <a
             href={appLinks.healthify[deviceType]}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src={healthifyMe} alt="App 2 Icon" className="app-icon" />
+            <button className="app-button">HealthifyMe</button>
           </a>
         </div>
+
       </div>
     </div>,
     <div>
@@ -69,32 +76,35 @@ const NextStepsCarousel = () => {
       </h2>
       <p className="step-content">
         Don't worry! Click the link below to download a pdf, that has all the
-        information you need. (Also list of food items to hit your goals)
+        information you need.<br /> (Also list of food items to hit your goals)
       </p>
       <br />
-      <br />
       <a href={nutritionPdf} download className="downloadButton">
-        Nutrition PDF
+        Nutrition 101 PDF ⬇️
       </a>
-    </div>,
-  ];
-
-  const handleNext = () => {
-    navigate("/gritPhases", {});
-  };
-
-  return (
-    <div className="nextStepsContainer">
-      {/* Logo at the top */}
-      <div className="next-steps-header">
-        <img src={logo} alt="Logo" className="logo-centered" />
-      </div>
-
-      <SwipeCarousel slides={slides} />
 
       <button className="nextButton" onClick={handleNext}>
         Next
       </button>
+
+    </div>,
+  ];
+
+
+  return (
+    <div className="nextStepsContainer">
+      {/* Logo at the top */}
+      <div className="theory-header">
+        <div class = "logo-container-nut">
+          <img src={logo} alt="Logo" className="logo-gritPhases-nut" />
+        </div>
+      </div>
+
+      <SwipeCarousel slides={slides} />
+
+     {/* <button className="nextButton" onClick={handleNext}>
+        Next
+      </button> */}
     </div>
   );
 };
