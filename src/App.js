@@ -91,7 +91,7 @@ const AppRoutes = () => {
       <Route path="/gFitReport" element={accessToken ? <GFitReport /> : <Navigate to="/" />} />
 
       {/* Default catch-all route */}
-      <Route path="/" element={<AppRoutes />} />
+      // <Route path="/" element={<AppRoutes />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
