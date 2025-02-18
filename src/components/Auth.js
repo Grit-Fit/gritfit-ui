@@ -39,8 +39,8 @@ const Auth = () => {
             localStorage.setItem("justSignedUp", "true");
             console.log("🔹 LocalStorage value after setting:", localStorage.getItem("justSignedUp"));
 
-            console.log("✅ Navigating to /welcome...");
-            navigate("/welcome", { replace: true });
+           //  console.log("✅ Navigating to /welcome...");
+            navigate(`${API_URL}/welcome`, { replace: true });
             setMessage(responseMessage);
         }
     } catch (error) {
@@ -52,7 +52,7 @@ const Auth = () => {
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5050/api/signIn", {
+      const res = await axios.post(`${API_URL}/signIn`, {
         email,
         password,
       });
