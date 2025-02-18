@@ -41,11 +41,10 @@ const AppRoutes = () => {
         setRedirectPath("/welcome");
         setSignupRedirect(true);
 
-        setTimeout(() => {
-          // console.log("🛑 Removing justSignedUp from localStorage...");
-          localStorage.removeItem("justSignedUp");
-          setSignupRedirect(false);
-        }, 3000);
+        // setTimeout(() => {
+        //   localStorage.removeItem("justSignedUp");
+        //   setSignupRedirect(false);
+        // }, 3000);
       } else {
         // console.log("🔵 Regular login, redirecting to /gritPhases...");
         setRedirectPath("/gritPhases");
