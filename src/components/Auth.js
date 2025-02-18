@@ -40,7 +40,7 @@ const Auth = () => {
             console.log("🔹 LocalStorage value after setting:", localStorage.getItem("justSignedUp"));
 
            //  console.log("✅ Navigating to /welcome...");
-            navigate(`${API_URL}/welcome`, { replace: true });
+            navigate("/welcome", { replace: true });
             setMessage(responseMessage);
         }
     } catch (error) {
