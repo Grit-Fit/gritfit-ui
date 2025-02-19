@@ -57,7 +57,7 @@ const login = async (_, credentials) => {
   const logout = async () => {
     try {
       setIsLoggingOut(true); // Set the flag to true when logging out
-      await axios.post('/logout', {}, { withCredentials: true }); // Backend should clear the refresh token
+      await axios.post('api/logout', {}, { withCredentials: true }); // Backend should clear the refresh token
       setAccessToken(null);
       setUser(null);
     } catch (error) {
