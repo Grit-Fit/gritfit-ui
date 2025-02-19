@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
 // Login function
 const login = async (_, credentials) => {
   try {
-      const response = await axios.post('/signIn', credentials, {
+      const response = await axios.post('api/signIn', credentials, {
           withCredentials: true, // Include cookies
       });
       const { token } = response.data;
