@@ -97,7 +97,7 @@ const LeftSwipe = () => {
       console.log("📦 Request Data:", requestData);
       
       const response = await axios.post(
-        "http://localhost:5050/api/userprogressNC",
+        "/api/userprogressNC",
         requestData,
         {
           headers: {

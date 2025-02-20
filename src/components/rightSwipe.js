@@ -42,7 +42,7 @@ const RightSwipe = () => {
       console.log("Access Token: ", accessToken)
       console.log("phaseNumber:", phaseNumber, "dayNumber:", dayNumber);
 
-      const response = await axios.post("http://localhost:5050/api/userprogressC", {
+      const response = await axios.post("/api/userprogressC", {
         phaseId: phaseNumber,
         taskId: dayNumber,
       }, {
