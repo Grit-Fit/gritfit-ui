@@ -95,7 +95,7 @@ const GritPhase = () => {
           if (task.taskstatus === "Not Started" && task.task_activation_date) {
             const activationDate = new Date(task.task_activation_date);
             if (now >= activationDate) {
-              return { ...task, taskstatus: "In Progress" };
+              return { ...task, taskstatus: "Not Completed" };
             }
           }
           return task;
