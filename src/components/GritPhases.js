@@ -51,7 +51,7 @@ const GritPhase = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:5050/api/getTaskData",
+          "/getTaskData",
           {},
           {
             headers: {
