@@ -2,7 +2,7 @@ html, body {
   height: 100%; /* Full height of the viewport */
   margin: 0;
   padding: 0;
-  overflow-y: hidden;
+  
   background: radial-gradient(
     90.87% 58.95% at 53.33% 50.1%, 
     #FFFFFF 0%, 
