@@ -151,9 +151,37 @@ const GritPhase = () => {
     }
   }, []);
 
+  const mergeDuplicateTasks = (tasks) => {
+    const statusPriority = {
+      "Completed": 3,
+      "Not Completed": 2,
+      "In Progress": 1,
+      "Not Started": 0,
+    };
+    const uniqueMap = {};
+
+    for (const t of tasks) {
+      const key = `${t.phaseid}-${t.taskid}`;
+      if (!uniqueMap[key]) {
+        uniqueMap[key] = t;
+      } else {
+        // Compare priorities
+        const existingTask = uniqueMap[key];
+        if (
+          statusPriority[t.taskstatus] >
+          statusPriority[existingTask.taskstatus]
+        ) {
+          uniqueMap[key] = t;
+        }
+      }
+    }
+    return Object.values(uniqueMap);
+  };
+
   // Utility function to group tasks by phase
   const groupTasksByPhase = (tasks) => {
-    return tasks.reduce((acc, task) => {
+    const deduped = mergeDuplicateTasks(tasks);
+    return deduped.reduce((acc, task) => {
       if (!acc[task.phaseid]) {
         acc[task.phaseid] = [];
       }

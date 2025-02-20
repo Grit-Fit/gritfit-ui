@@ -93,8 +93,8 @@ const LeftSwipe = () => {
         requestData.failedGoal = selectedGoal; // Include goal in phase 3
       }
 
-      console.log("🚀 Sending request to:", "http://localhost:5050/api/userprogressNC");
-      console.log("📦 Request Data:", requestData);
+      // console.log("🚀 Sending request to:", "http://localhost:5050/api/userprogressNC");
+      // console.log("📦 Request Data:", requestData);
       
       const response = await axios.post(
         "/api/userprogressNC",
