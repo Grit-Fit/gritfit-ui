@@ -233,10 +233,12 @@ input::placeholder {
 @media (max-width: 480px) {
     .welcome {
         font-size: 2.2rem;
+
     }
 
     .signin-button {
         width: 120px;
+        background: linear-gradient(135deg, #3599f0, #00f2fe);
     }
 
     .logo {
