@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
 import "../css/Welcome.css";
-import api from "../axios";
+import axios from "../axios";
 
 const WelcomePage = () => {
   const { logout, accessToken, refreshAuthToken } = useAuth();
@@ -48,7 +48,7 @@ const handleUpdateUsername = async (e) => {
   try {
     // Because baseURL is set to e.g. "https://api.gritfit.site/api"
     // This will call:  POST https://api.gritfit.site/api/updateUsername
-    const response = await api.post("/api/updateUsername", {
+    const response = await axios.post("/api/updateUsername", {
       newUsername: name
     });
 
