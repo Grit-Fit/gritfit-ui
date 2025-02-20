@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
 import "../css/Welcome.css";
-import axios from "../axios";
+import api from "../axios";
 
 const WelcomePage = () => {
   const { logout, accessToken, refreshAuthToken } = useAuth();
