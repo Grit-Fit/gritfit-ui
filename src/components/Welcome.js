@@ -42,27 +42,24 @@ const WelcomePage = () => {
       refreshAuthToken(); // Refresh token by making API call to the backend
     }
   }, [accessToken, refreshAuthToken]);
-  const handleUpdateUsername = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:5050/api/updateUsername",
-        { newUsername: name },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
 
-      setMessage(response.data.message);
-    } catch (error) {
-      console.error(error);
-      setMessage(
-        error.response ? error.response.data.message : "Error occurred"
-      );
-    }
-  };
+const handleUpdateUsername = async (e) => {
+  e.preventDefault();
+  try {
+    // Because baseURL is set to e.g. "https://api.gritfit.site/api"
+    // This will call:  POST https://api.gritfit.site/api/updateUsername
+    const response = await api.post("/updateUsername", {
+      newUsername: name
+    });
+
+    setMessage(response.data.message);
+  } catch (error) {
+    console.error(error);
+    setMessage(
+      error.response ? error.response.data.message : "Error occurred"
+    );
+  }
+};
 
   const handleLogout = () => {
     logout();
