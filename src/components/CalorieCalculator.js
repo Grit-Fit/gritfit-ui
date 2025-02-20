@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../assets/Logo.png";
+import logo from "../assets/GritFit_Full.png";
 import female_icon from "../assets/female.png";
 import male_icon from "../assets/male.png";
 import "../css/CalorieCalculator.css";
