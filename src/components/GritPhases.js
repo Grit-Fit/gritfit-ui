@@ -72,7 +72,7 @@ const GritPhase = () => {
         if (allTasksNotStarted && mergedData.length > 0) {
          
           await axios.post(
-            "http://localhost:5050/api/userprogressStart",
+            "/api/userprogressStart",
             {
               phaseId: 1,
               taskId: 1,
