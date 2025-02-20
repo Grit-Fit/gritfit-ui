@@ -64,6 +64,7 @@ const AppRoutes = () => {
 
   return (
     <Routes>
+      <Route path="/" element={<Auth />} />
       <Route
         path="/"
         element={
@@ -73,10 +74,10 @@ const AppRoutes = () => {
         }
       />
 
-      <Route path="/login" element={!accessToken ? <Auth /> : <Navigate to="/gritPhases" />} />
+      <Route path="/login" element={!accessToken ? <Auth /> : <Navigate to="/gritPhases" replace />} />
       <Route path="/signup" element={!accessToken ? <Auth /> : <Navigate to="/welcome" />} />
       <Route path="/logo" element={accessToken ? <LogoPage /> : <Navigate to="/welcome" />} />
-      <Route path="/welcome" element={accessToken ? <WelcomePage /> : <Navigate to="/" />} />
+      <Route path="/welcome" element={accessToken ? <WelcomePage /> : <Navigate to="/" replace />} />
       <Route path="/gritPhases" element={accessToken ? <GritPhases /> : <Navigate to="/" />} />
       <Route path="/selectTheory" element={accessToken ? <NutritionTheory /> : <Navigate to="/" />} />
       <Route path="/selectGoal" element={accessToken ? <GymGoal /> : <Navigate to="/" />} />
