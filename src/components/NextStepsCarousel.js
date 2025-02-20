@@ -1,7 +1,7 @@
 import React from "react";
 import SwipeCarousel from "./SwipeCarousel";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/Logo.png"; 
+import logo from "../assets/GritFit_Full.png"; 
 import myFitnessPal from "../assets/myFitnessPal.png"; 
 import healthifyMe from "../assets/healthifyMe.png"; 
 import nutritionPdf from "../assets/Nutrition101PDF.pdf";

@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { ChevronDown, Info } from "lucide-react";
 import NavBar from "./navBar";
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/Logo.png";
+import logo from "../assets/GritFit_Full.png";
 import "../css/gFitReport.css";
 import axios from "../axios";
 import nutritionPdf from "../assets/Nutrition101PDF.pdf";

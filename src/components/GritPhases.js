@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, Info } from "lucide-react";
 import NavBar from "./navBar";
-import logo from "../assets/Logo.png";
+import logo from "../assets/GritFit_Full.png";
 import buttonImage from "../assets/Stepping_StoneBtn.png";
 import rightSwipeButtonImage from "../assets/RightSwipe_SteppingStoneBtn.png";
 import leftSwipeButtonImage from "../assets/LeftSwipe_SteppingStoneBtn.png";
@@ -95,7 +95,7 @@ const GritPhase = () => {
           if (task.taskstatus === "Not Started" && task.task_activation_date) {
             const activationDate = new Date(task.task_activation_date);
             if (now >= activationDate) {
-              return { ...task, taskstatus: "Not Completed" };
+              return { ...task, taskstatus: "In Progress" };
             }
           }
           return task;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronDown, ChevronRight } from "lucide-react";
-import logo from "../assets/Logo.png";
+import logo from "../assets/GritFit_Full.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../css/CalorieMacro.css";
 
