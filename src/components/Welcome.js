@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import StatusCard from "./StatusCard";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/Logo.png";
+import logo from "../assets/GritFit_Full.png";
 import "../css/Welcome.css";
 import axios from "../axios";
 
