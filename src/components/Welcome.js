@@ -49,7 +49,8 @@ const handleUpdateUsername = async (e) => {
     // Because baseURL is set to e.g. "https://api.gritfit.site/api"
     // This will call:  POST https://api.gritfit.site/api/updateUsername
 
-    const response = await axios.post("/api/updateUsername", {
+
+    const response = await axios.post("/updateUsername", {
 
       newUsername: name
     });

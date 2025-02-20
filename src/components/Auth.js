@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "../axios";
-import logo from "../assets/Logo.png";
+import logo from "../assets/GritFit_Full.png";
 import "../css/Auth.css";
 import back from "../assets/Back.png";
 import signInIcon from "../assets/signInIcon.png";
