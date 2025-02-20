@@ -75,7 +75,7 @@ const AppRoutes = () => {
       />
 
       <Route path="/login" element={!accessToken ? <Auth /> : <Navigate to="/gritPhases"  />} />
-      <Route path="/signup" element={!accessToken ? <Auth /> : <Navigate to="/welcome" replace />} />
+      <Route path="/signup" element={!accessToken ? <Auth /> : <Navigate to="/welcome"  />} />
       <Route path="/logo" element={accessToken ? <LogoPage /> : <Navigate to="/welcome" />} />
       <Route path="/welcome" element={accessToken ? <WelcomePage /> : <Navigate to="/"  />} />
       <Route path="/gritPhases" element={accessToken ? <GritPhases /> : <Navigate to="/" />} />

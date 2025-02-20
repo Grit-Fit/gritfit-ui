@@ -90,12 +90,9 @@ const GritPhase = () => {
     
         const now = new Date();
         const updatedData = mergedData.map((task) => {
-          console.log("Fetched Task Data:", mergedData);
+          // console.log("Fetched Task Data:", mergedData);
 
-          if (
-            (task.taskstatus === "Not Started" || task.taskstatus === "Not Completed") &&
-            task.task_activation_date
-          ) {
+          if (task.taskstatus === "Not Started" && task.task_activation_date) {
             const activationDate = new Date(task.task_activation_date);
             if (now >= activationDate) {
               return { ...task, taskstatus: "In Progress" };
@@ -154,9 +151,9 @@ const GritPhase = () => {
   const mergeDuplicateTasks = (tasks) => {
     const statusPriority = {
       "Completed": 3,
-      "Not Completed": 2,
-      "In Progress": 1,
-      "Not Started": 0,
+      "In Progress": 2,  
+      "Not Completed": 1,
+      "Not Started": 0
     };
     const uniqueMap = {};
 
