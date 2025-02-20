@@ -1,7 +1,5 @@
 /* src/components/WelcomePage.css */
-body{
-    overflow-y: hidden;
-}
+
 
 .container {
     display: flex;
