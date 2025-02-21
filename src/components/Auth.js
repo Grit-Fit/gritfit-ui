@@ -132,11 +132,13 @@ const Auth = () => {
                 />
                 {/* ✅ Fix: Ensure button acts as submit */}
                 <button type="submit" className="createAcc-button">Create Account</button>
+
+                <div className="App">
+                  <RefreshButton />
+                </div>
             </form>
 
-            <div className="App">
-              <RefreshButton />
-            </div>
+            
 
               {message && <p className="message">{message}</p>}
             </div>
