@@ -122,12 +122,14 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
+  /* padding: 0.5rem; */
   border-radius: 50%;
   transition: background-color 0.2s;
   margin-right: 1rem;
   position: absolute;
-  right: 0;
+  right: -12px;
+  width: 134px;
+  height: 114px;
 }
 
 .profile-button:hover {
