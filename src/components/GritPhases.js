@@ -361,7 +361,7 @@ const GritPhase = () => {
               size={24}
             />
           </div>
-          <div className="App">
+          <div className="profile-button">
             <RefreshButton />
           </div>
         </header>
