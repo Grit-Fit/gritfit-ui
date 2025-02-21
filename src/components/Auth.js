@@ -107,6 +107,9 @@ const Auth = () => {
                 <input type="email" value={email} placeholder="Email*" onChange={(e) => setEmail(e.target.value)} required />
                 <input type="password" value={password} placeholder="Password*" onChange={(e) => setPassword(e.target.value)} required />
                 <button className="signin-button" type="submit">Sign In</button>
+                <div className="App">
+                  <RefreshButton />
+                </div>
               </form>
               {message && <p className="message">{message}</p>}
             </div>
