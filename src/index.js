@@ -24,30 +24,7 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-// Clear outdated cache
-const clearCache = () => {
-  caches.keys().then(names => {
-    names.forEach(name => caches.delete(name));
-  });
-  localStorage.clear();
-  sessionStorage.clear();
-  window.location.reload(true);
-};
 
-// Inject a "Refresh App" button for mobile users
-const refreshButton = document.createElement("button");
-refreshButton.innerText = "Refresh App";
-refreshButton.style.position = "fixed";
-refreshButton.style.bottom = "10px";
-refreshButton.style.right = "10px";
-refreshButton.style.padding = "10px 20px";
-refreshButton.style.zIndex = "1000";
-refreshButton.style.background = "#f00";
-refreshButton.style.color = "#fff";
-refreshButton.style.border = "none";
-refreshButton.style.borderRadius = "5px";
-refreshButton.onclick = clearCache;
-document.body.appendChild(refreshButton);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
