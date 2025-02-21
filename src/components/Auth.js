@@ -7,6 +7,8 @@ import "../css/Auth.css";
 import back from "../assets/Back.png";
 import signInIcon from "../assets/signInIcon.png";
 import signUpIcon from "../assets/signUpIcon.png";
+import RefreshButton from "./RefreshButton.js";
+
 const API_URL =  "https://api.gritfit.site/api";
 
 const Auth = () => {
@@ -131,6 +133,10 @@ const Auth = () => {
                 {/* ✅ Fix: Ensure button acts as submit */}
                 <button type="submit" className="createAcc-button">Create Account</button>
             </form>
+
+            <div className="App">
+              <RefreshButton />
+            </div>
 
               {message && <p className="message">{message}</p>}
             </div>
