@@ -100,7 +100,7 @@ const Auth = () => {
                 <div className="App">
                   <RefreshButton />
                 </div>
-                
+
               </div>
             </>
           </div>
@@ -141,7 +141,7 @@ const Auth = () => {
                 {/* ✅ Fix: Ensure button acts as submit */}
                 <button type="submit" className="createAcc-button">Create Account</button>
 
-                <div className="App">
+                <div className="App" style={{ marginLeft: "65px" }}>
                   <RefreshButton />
                 </div>
             </form>

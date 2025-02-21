@@ -305,6 +305,11 @@ html, body {
     padding: 3px 5px;
   }
 
+  .unitWrapper:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   .genderWrapper {
     display: flex;
     flex-direction: column;
@@ -337,6 +342,11 @@ html, body {
     background: var(--Gradient-niice, linear-gradient(90deg, rgba(203, 13, 76, 0.7) 20.51%, rgba(40, 73, 100, 0.7) 46.29%, rgba(34, 93, 169, 0.7) 73.56%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  .selectGender:focus {
+    outline: none !important;
+    box-shadow: none !important;
   }
   
   .unitIcon {
@@ -382,6 +392,7 @@ html, body {
         padding-bottom: 5px;
         margin-left: 1px;
         margin-top: -4px;
+        margin-bottom: 14px;
     }
   }
   

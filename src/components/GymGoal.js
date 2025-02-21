@@ -39,7 +39,7 @@ const GymGoal = () => {
     if (!showInfo) {
       setTimeout(() => {
         setShowInfo(false);
-      }, 5000); // Change to 10000 for 10 seconds if needed
+      }, 15000); // Change to 10000 for 10 seconds if needed
     }
   };
 
