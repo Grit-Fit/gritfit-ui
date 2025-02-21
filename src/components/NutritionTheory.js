@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import StatusCard from "./StatusCard";
 import { ChevronLeft } from "lucide-react";
-import logo from "../assets/Logo.png";
+import logo from "../assets/GritFit_Full.png";
 import { useNavigate } from "react-router-dom";
 import "../css/NutritionTheory.css";
 
