@@ -96,6 +96,11 @@ const Auth = () => {
                   <img src={signUpIcon} alt="Sign Up Icon" className="icon-left" />
                   Create Account
                 </button>
+
+                <div className="App">
+                  <RefreshButton />
+                </div>
+                
               </div>
             </>
           </div>
