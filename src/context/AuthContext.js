@@ -40,11 +40,9 @@ const login = async (_, credentials) => {
       console.log("✅ Signup Successful. Storing token...");
       
       // ✅ Delay setting token to allow navigation to complete
-      setTimeout(() => {
+      
           setAccessToken(token);
-          decodeToken(token);
-          console.log("🛑 Token set after delay.");
-      }, 1000); // 1-second delay prevents race conditions
+          decodeToken(token);// 1-second delay prevents race conditions
 
   } catch (error) {
       console.error('Login failed:', error);

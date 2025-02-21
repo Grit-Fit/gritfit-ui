@@ -371,7 +371,8 @@ html, body {
   
     .inputBox {
       padding: 16px 8px; /* Smaller padding for inputs */
-      font-size: 14px; /* Adjust font size further */
+      font-size: 14px;
+      height: 142px; /* Adjust font size further */
     }
   
     .inputValue {
