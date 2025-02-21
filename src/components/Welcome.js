@@ -50,7 +50,7 @@ const handleUpdateUsername = async (e) => {
     // This will call:  POST https://api.gritfit.site/api/updateUsername
 
 
-    const response = await axios.post("/updateUsername", {
+    const response = await axios.post("/api/updateUsername", {
 
       newUsername: name
     });

@@ -25,7 +25,7 @@ const CalorieMacro = () => {
         id: "calculation",
         question: "How to calculate carbohydrates according to my weight?",
         answer:
-          "You should aim to consume 2-3 grams of carbohydrates per pound of body weight per day. For example, if you weigh 160 lbs, then you should get 320-480 grams of carbohydrates in total from all your meals.",
+          "You should aim to consume 2-3 grams of carbohydrates per lb of body weight per day. For example, if you weigh 160 lbs, then you should get 320-480 grams of carbohydrates in total from all your meals.",
       },
       {
         id: "importance",
@@ -39,7 +39,7 @@ const CalorieMacro = () => {
         id: "calculation",
         question: "How to calculate fat according to my weight?",
         answer:
-          "You should aim to consume about 0.4-0.5 grams of fat per pound of body weight per day. For example, if you weigh 160 lbs, then you should get 64-80 grams of fat in total from all your meals.",
+          "You should aim to consume about 0.4-0.5 grams of fat per lb of body weight per day. For example, if you weigh 160 lbs, then you should get 64-80 grams of fat in total from all your meals.",
       },
       {
         id: "importance",

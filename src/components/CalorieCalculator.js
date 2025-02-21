@@ -8,15 +8,16 @@ import "../css/CalorieCalculator.css";
 import "../css/NutritionTheory.css";
 
 const CalorieCalculator = () => {
-  const [age, setAge] = useState(27);
+  const [age, setAge] = useState("");
   const [gender, setGender] = useState("male");
-  const [weight, setWeight] = useState(100); // Default weight in lbs
+  const [weight, setWeight] = useState(""); // Default weight in lbs
   const [weightUnit, setWeightUnit] = useState("lbs"); // Default unit for weight
-  const [height, setHeight] = useState("5' 7\""); // Default height in feet/inches
+  const [height, setHeight] = useState(""); // Default height in feet/inches
   const [heightUnit, setHeightUnit] = useState("feet"); // Default unit for height
   const [activity, setActivity] = useState(2);
   const [maintenanceCalories, setMaintenanceCalories] = useState(null);
   const [macros, setMacros] = useState(null);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -49,14 +50,20 @@ const CalorieCalculator = () => {
       console.log("Weight: ", weight);
       console.log("Height: ", height);
       console.log("activity: ", activity);
+
       const weightKg = weightUnit === "lbs" ? weight * 0.453592 : weight;
-      let heightCm;
-      if (heightUnit === "feet") {
-        const [feet, inches] = height.split("'").map((v) => parseFloat(v));
-        heightCm = feet * 30.48 + inches * 2.54;
-      } else {
-        heightCm = parseFloat(height);
-      }
+
+    let heightCm = 0;
+    if (heightUnit === "feet") {
+      const sanitized = height.replace(/['"]/g, ""); // remove ' and "
+      const [feetStr, inchesStr] = sanitized.split(" ");
+      const feet = parseFloat(feetStr) || 0;
+      const inches = parseFloat(inchesStr) || 0;
+      heightCm = feet * 30.48 + inches * 2.54;
+    } else {
+      // cm
+      heightCm = parseFloat(height);
+    }
 
       const bmr =
         gender === "male"
@@ -121,6 +128,7 @@ const CalorieCalculator = () => {
                 min="0"
                 className="inputValue"
                 aria-label="Age"
+                placeholder="e.g., 25"
               />
               <div className="unitWrapper">
                 <div className="unitText">Years</div>
@@ -158,6 +166,7 @@ const CalorieCalculator = () => {
                 min="0"
                 className="inputValue"
                 aria-label="Weight"
+                placeholder="e.g., 150"
               />
               <div className="unitWrapper">
                 <select
@@ -181,6 +190,7 @@ const CalorieCalculator = () => {
                   onChange={(e) => setHeight(e.target.value)}
                   className="inputValue"
                   aria-label="Height"
+                  placeholder="e.g., 5 7"
                 />
               ) : (
                 <input

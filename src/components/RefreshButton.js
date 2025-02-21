@@ -26,15 +26,15 @@ const RefreshButton = () => {
         border: "2px solid #007bff",
         background: "transparent",
         color: "#007bff",
-        borderRadius: "8px",
-        fontSize: "16px",
+        borderRadius: "32px",
+        fontSize: "10px",
         fontWeight: "500",
         cursor: "pointer",
         transition: "all 0.2s ease-in-out",
         marginTop: "20px"
       }}
     >
-      {refreshing ? "Refreshing..." : "🔄 Refresh App"}
+      🔄 Refresh App
     </button>
   );
 };

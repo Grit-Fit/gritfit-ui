@@ -259,6 +259,7 @@ const GFitReport = () => {
   const [taskData, setTaskData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [username, setUsername] = useState(""); 
 
   useEffect(() => {
     // If there is no accessToken, try to refresh it by calling the backend refresh route
@@ -275,6 +276,19 @@ const GFitReport = () => {
   };
 
   useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        // Calls GET /api/getUserProfile (baseURL + "/api/getUserProfile")
+        const res = await axios.get("/api/getUserProfile");
+        setUsername(res.data.username || "");
+      } catch (err) {
+        console.error("Error fetching username:", err);
+      }
+    };
+    fetchUsername();
+  }, []);
+
+  useEffect(() => {
     const fetchTaskData = async () => {
       setLoading(true);
       setError(null);
@@ -284,7 +298,7 @@ const GFitReport = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:5050/api/getUserProgress",
+          "/api/getUserProgress",
           {},
           {
             headers: {
@@ -333,7 +347,7 @@ const GFitReport = () => {
         <div className="fullpage-report">
           <div className="report_header">
             <div className="report_header-text">
-              Hello there,
+              Hello there, {username}!
               <br />
               This is your GFit Report
             </div>

@@ -343,6 +343,17 @@ const GritPhase = () => {
     );
   };
 
+  const handleRefresh = () => {
+    caches.keys().then((names) => {
+      names.forEach((name) => caches.delete(name));
+    });
+    localStorage.clear();
+    sessionStorage.clear();
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 1000);
+  };
+
   return (
     <div className="grit-phase-container">
       <NavBar isOpen={isNavOpen} onClose={handleNavClose} />
@@ -362,7 +373,25 @@ const GritPhase = () => {
             />
           </div>
           <div className="profile-button">
-            <RefreshButton />
+            <button
+              onClick={handleRefresh}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "transparent",
+                color: "#007bff",
+                borderRadius: "32px",
+                fontSize: "25px",
+                fontWeight: "500",
+                cursor: "pointer",
+                transition: "all 0.2s ease-in-out",
+                marginTop: "38px",
+                marginLeft: "92px",
+              }}
+            >
+              🔄
+            </button>
           </div>
         </header>
 
