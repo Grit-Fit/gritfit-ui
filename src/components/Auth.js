@@ -107,6 +107,9 @@ const Auth = () => {
                 <input type="email" value={email} placeholder="Email*" onChange={(e) => setEmail(e.target.value)} required />
                 <input type="password" value={password} placeholder="Password*" onChange={(e) => setPassword(e.target.value)} required />
                 <button className="signin-button" type="submit">Sign In</button>
+                <div className="App">
+                  <RefreshButton />
+                </div>
               </form>
               {message && <p className="message">{message}</p>}
             </div>
@@ -132,11 +135,13 @@ const Auth = () => {
                 />
                 {/* ✅ Fix: Ensure button acts as submit */}
                 <button type="submit" className="createAcc-button">Create Account</button>
+
+                <div className="App">
+                  <RefreshButton />
+                </div>
             </form>
 
-            <div className="App">
-              <RefreshButton />
-            </div>
+            
 
               {message && <p className="message">{message}</p>}
             </div>

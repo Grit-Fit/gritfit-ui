@@ -12,6 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import SwipeImageWithSpring from "./SwipeImageWithSpring";
 import axios from "../axios";
 import "../css/NutritionTheory.css";
+import RefreshButton from "./RefreshButton.js";
 
 const GritPhase = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -360,9 +361,9 @@ const GritPhase = () => {
               size={24}
             />
           </div>
-          <button className="profile-button">
-            <Info size={24} />
-          </button>
+          <div className="App">
+            <RefreshButton />
+          </div>
         </header>
 
         {/* Show loading or errors */}
