@@ -253,12 +253,22 @@ const GritPhase = () => {
   // Render phases and their days
   const renderPhasesWithDays = (phases) => {
     const phaseKeys = Object.keys(phases); // Get all phase IDs
-
+  
     return phaseKeys.map((phaseId) => {
       const tasks = phases[phaseId]; // Get tasks for the current phase
-      const phaseTitle = tasks[0]?.title || `GritPhase ${phaseId}`; // Use the title from the first task
+      
+      // 1) Conditionally set the phase title
+      let phaseTitle = tasks[0]?.title || `GritPhase ${phaseId}`;
+      if (parseInt(phaseId, 10) === 3) {
+        phaseTitle = "Mystery Phase ❓"; 
+      }
+  
+      // 2) Conditionally set the phase description
       let phaseDescription =
-        phaseId % 3 === 0 ? "Flip the Day to see the task!" : tasks[0].taskdesc; 
+        parseInt(phaseId, 10) % 3 === 0
+          ? "Flip the Day to see the task!"
+          : tasks[0].taskdesc;
+  
       return (
         <section key={phaseId} className={`section section-${phaseId}`}>
           <div className="grit-phase-title">
@@ -270,6 +280,7 @@ const GritPhase = () => {
       );
     });
   };
+  
 
   
   const renderDayButtons = (phaseId, tasks) => {
