@@ -64,15 +64,15 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* <Route path="/" element={<Auth />} /> */}
-      <Route
+      <Route path="/" element={<Auth />} />
+      {/* <Route
         path="/"
         element={
           signupRedirect
             ? <Navigate to="/welcome" replace />
             : <Navigate to={redirectPath || "/gritPhases"} replace />
         }
-      />
+      /> */}
 
       <Route path="/login" element={!accessToken ? <Auth /> : <Navigate to="/gritPhases"  />} />
       <Route path="/signup" element={!accessToken ? <Auth /> : <Navigate to="/welcome"  />} />
