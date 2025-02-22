@@ -64,7 +64,7 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Auth />} />
+      {/* <Route path="/" element={<Auth />} /> */}
       <Route
         path="/"
         element={

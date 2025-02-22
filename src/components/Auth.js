@@ -141,7 +141,7 @@ const Auth = () => {
                 {/* ✅ Fix: Ensure button acts as submit */}
                 <button type="submit" className="createAcc-button">Create Account</button>
 
-                <div className="App" style={{ marginLeft: "65px" }}>
+                <div className="App" style={{ marginLeft: "124px" }}>
                   <RefreshButton />
                 </div>
             </form>
