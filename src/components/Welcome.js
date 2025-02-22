@@ -43,26 +43,23 @@ const WelcomePage = () => {
     }
   }, [accessToken, refreshAuthToken]);
 
-const handleUpdateUsername = async (e) => {
-  e.preventDefault();
-  try {
-    // Because baseURL is set to e.g. "https://api.gritfit.site/api"
-    // This will call:  POST https://api.gritfit.site/api/updateUsername
-
-
-    const response = await axios.post("/api/updateUsername", {
-
-      newUsername: name
-    });
-
-    setMessage(response.data.message);
-  } catch (error) {
-    console.error(error);
-    setMessage(
-      error.response ? error.response.data.message : "Error occurred"
-    );
-  }
-};
+  const updateUsername = async (newName) => {
+    try {
+      const response = await axios.post(
+        "https://api.gritfit.site/api/updateUsername",
+        { newUsername: newName },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true, 
+        }
+      );
+      console.log("Success:", response.data);
+    } catch (error) {
+      console.error("Error updating username:", error);
+    }
+  };
 
   const handleLogout = () => {
     logout();
