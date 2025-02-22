@@ -43,7 +43,7 @@ const WelcomePage = () => {
     }
   }, [accessToken, refreshAuthToken]);
 
-  const updateUsername = async (newName) => {
+  const handleUpdateUsername = async (newName) => {
     try {
       const response = await axios.post(
         "https://api.gritfit.site/api/updateUsername",
@@ -52,7 +52,7 @@ const WelcomePage = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-          withCredentials: true, 
+          withCredentials: true, // If your server needs cookies
         }
       );
       console.log("Success:", response.data);
