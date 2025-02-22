@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/GritFit_Full.png";
@@ -260,7 +260,7 @@ const CalorieCalculator = () => {
                   activity === index + 1 ? "active-label" : ""
                 }`}
               >
-                <span className="label-number">{index + 1}</span> <br />
+                {/* <span className="label-number">{index + 1}</span> <br /> */}
                 <span className="label-text">{label}</span>
               </div>
             ))}
