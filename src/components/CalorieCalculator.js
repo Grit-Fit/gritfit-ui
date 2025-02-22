@@ -28,6 +28,26 @@ const CalorieCalculator = () => {
     female: female_icon,
   };
 
+  useEffect(() => {
+    // Load saved values (if any) from localStorage
+    const savedAge = localStorage.getItem("cc_age");
+    const savedGender = localStorage.getItem("cc_gender");
+    const savedWeight = localStorage.getItem("cc_weight");
+    const savedWeightUnit = localStorage.getItem("cc_weightUnit");
+    const savedHeight = localStorage.getItem("cc_height");
+    const savedHeightUnit = localStorage.getItem("cc_heightUnit");
+    const savedActivity = localStorage.getItem("cc_activity");
+
+    if (savedAge) setAge(savedAge);
+    if (savedGender) setGender(savedGender);
+    if (savedWeight) setWeight(savedWeight);
+    if (savedWeightUnit) setWeightUnit(savedWeightUnit);
+    if (savedHeight) setHeight(savedHeight);
+    if (savedHeightUnit) setHeightUnit(savedHeightUnit);
+    if (savedActivity) setActivity(parseInt(savedActivity, 10));
+  }, []);
+
+
   const activityLabels = [
     "🛋️ Couch Potato",
     "🐢 Slow & Steady",
