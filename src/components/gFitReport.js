@@ -278,15 +278,21 @@ const GFitReport = () => {
   useEffect(() => {
     const fetchUsername = async () => {
       try {
-        // Calls GET /api/getUserProfile (baseURL + "/api/getUserProfile")
-        const res = await axios.get("/api/getUserProfile");
-        setUsername(res.data.username || "");
-      } catch (err) {
-        console.error("Error fetching username:", err);
+        const response = await axios.get("/api/getUserProfile", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setUsername(response.data.username || "");
+      } catch (error) {
+        console.error("Error fetching username:", error);
       }
     };
-    fetchUsername();
-  }, []);
+
+    if (accessToken) {
+      fetchUsername();
+    }
+  }, [accessToken]);
 
   useEffect(() => {
     const fetchTaskData = async () => {
