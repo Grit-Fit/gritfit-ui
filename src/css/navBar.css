@@ -19,6 +19,16 @@
   transform: translateX(0);
 }
 
+.back-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: auto; /* or wherever you want it */
+  font-size: 1.2rem;
+  padding: 8px;
+  color: #333;
+}
+
 
 /* Tablet screens (between 768px and 1023px) */
 @media screen and (max-width: 1023px) {

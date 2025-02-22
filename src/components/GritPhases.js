@@ -384,7 +384,7 @@ const GritPhase = () => {
             />
           </div>
           <div className="profile-button">
-            <button
+            {/* <button
               onClick={handleRefresh}
               style={{
                 display: "flex",
@@ -402,7 +402,10 @@ const GritPhase = () => {
               }}
             >
               🔄
-            </button>
+            </button> */}
+                      <button className="profile-button">
+                        <Info size={24} />
+                      </button>
           </div>
         </header>
 
