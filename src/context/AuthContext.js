@@ -42,7 +42,7 @@ const login = async (_, credentials) => {
       // ✅ Delay setting token to allow navigation to complete
       
           setAccessToken(token);
-          decodeToken(token);// 1-second delay prevents race conditions
+          decodeToken(token);
 
   } catch (error) {
       console.error('Login failed:', error);

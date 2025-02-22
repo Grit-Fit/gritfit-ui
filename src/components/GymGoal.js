@@ -14,7 +14,7 @@ const GymGoal = () => {
   const cardData = [
     { text: "Cutting", locked: false },
     { text: "Bulking", locked: false },
-    { text: "Maintaining", locked: false },
+    { text: "Recomposition", locked: true },
   ];
 
   const goalMapping = {
@@ -81,9 +81,8 @@ const GymGoal = () => {
               calorie surplus with a balanced diet and strength training.
             </p>
             <p>
-              <strong>Maintaining:</strong> Keep current body composition by
-              balancing calorie intake with expenditure to avoid fat gain or
-              muscle loss.
+              <strong>Recomposition:</strong>  Aiming to build muscle and lose fat simultaneously,
+               typically by eating around maintenance calories with a strategic balance of protein intake and training intensity.
             </p>
           </div>
         )}
