@@ -7,6 +7,7 @@ import homeIcon from "../assets/home.png";
 import gfitIcon from "../assets/gfit.png";
 import signout from "../assets/singout.png";
 import ContactUs from "./contactUs";
+import { MessageSquare } from "lucide-react";
 
 const NavBar = ({ isOpen, onClose }) => {
   const { accessToken, logout } = useContext(AuthContext);
@@ -99,7 +100,8 @@ const NavBar = ({ isOpen, onClose }) => {
             </a>
           </li>
           <li>
-            <a href="#contact-us" onClick={handleContactClick}>
+          <a href="#contact-us" onClick={handleContactClick}>
+              <MessageSquare size={20} className="nav-icon" />
               Contact Us
             </a>
           </li>
