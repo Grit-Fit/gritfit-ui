@@ -8,92 +8,102 @@ import "../css/gFitReport.css";
 import axios from "../axios";
 import nutritionPdf from "../assets/Nutrition101PDF.pdf";
 
-const Calendar = ({ userProgress }) => {
+function Calendar({ userProgress }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState([]);
 
+  // Generate the days for the current month
   useEffect(() => {
     generateCalendarDays();
   }, [currentDate]);
 
-  const generateCalendarDays = () => {
+  function generateCalendarDays() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const days = [];
 
+    // 1) First day of the month
+    const firstDay = new Date(year, month, 1);
+    // 2) Last day of the month
+    const lastDay = new Date(year, month + 1, 0);
+
+    const days = [];
+    // Add nulls for offset so the 1st day aligns with correct weekday
     for (let i = 0; i < firstDay.getDay(); i++) {
       days.push(null);
     }
-
+    // Then add the actual days
     for (let i = 1; i <= lastDay.getDate(); i++) {
       days.push(i);
     }
-
     setCalendarDays(days);
+  }
+
+  // Move to previous month
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)));
   };
 
-  // const getDayStatus = (day) => {
-  //   if (!day) return null;
+  // Move to next month
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)));
+  };
 
-  //   if (userProgress) {
-  //     const matchingTask = userProgress.find((task) => {
-  //       if (!task.created_at || !task.completion_date) return false; // Handle missing dates
-  //       const creationDate = task.created_at.split("T")[0];
-  //       const completionDate = task.completion_date.split("T")[0];
-  //       return creationDate === completionDate;
-  //     });
-  //     if (matchingTask) {
-  //       // Determine the color based on task status
-  //       console.log("Matching Task", matchingTask)
-  //       if (matchingTask.taskstatus === "Completed") {
-  //         console.log("Conpleted");
-  //         return "green"; // Completed
-  //       } else if (matchingTask.taskstatus === "Not Completed") {
-  //         return "red"; // Not Completed
-  //       } else if (matchingTask.taskstatus === "In Progress") {
-  //         return "blue"; // In Progress
-  //       } else {
-  //         return "transparent";
-  //       }
-  //     }
-  //   }
+  // Decide which color class (green/red/blue) to apply to a day
+  function getDayClass(day) {
+    if (!day) return ""; // empty cell for offset
 
-  //   // Return no color if no matching task or status doesn't match
-  //   return null;
-  // };
+    // Build a YYYY-MM-DD to compare with userProgress
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const dayStr = String(day).padStart(2, "0");
+    const dateString = `${year}-${month}-${dayStr}`;
 
-  const getDayStatus = (day) => {
-    if (!day) return null;
-  
-    if (userProgress) {
-      // Find all tasks that were created on the same day
-      const matchingTasks = userProgress.filter((task) => {
-        if (!task.created_at || !task.completion_date) return false; // Handle missing dates
-        const creationDate = task.created_at.split("T")[0]; // Get date part only (ignoring time)
-        return creationDate === `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-      });
-  
-      if (matchingTasks.length > 0) {
-        // Check the status of the first matching task (or apply your custom logic for multiple tasks)
-        const taskStatus = matchingTasks[0].taskstatus; // Use the first task for now or combine statuses as needed
-  
-        // Determine the color based on task status
-        if (taskStatus === "Completed") {
-          return "lightgreen"; // Completed
-        } else if (taskStatus === "Not Completed") {
-          return "lightsalmon"; // Not Completed
-        } else if (taskStatus === "In Progress") {
-          return "lightblue"; // In Progress
-        } else {
-          return "transparent";
-        }
-      }
+    // Find all tasks that match this date
+    const tasksForDay = userProgress.filter((task) => {
+      // If you store the date in "completion_date" or "created_at"
+      // Adjust the logic to match your real fields
+      const compDate = task.completion_date
+        ? task.completion_date.split("T")[0]
+        : null;
+      const createdDate = task.created_at
+        ? task.created_at.split("T")[0]
+        : null;
+
+      // In some setups, "In Progress" might not have completion_date yet
+      // so you might match on "created_at" or "task_activation_date"
+      return (
+        compDate === dateString ||
+        createdDate === dateString
+        // OR check activation date if needed
+      );
+    });
+
+    if (tasksForDay.length === 0) {
+      // No tasks found for this date => no color
+      return "";
     }
-  
-    return null; // No color if no matching task or status doesn't match
-  };
+
+    // If multiple tasks in one day, decide the color priority
+    // e.g. if any are "Not Completed," we color red
+    // else if all are "Completed," color green
+    // else if any are "In Progress," color blue
+
+    const hasNotCompleted = tasksForDay.some(
+      (t) => t.taskstatus === "Not Completed"
+    );
+    const allCompleted = tasksForDay.every((t) => t.taskstatus === "Completed");
+    const hasInProgress = tasksForDay.some((t) => t.taskstatus === "In Progress");
+
+    if (hasNotCompleted) {
+      return "red";
+    } else if (allCompleted) {
+      return "green";
+    } else if (hasInProgress) {
+      return "blue";
+    }
+    return ""; // no color if none match
+  }
+
   const monthNames = [
     "January",
     "February",
@@ -108,38 +118,18 @@ const Calendar = ({ userProgress }) => {
     "November",
     "December",
   ];
-
   const dayNames = ["M", "T", "W", "T", "F", "S", "Su"];
 
   return (
     <div className="calendar-container">
       <div className="calendar-header">
-        {/* Left Arrow for Previous Month */}
-        <button
-          className="arrow-button previous"
-          onClick={() =>
-            setCurrentDate(
-              new Date(currentDate.setMonth(currentDate.getMonth() - 1))
-            )
-          }
-        >
+        <button className="arrow-button previous" onClick={handlePrevMonth}>
           &lt;
         </button>
-
-        {/* Month Name */}
         <h2>
           {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
         </h2>
-
-        {/* Right Arrow for Next Month */}
-        <button
-          className="arrow-button next"
-          onClick={() =>
-            setCurrentDate(
-              new Date(currentDate.setMonth(currentDate.getMonth() + 1))
-            )
-          }
-        >
+        <button className="arrow-button next" onClick={handleNextMonth}>
           &gt;
         </button>
       </div>
@@ -151,24 +141,22 @@ const Calendar = ({ userProgress }) => {
           ))}
         </div>
         <div className="days-grid">
-          {calendarDays.map((day, index) => (
-            <div
-              key={index}
-              className={`calendar-day ${
-                day === currentDate.getDate() ? "current-day" : ""
-              }`}
-              style={{
-                backgroundColor: getDayStatus(day),
-              }}
-            >
-              {day}
-            </div>
-          ))}
+          {calendarDays.map((day, index) => {
+            const dayClass = getDayClass(day);
+            return (
+              <div
+                key={index}
+                className={`calendar-day ${dayClass}`}
+              >
+                {day}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
   );
-};
+}
 
 const PieChartComponent = ({ userProgress }) => {
   const predefinedCategories = [
