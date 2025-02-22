@@ -346,9 +346,9 @@ const GFitReport = () => {
             /> */}
           </div>
 
-          <button className="profile-button">
+          {/* <button className="profile-button">
             <Info size={24} />
-          </button>
+          </button> */}
         </header>
         <div className="fullpage-report">
           <div className="report_header">

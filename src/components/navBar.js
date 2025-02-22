@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { MessageSquare } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../css/navBar.css";
@@ -39,7 +38,7 @@ const NavBar = ({ isOpen, onClose }) => {
   const handleContactClick = (e) => {
     e.preventDefault();
     if (onClose) {
-      onClose(); // Close the navbar when Contact Us is clicked
+      onClose(); 
     }
     setShowContactPopup(true);
   };
@@ -50,6 +49,18 @@ const NavBar = ({ isOpen, onClose }) => {
       await logout();
     }
     navigate("/");
+  };
+
+  // NEW: Back button handler
+  const handleBackButton = (e) => {
+    e.preventDefault();
+    // 1) Close the navbar
+    if (onClose) {
+      onClose();
+    }
+
+    // 2) Optionally go back in history if you want:
+    // navigate(-1);
   };
 
   return (
@@ -65,6 +76,11 @@ const NavBar = ({ isOpen, onClose }) => {
               style={{ cursor: "pointer" }}
             />
           </div>
+
+          {/* Simple button with arrow text (no imports) */}
+          <button className="back-button" onClick={handleBackButton}>
+            ←
+          </button>
         </div>
 
         <div className="navbar-separator" />
@@ -78,19 +94,18 @@ const NavBar = ({ isOpen, onClose }) => {
           </li>
           <li>
             <a href="#gfit-report" onClick={handleGFitClick}>
-              <img src={gfitIcon} alt="Home" className="nav-icon" />
+              <img src={gfitIcon} alt="GFit" className="nav-icon" />
               GFit Report
             </a>
           </li>
           <li>
             <a href="#contact-us" onClick={handleContactClick}>
-              <MessageSquare size={20} className="nav-icon" />
               Contact Us
             </a>
           </li>
           <li>
             <a href="#sign-out" onClick={handleSignOut}>
-              <img src={signout} alt="Home" className="nav-icon" />
+              <img src={signout} alt="Sign Out" className="nav-icon" />
               Sign Out
             </a>
           </li>

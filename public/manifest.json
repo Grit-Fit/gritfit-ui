@@ -3,12 +3,12 @@
     "name": "GritFit",
     "icons": [
       {
-        "src": "icons/GritFit_G_White_PNG.png",
+        "src": "icons/GritFit_G_Black_PNG.png",
         "sizes": "192x192",
         "type": "image/png"
       },
       {
-        "src": "icons/GritFit_G_White_PNG.png",
+        "src": "icons/GritFit_G_Black_PNG.png",
         "sizes": "512x512",
         "type": "image/png"
       }
