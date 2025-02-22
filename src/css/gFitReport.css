@@ -122,6 +122,23 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.calendar-day.green {
+  background-color: #00c49f; /* Green shade */
+  color: white;
+}
+
+/* For Not Completed tasks */
+.calendar-day.red {
+  background-color: #ff4040; /* Red shade */
+  color: white;
+}
+
+/* For In Progress tasks (optional) */
+.calendar-day.blue {
+  background-color: #3f87ff; /* Blue shade */
+  color: white;
+}
+
 .calendar-header {
   display: flex;
   justify-content: center;

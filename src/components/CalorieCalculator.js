@@ -186,7 +186,7 @@ const CalorieCalculator = () => {
                 min="0"
                 className="inputValue"
                 aria-label="Weight"
-                placeholder="e.g., 150"
+                placeholder="150"
               />
               <div className="unitWrapper">
                 <select
@@ -210,7 +210,7 @@ const CalorieCalculator = () => {
                   onChange={(e) => setHeight(e.target.value)}
                   className="inputValue"
                   aria-label="Height"
-                  placeholder="e.g., 5 7"
+                  placeholder="5 7"
                 />
               ) : (
                 <input
@@ -219,7 +219,7 @@ const CalorieCalculator = () => {
                   onChange={(e) => setHeight(e.target.value)}
                   min="0"
                   className="inputValue"
-                  placeholder="e.g., 170"
+                  placeholder="170"
                   aria-label="Height"
                 />
               )}
@@ -255,10 +255,10 @@ const CalorieCalculator = () => {
           <div className="activity-labels">
             {activityLabels.map((label, index) => (
               <div
-                key={index}
-                className={`label ${
-                  activity === index + 1 ? "active-label" : ""
-                }`}
+                // key={index}
+                // // className={`label ${
+                // //   activity === index + 1 ? "active-label" : ""
+                // // }`}
               >
                 {/* <span className="label-number">{index + 1}</span> <br /> */}
                 <span className="label-text">{label}</span>
