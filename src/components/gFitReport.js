@@ -46,6 +46,7 @@ const Calendar = ({ userProgress }) => {
 
     if (tasksForDay.some((t) => t.taskstatus === "Not Completed")) return "red";
     if (tasksForDay.some((t) => t.taskstatus === "Completed")) return "green";
+    if (tasksForDay.some((t) => t.taskstatus === "In Progress")) return "blue";
     return "";
   }
 
@@ -56,14 +57,104 @@ const Calendar = ({ userProgress }) => {
         <h2>{currentDate.toLocaleString("default", { month: "long" })} {currentDate.getFullYear()}</h2>
         <button className="arrow-button" onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))}>&gt;</button>
       </div>
-      <div className="calendar-grid horizontal-calendar">
-        {calendarDays.map((day, index) => (
-          <div key={index} className={`calendar-day ${getDayClass(day, currentDate, userProgress)}`}>{day}</div>
+      <div className="calendar-grid-wrapper">
+        <div className="calendar-grid horizontal-calendar">
+          {[...Array(6)].map((_, weekIndex) => (
+            <div key={weekIndex} className="calendar-week">
+              {calendarDays.slice(weekIndex * 7, (weekIndex + 1) * 7).map((day, index) => (
+                <div key={index} className={`calendar-day ${getDayClass(day, currentDate, userProgress)}`}>{day}</div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const PieChartComponent = ({ userProgress }) => {
+  const predefinedCategories = [
+    "Feeling unwell",
+    "Lack of motivation",
+    "Cheat day",
+    "Too busy",
+  ];
+
+  const COLORS = ["#FF8042", "#00C49F", "#FFBB28", "#D0ED57", "#0088FE"];
+
+  // Process the userProgress to calculate reasons
+  const reasonCounts = userProgress
+    ?.filter((task) => task.notcompletionreason) // Only consider tasks with a notcompletionreason
+    .reduce((acc, task) => {
+      const reason = predefinedCategories.includes(task.notcompletionreason)
+        ? task.notcompletionreason
+        : "Other"; // Categorize as "Other" if not in predefined categories
+      acc[reason] = (acc[reason] || 0) + 1; // Increment count for the reason
+      return acc;
+    }, {});
+
+  // Prepare data for the PieChart
+  const chartData = Object.entries(reasonCounts || {}).map(([name, value]) => ({
+    name,
+    value,
+  }));
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="pie-tooltip">
+          <p className="pie-tooltip-title">{payload[0].name}</p>
+          <p className="pie-tooltip-value">{`${payload[0].value} times`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <div>
+      <div className="pie-chart-container">
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              outerRadius={100}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Pie Legend */}
+      <div className="pie-legend">
+        {chartData.map((entry, index) => (
+          <div key={`legend-${index}`} className="legend-item">
+            <div
+              className="legend-color"
+              style={{ backgroundColor: COLORS[index % COLORS.length] }}
+            />
+            <span className="legend-text">
+              {entry.name} ({entry.value})
+            </span>
+          </div>
         ))}
       </div>
     </div>
   );
 };
+
 
 const GFitReport = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -132,17 +223,14 @@ const GFitReport = () => {
                   <Calendar userProgress={taskData} />
                 </div>
                 <div className="pie_section">
-                  <h3>Inconsistency Pie</h3>
+                  <div className="pie-heading">Inconsistency Pie</div>
                   <div className="pie-text">
                     Discover what's been keeping you from hitting your daily
                     goals. Hover over each part of the pie to see which reasons
                     have been the biggest and smallest hurdles on your journey
                     to a healthier lifestyle!
                   </div>
-                  <PieChart width={400} height={400}>
-                    <Pie dataKey="value" data={taskData} cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label />
-                    <Tooltip />
-                  </PieChart>
+                  <PieChartComponent userProgress={taskData} />
                 </div>
                 <div className="pie_section">
                   <h3>Fitness Guide</h3>
