@@ -38,33 +38,32 @@ const Calendar = ({ userProgress }) => {
 
   // 🔴 **Fix: Ensure Proper Date Matching**
   function getDayClass(day) {
-    if (!day) return ""; // Skip empty cells
-
+    if (!day || !currentDate) return "";
+  
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const dayStr = String(day).padStart(2, "0");
     const dateString = `${year}-${month}-${dayStr}`;
-
-    // **Debug: Check if userProgress exists**
+  
     console.log("Checking date:", dateString);
     console.log("userProgress:", userProgress);
-
+  
     if (userProgress && Array.isArray(userProgress)) {
       const matchingTasks = userProgress.filter((task) => {
-        if (!task.created_at || !task.completion_date) return false;
-        const taskDate = task.completion_date.split("T")[0]; // Compare only YYYY-MM-DD
+        if (!task.completion_date) return false;
+        const taskDate = task.completion_date.split("T")[0];
         return taskDate === dateString;
       });
-
+  
       if (matchingTasks.length > 0) {
-        const { taskstatus } = matchingTasks[0];
-        if (taskstatus === "Completed") return "green";
-        if (taskstatus === "Not Completed") return "red";
-        if (taskstatus === "In Progress") return "blue";
+        // Prioritize "Completed" > "Not Completed" > "In Progress"
+        if (matchingTasks.some((t) => t.taskstatus === "Completed")) return "green";
+        if (matchingTasks.some((t) => t.taskstatus === "Not Completed")) return "red";
+        if (matchingTasks.some((t) => t.taskstatus === "In Progress")) return "blue";
       }
     }
-
-    return "";
+  
+    return ""; // Default if no task matches
   }
 
   return (
