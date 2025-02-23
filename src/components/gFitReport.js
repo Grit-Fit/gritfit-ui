@@ -11,14 +11,15 @@ const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState([]);
 
-  // Exactly as you had it
+  // Start day-of-week labels at Sunday
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
   useEffect(() => {
     generateCalendarDays();
   }, [currentDate]);
 
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  // 1) Build the days array with offsets (blanks) so the first day aligns.
+  // 1) Insert blank cells for offsets
+  // 2) Then push actual days of the month
   const generateCalendarDays = () => {
     if (!currentDate) return;
 
@@ -27,22 +28,22 @@ const Calendar = ({ userProgress }) => {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
 
-    // Blank cells before day 1 (0=Sunday, 1=Mon, etc.)
+    // 0=Sunday, 1=Monday, etc.
     const startBlanks = firstDay.getDay();
     const blanksArray = Array(startBlanks).fill(null);
 
-    // Actual days for the month
+    // actual days
     const daysArray = [];
     for (let d = 1; d <= lastDay.getDate(); d++) {
       daysArray.push(d);
     }
 
-    // Combined: offset + real days
+    // combine blank + real
     setCalendarDays([...blanksArray, ...daysArray]);
   };
 
-  // 2) Use your EXACT logic: find tasks by created_at vs. completion_date,
-  // color them if "Completed," "Not Completed," or "In Progress."
+  // 2) EXACT color logic from your prior code:
+  //    compares created_at/completion_date & sets red/green/blue
   function getDayClass(day) {
     if (!day) return ""; // blank cell => no color
 
@@ -51,20 +52,21 @@ const Calendar = ({ userProgress }) => {
     const dayStr = String(day).padStart(2, "0");
     const dateString = `${year}-${month}-${dayStr}`;
 
+    // Filter tasks for this date
     if (userProgress) {
-      // EXACT code from you: filter tasks that match this date
       const matchingTasks = userProgress.filter((task) => {
+        // same check you had:
         if (!task.created_at || !task.completion_date) return false;
-        const creationDate = task.created_at.split("T")[0]; 
-        // You compare creationDate to dateString
+        const creationDate = task.created_at.split("T")[0];
         return creationDate === dateString;
       });
 
+      // color if a matching task has a relevant status
       if (matchingTasks.length > 0) {
-        const taskStatus = matchingTasks[0].taskstatus; 
-        if (taskStatus === "Completed") return "green";
-        if (taskStatus === "Not Completed") return "red";
-        if (taskStatus === "In Progress") return "blue";
+        const { taskstatus } = matchingTasks[0];
+        if (taskstatus === "Completed") return "green";
+        if (taskstatus === "Not Completed") return "red";
+        if (taskstatus === "In Progress") return "blue";
       }
     }
     return "";
@@ -107,7 +109,7 @@ const Calendar = ({ userProgress }) => {
         </button>
       </div>
 
-      {/* Row of day names across the top */}
+      {/* Day-of-week labels */}
       <div className="days-header">
         {dayNames.map((day) => (
           <div key={day} className="day-name">
@@ -116,17 +118,15 @@ const Calendar = ({ userProgress }) => {
         ))}
       </div>
 
-      {/* 6 potential rows (some months only need 5) */}
+      {/* 6 possible rows => 7 columns each => 42 cells */}
       <div className="calendar-grid">
         {[...Array(6)].map((_, weekIndex) => (
           <div key={weekIndex} className="days-grid">
             {calendarDays
               .slice(weekIndex * 7, (weekIndex + 1) * 7)
               .map((day, idx) => (
-                <div
-                  key={idx}
-                  className={`calendar-day ${getDayClass(day)}`}
-                >
+                <div key={idx} className={`calendar-day ${getDayClass(day)}`}>
+                  {/* Show day number unless null => blank */}
                   {day || ""}
                 </div>
               ))}
