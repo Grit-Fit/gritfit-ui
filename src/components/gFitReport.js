@@ -11,15 +11,14 @@ const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState([]);
 
-  // Day-of-week labels (Sunday start)
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  // On mount or when currentDate changes, rebuild the array
+  // Exactly as you had it
   useEffect(() => {
     generateCalendarDays();
   }, [currentDate]);
 
-  // EXACT changes to create a real grid:
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  // 1) Build the days array with offsets (blanks) so the first day aligns.
   const generateCalendarDays = () => {
     if (!currentDate) return;
 
@@ -28,42 +27,44 @@ const Calendar = ({ userProgress }) => {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
 
-    // Number of blanks before day 1
-    const startBlanks = firstDay.getDay(); // 0=Sunday, 1=Mon, etc.
-    // Build an array of 'null' that many times
+    // Blank cells before day 1 (0=Sunday, 1=Mon, etc.)
+    const startBlanks = firstDay.getDay();
     const blanksArray = Array(startBlanks).fill(null);
 
-    // Then the actual days for this month
+    // Actual days for the month
     const daysArray = [];
     for (let d = 1; d <= lastDay.getDate(); d++) {
       daysArray.push(d);
     }
 
-    // Final array => blank cells + real days
+    // Combined: offset + real days
     setCalendarDays([...blanksArray, ...daysArray]);
   };
 
-  // EXACT same getDayClass logic from your code, but not repeated
+  // 2) Use your EXACT logic: find tasks by created_at vs. completion_date,
+  // color them if "Completed," "Not Completed," or "In Progress."
   function getDayClass(day) {
-    if (!day) return "";
+    if (!day) return ""; // blank cell => no color
+
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const dayStr = String(day).padStart(2, "0");
     const dateString = `${year}-${month}-${dayStr}`;
 
-    // From your code: searching userProgress for completion_date
     if (userProgress) {
-      const tasksForDay = userProgress.filter((task) => {
+      // EXACT code from you: filter tasks that match this date
+      const matchingTasks = userProgress.filter((task) => {
         if (!task.created_at || !task.completion_date) return false;
-        const creationDate = task.created_at.split("T")[0];
+        const creationDate = task.created_at.split("T")[0]; 
+        // You compare creationDate to dateString
         return creationDate === dateString;
       });
 
-      if (tasksForDay.length > 0) {
-        const status = tasksForDay[0].taskstatus;
-        if (status === "Completed") return "green";
-        if (status === "Not Completed") return "red";
-        if (status === "In Progress") return "blue";
+      if (matchingTasks.length > 0) {
+        const taskStatus = matchingTasks[0].taskstatus; 
+        if (taskStatus === "Completed") return "green";
+        if (taskStatus === "Not Completed") return "red";
+        if (taskStatus === "In Progress") return "blue";
       }
     }
     return "";
@@ -106,25 +107,29 @@ const Calendar = ({ userProgress }) => {
         </button>
       </div>
 
-      {/* Day-of-week row */}
-      <div className="day-names">
-        {dayNames.map((dn) => (
-          <div key={dn} className="day-name">
-            {dn}
+      {/* Row of day names across the top */}
+      <div className="days-header">
+        {dayNames.map((day) => (
+          <div key={day} className="day-name">
+            {day}
           </div>
         ))}
       </div>
 
-      {/* We have at most 42 cells: (startBlanks + totalDays). If the month uses 31 days + offset = up to 35 or 36 etc. */}
-      <div className="month-grid">
-        {[...Array(6)].map((_, rowIndex) => (
-          <div key={rowIndex} className="week-row">
-            {calendarDays.slice(rowIndex * 7, (rowIndex + 1) * 7).map((day, i) => (
-              <div key={i} className={`calendar-day ${getDayClass(day)}`}>
-                {/* day might be null => show blank */}
-                {day || ""}
-              </div>
-            ))}
+      {/* 6 potential rows (some months only need 5) */}
+      <div className="calendar-grid">
+        {[...Array(6)].map((_, weekIndex) => (
+          <div key={weekIndex} className="days-grid">
+            {calendarDays
+              .slice(weekIndex * 7, (weekIndex + 1) * 7)
+              .map((day, idx) => (
+                <div
+                  key={idx}
+                  className={`calendar-day ${getDayClass(day)}`}
+                >
+                  {day || ""}
+                </div>
+              ))}
           </div>
         ))}
       </div>

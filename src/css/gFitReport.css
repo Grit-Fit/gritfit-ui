@@ -203,7 +203,7 @@
 }
 
 /* your color classes */
-/* .calendar-day.green {
+.calendar-day.green {
   background-color: #00c49f;
   color: #fff;
 }
@@ -216,7 +216,7 @@
 .calendar-day.blue {
   background-color: #3f87ff;
   color: #fff;
-} */
+}
 
 .month-grid {
   display: flex;
