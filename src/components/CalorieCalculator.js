@@ -148,7 +148,7 @@ const CalorieCalculator = () => {
                 min="0"
                 className="inputValue"
                 aria-label="Age"
-                placeholder="e.g., 25"
+                placeholder="25"
               />
               <div className="unitWrapper">
                 <div className="unitText">Years</div>
