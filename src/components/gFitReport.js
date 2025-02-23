@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { ChevronDown, Info } from "lucide-react";
 import NavBar from "./navBar";
 import { useAuth } from "../context/AuthContext";
 import logo from "../assets/GritFit_Full.png";
@@ -17,8 +16,10 @@ const Calendar = ({ userProgress }) => {
   }, [currentDate]);
 
   const generateCalendarDays = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    if (!currentDate) return;
+
+    const year = currentDate?.getFullYear() || new Date().getFullYear();
+    const month = currentDate?.getMonth() || new Date().getMonth();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const days = [];
@@ -34,223 +35,34 @@ const Calendar = ({ userProgress }) => {
     setCalendarDays(days);
   };
 
-  // const getDayStatus = (day) => {
-  //   if (!day) return null;
-
-  //   if (userProgress) {
-  //     const matchingTask = userProgress.find((task) => {
-  //       if (!task.created_at || !task.completion_date) return false; // Handle missing dates
-  //       const creationDate = task.created_at.split("T")[0];
-  //       const completionDate = task.completion_date.split("T")[0];
-  //       return creationDate === completionDate;
-  //     });
-  //     if (matchingTask) {
-  //       // Determine the color based on task status
-  //       console.log("Matching Task", matchingTask)
-  //       if (matchingTask.taskstatus === "Completed") {
-  //         console.log("Conpleted");
-  //         return "green"; // Completed
-  //       } else if (matchingTask.taskstatus === "Not Completed") {
-  //         return "red"; // Not Completed
-  //       } else if (matchingTask.taskstatus === "In Progress") {
-  //         return "blue"; // In Progress
-  //       } else {
-  //         return "transparent";
-  //       }
-  //     }
-  //   }
-
-  //   // Return no color if no matching task or status doesn't match
-  //   return null;
-  // };
-
   function getDayClass(day, currentMonth, userProgress) {
-    if (!day) return "";
-  
-    // Build YYYY-MM-DD for the calendar day
-    const year = currentMonth.getFullYear();
-    const month = String(currentMonth.getMonth() + 1).padStart(2, "0");
+    if (!day || !currentMonth) return "";
+
+    const year = currentMonth?.getFullYear() || new Date().getFullYear();
+    const month = String(currentMonth?.getMonth() + 1).padStart(2, "0");
     const dayStr = String(day).padStart(2, "0");
-    const dateString = `${year}-${month}-${dayStr}`; // e.g. "2025-02-23"
-  
-    // Find tasks whose completion_date matches this day
-    const tasksForDay = userProgress.filter((task) => {
-      const cDate = task.completion_date
-        ? task.completion_date.split("T")[0]
-        : null;
+    const dateString = `${year}-${month}-${dayStr}`;
+
+    const tasksForDay = (userProgress || []).filter((task) => {
+      const cDate = task.completion_date ? task.completion_date.split("T")[0] : null;
       return cDate === dateString;
     });
-  
-    if (tasksForDay.length === 0) {
-      // No tasks finalized for this day => no color
-      return "";
-    }
-  
-    // If ANY are "Not Completed", color red
-    if (tasksForDay.some(t => t.taskstatus === "Not Completed")) {
-      return "red";
-    }
-    // Else if ANY are "Completed", color green
-    if (tasksForDay.some(t => t.taskstatus === "Completed")) {
-      return "green";
-    }
-    // If you want "In Progress" in blue, you'd need a date for that status too
-    return "";
-  };
-  
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
-  const dayNames = ["M", "T", "W", "T", "F", "S", "Su"];
+    if (tasksForDay.some((t) => t.taskstatus === "Not Completed")) return "red";
+    if (tasksForDay.some((t) => t.taskstatus === "Completed")) return "green";
+    return "";
+  }
 
   return (
     <div className="calendar-container">
       <div className="calendar-header">
-        {/* Left Arrow for Previous Month */}
-        <button
-          className="arrow-button previous"
-          onClick={() =>
-            setCurrentDate(
-              new Date(currentDate.setMonth(currentDate.getMonth() - 1))
-            )
-          }
-        >
-          &lt;
-        </button>
-
-        {/* Month Name */}
-        <h2>
-          {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-        </h2>
-
-        {/* Right Arrow for Next Month */}
-        <button
-          className="arrow-button next"
-          onClick={() =>
-            setCurrentDate(
-              new Date(currentDate.setMonth(currentDate.getMonth() + 1))
-            )
-          }
-        >
-          &gt;
-        </button>
+        <button className="arrow-button" onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))}>&lt;</button>
+        <h2>{currentDate.toLocaleString("default", { month: "long" })} {currentDate.getFullYear()}</h2>
+        <button className="arrow-button" onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))}>&gt;</button>
       </div>
-
       <div className="calendar-grid">
-        <div className="days-header">
-          {dayNames.map((day) => (
-            <div key={day}>{day}</div>
-          ))}
-        </div>
-        <div className="days-grid">
-          {calendarDays.map((day, index) => (
-            <div
-              key={index}
-              className={`calendar-day ${
-                day === currentDate.getDate() ? "current-day" : ""
-              }`}
-              style={{
-                backgroundColor: getDayClass(day),
-              }}
-            >
-              {day}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const PieChartComponent = ({ userProgress }) => {
-  const predefinedCategories = [
-    "Feeling unwell",
-    "Lack of motivation",
-    "Cheat day",
-    "Too busy",
-  ];
-
-  const COLORS = ["#FF8042", "#00C49F", "#FFBB28", "#D0ED57", "#0088FE"];
-
-  // Process the userProgress to calculate reasons
-  const reasonCounts = userProgress
-    ?.filter((task) => task.notcompletionreason) // Only consider tasks with a notcompletionreason
-    .reduce((acc, task) => {
-      const reason = predefinedCategories.includes(task.notcompletionreason)
-        ? task.notcompletionreason
-        : "Other"; // Categorize as "Other" if not in predefined categories
-      acc[reason] = (acc[reason] || 0) + 1; // Increment count for the reason
-      return acc;
-    }, {});
-
-  // Prepare data for the PieChart
-  const chartData = Object.entries(reasonCounts || {}).map(([name, value]) => ({
-    name,
-    value,
-  }));
-
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="pie-tooltip">
-          <p className="pie-tooltip-title">{payload[0].name}</p>
-          <p className="pie-tooltip-value">{`${payload[0].value} times`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  return (
-    <div>
-      <div className="pie-chart-container">
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              outerRadius={100}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip content={<CustomTooltip />} />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Pie Legend */}
-      <div className="pie-legend">
-        {chartData.map((entry, index) => (
-          <div key={`legend-${index}`} className="legend-item">
-            <div
-              className="legend-color"
-              style={{ backgroundColor: COLORS[index % COLORS.length] }}
-            />
-            <span className="legend-text">
-              {entry.name} ({entry.value})
-            </span>
-          </div>
+        {calendarDays.map((day, index) => (
+          <div key={index} className={`calendar-day ${getDayClass(day, currentDate, userProgress)}`}>{day}</div>
         ))}
       </div>
     </div>
@@ -260,140 +72,68 @@ const PieChartComponent = ({ userProgress }) => {
 const GFitReport = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const { accessToken, refreshAuthToken } = useAuth();
-  const [taskData, setTaskData] = useState(null);
+  const [taskData, setTaskData] = useState([]); // Ensure it's an empty array initially
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [username, setUsername] = useState(""); 
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
-    // If there is no accessToken, try to refresh it by calling the backend refresh route
-    if (!accessToken) {
-      refreshAuthToken(); // Refresh token by making API call to the backend
-    }
+    if (!accessToken) refreshAuthToken();
   }, [accessToken, refreshAuthToken]);
-  const handleNavClose = () => {
-    setIsNavOpen(false);
-  };
-
-  const handleNavOpen = () => {
-    setIsNavOpen(true);
-  };
 
   useEffect(() => {
     const fetchUsername = async () => {
       try {
         const response = await axios.get("/api/getUserProfile", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUsername(response.data.username || "");
       } catch (error) {
         console.error("Error fetching username:", error);
       }
     };
-
-    if (accessToken) {
-      fetchUsername();
-    }
+    if (accessToken) fetchUsername();
   }, [accessToken]);
 
   useEffect(() => {
     const fetchTaskData = async () => {
       setLoading(true);
-      setError(null);
-
-      console.time("Fetch User Data"); // Start timing the request
-      const startTime = Date.now(); // Alternative timing method
-
       try {
-        const response = await axios.post(
-          "/api/getUserProgress",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        // console.log("Merged Data: ", response.data.data)
-        const elapsed = Date.now() - startTime; // Calculate elapsed time
-        console.timeEnd("Fetch User Data"); // End timing the request
-        const userProgressData = response.data.data;
-        console.log("User Progress Data: ", userProgressData);
-        setTaskData(userProgressData);
+        const response = await axios.post("/api/getUserProgress", {}, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        setTaskData(response.data.data || []); // Ensure it's never null
       } catch (err) {
         console.error("Error fetching data:", err);
-        setError("Failed to fetch user data. Please try again later.");
       } finally {
         setLoading(false);
-        console.log("Task Data: ", taskData);
       }
     };
-    fetchTaskData();
-  }, []);
+    if (accessToken) fetchTaskData();
+  }, [accessToken]);
+
   return (
     <div>
-      <NavBar isOpen={isNavOpen} onClose={handleNavClose} />
-
-      <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
+      <NavBar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
+      <div className="main-content">
         <header className="gfit-report-header">
           <div className="logo-container1">
-            <img
-              src={logo}
-              alt="Logo"
-              onClick={!isNavOpen ? handleNavOpen : undefined}
-            />
-            {/* <ChevronDown
-              className={`chevron ${isNavOpen ? "rotated" : ""}`}
-              size={24}
-            /> */}
+            <img src={logo} alt="Logo" onClick={() => setIsNavOpen(!isNavOpen)} />
           </div>
-
-          {/* <button className="profile-button">
-            <Info size={24} />
-          </button> */}
         </header>
         <div className="fullpage-report">
           <div className="report_header">
-            <div className="report_header-text">
-              Hello there, {username}!
-              <br />
-              This is your GFit Report
-            </div>
+            <div className="report_header-text">Hello there, {username}!<br />This is your GFit Report</div>
           </div>
           <div className="body_page">
-            {loading ? (
-              <div className="loading-message">Loading data...</div>
-            ) : (
+            {loading ? <div className="loading-message">Loading data...</div> : (
               <>
                 <div className="calendar_section">
-                  <div className="heading-calendar">Consistency Calendar</div>
-                  <div className="header_line">
-                    Are you team Green or Red? Get a bird's eye view of your
-                    consistency this month!
-                  </div>
+                  <h3>Consistency Calendar</h3>
                   <Calendar userProgress={taskData} />
                 </div>
                 <div className="pie_section">
-                  <div className="pie-heading">Inconsistency Pie</div>
-                  <div className="pie-text">
-                    Discover what's been keeping you from hitting your daily
-                    goals. Hover over each part of the pie to see which reasons
-                    have been the biggest and smallest hurdles on your journey
-                    to a healthier lifestyle!
-                  </div>
-                  <PieChartComponent userProgress={taskData} />
-                </div>
-                <div className="pie_section">
-                  <div className="pie-heading">Fitness Guide</div>
-                  <p>
-                   Ready to dive deeper into your nutrition? Download our comprehensive "Nutrition 101" guide to learn all you need to start eating healthier today!
-                  </p>
-                        <a href={nutritionPdf} download className="downloadButton">
-                          Nutrition 101 PDF ⬇️
-                        </a>
-                    
+                  <h3>Fitness Guide</h3>
+                  <a href={nutritionPdf} download className="downloadButton">Nutrition 101 PDF ⬇️</a>
                 </div>
               </>
             )}
