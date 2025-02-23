@@ -116,10 +116,11 @@
 
 /* Calendar styles */
 .calendar-container {
-  padding: 1rem;
+  max-width: 420px;
+  margin: 0 auto;
   background: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
 }
 
 .calendar-day.green {
@@ -142,7 +143,8 @@
 .calendar-header {
   display: flex;
   justify-content: center;
-  /* text-align: center; */
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -153,6 +155,19 @@
 
 .calendar-grid {
   width: 100%;
+}
+
+.day-names {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.day-name {
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
 }
 
 .days-header {
@@ -176,12 +191,43 @@
 }
 
 .calendar-day {
-  height: 2.5rem;
+  background-color: #fff;
+  border-radius: 4px;
+  text-align: center;
+  padding: 0.75rem 0;
+  font-size: 0.875rem;
+  min-height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  transition: all 0.2s;
+}
+
+/* your color classes */
+.calendar-day.green {
+  background-color: #00c49f;
+  color: #fff;
+}
+
+.calendar-day.red {
+  background-color: #ff4040;
+  color: #fff;
+}
+
+.calendar-day.blue {
+  background-color: #3f87ff;
+  color: #fff;
+}
+
+.month-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* space between rows */
+}
+
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px; /* space between days */
 }
 
 .calendar-day:not(:empty) {
