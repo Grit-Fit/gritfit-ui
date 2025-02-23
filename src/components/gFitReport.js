@@ -24,10 +24,6 @@ const Calendar = ({ userProgress }) => {
     const lastDay = new Date(year, month + 1, 0);
     const days = [];
 
-    for (let i = 0; i < firstDay.getDay(); i++) {
-      days.push(null);
-    }
-
     for (let i = 1; i <= lastDay.getDate(); i++) {
       days.push(i);
     }
@@ -60,7 +56,7 @@ const Calendar = ({ userProgress }) => {
         <h2>{currentDate.toLocaleString("default", { month: "long" })} {currentDate.getFullYear()}</h2>
         <button className="arrow-button" onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))}>&gt;</button>
       </div>
-      <div className="calendar-grid">
+      <div className="calendar-grid horizontal-calendar">
         {calendarDays.map((day, index) => (
           <div key={index} className={`calendar-day ${getDayClass(day, currentDate, userProgress)}`}>{day}</div>
         ))}
@@ -129,10 +125,30 @@ const GFitReport = () => {
               <>
                 <div className="calendar_section">
                   <h3>Consistency Calendar</h3>
+                  <div className="header_line">
+                    Are you team Green or Red? Get a bird's eye view of your
+                    consistency this month!
+                  </div>
                   <Calendar userProgress={taskData} />
                 </div>
                 <div className="pie_section">
+                  <h3>Inconsistency Pie</h3>
+                  <div className="pie-text">
+                    Discover what's been keeping you from hitting your daily
+                    goals. Hover over each part of the pie to see which reasons
+                    have been the biggest and smallest hurdles on your journey
+                    to a healthier lifestyle!
+                  </div>
+                  <PieChart width={400} height={400}>
+                    <Pie dataKey="value" data={taskData} cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label />
+                    <Tooltip />
+                  </PieChart>
+                </div>
+                <div className="pie_section">
                   <h3>Fitness Guide</h3>
+                  <p>
+                   Ready to dive deeper into your nutrition? Download our comprehensive "Nutrition 101" guide to learn all you need to start eating healthier today!
+                  </p>
                   <a href={nutritionPdf} download className="downloadButton">Nutrition 101 PDF ⬇️</a>
                 </div>
               </>
