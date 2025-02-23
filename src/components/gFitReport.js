@@ -67,8 +67,9 @@ const Calendar = ({ userProgress }) => {
   return (
     <div className="calendar-container">
       <div className="calendar-header">
+        {/* Left Arrow for Previous Month */}
         <button
-          className="arrow-button"
+          className="arrow-button previous"
           onClick={() =>
             setCurrentDate(
               new Date(currentDate.setMonth(currentDate.getMonth() - 1))
@@ -77,12 +78,15 @@ const Calendar = ({ userProgress }) => {
         >
           &lt;
         </button>
+
+        {/* Month Name */}
         <h2>
-          {currentDate.toLocaleString("default", { month: "long" })}{" "}
-          {currentDate.getFullYear()}
+          {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
         </h2>
+
+        {/* Right Arrow for Next Month */}
         <button
-          className="arrow-button"
+          className="arrow-button next"
           onClick={() =>
             setCurrentDate(
               new Date(currentDate.setMonth(currentDate.getMonth() + 1))
@@ -93,35 +97,24 @@ const Calendar = ({ userProgress }) => {
         </button>
       </div>
 
-      {/* Row of weekday labels */}
-      <div className="day-header">
-        {dayNames.map((day) => (
-          <div key={day} className="day-name">
-            {day}
-          </div>
-        ))}
-      </div>
-
       <div className="calendar-grid">
+        <div className="days-header">
+          {dayNames.map((day) => (
+            <div key={day}>{day}</div>
+          ))}
+        </div>
         <div className="days-grid">
-          {/* 6 rows (some months need 5 or 6) */}
-          {[...Array(6)].map((_, weekIndex) => (
-            <div key={weekIndex} className="days-grid">
-              {/* Slice array in chunks of 7 */}
-              {calendarDays
-                .slice(weekIndex * 7, (weekIndex + 1) * 7)
-                .map((day, index) => (
-                  <div
-                    key={index}
-                    className={`calendar-day ${getDayClass(
-                      day,
-                      currentDate,
-                      userProgress
-                    )}`}
-                  >
-                    {day || ""}
-                  </div>
-                ))}
+          {calendarDays.map((day, index) => (
+            <div
+              key={index}
+              className={`calendar-day ${
+                day === currentDate.getDate() ? "current-day" : ""
+              }`}
+              style={{
+                backgroundColor: getDayStatus(day),
+              }}
+            >
+              {day}
             </div>
           ))}
         </div>
