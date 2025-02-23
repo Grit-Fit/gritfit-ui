@@ -94,7 +94,7 @@ const Calendar = ({ userProgress }) => {
       </div>
 
       {/* Row of weekday labels */}
-      <div className="day-names">
+      <div className="day-header">
         {dayNames.map((day) => (
           <div key={day} className="day-name">
             {day}
@@ -103,7 +103,7 @@ const Calendar = ({ userProgress }) => {
       </div>
 
       <div className="calendar-grid">
-        <div className="days-header">
+        <div className="days-grid">
           {/* 6 rows (some months need 5 or 6) */}
           {[...Array(6)].map((_, weekIndex) => (
             <div key={weekIndex} className="days-grid">
