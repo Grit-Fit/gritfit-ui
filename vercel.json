@@ -24,9 +24,5 @@
       ]
     }
   ],
-  "functions": {
-    "api/**": {
-      "regions": ["iad1", "sfo1"]
-    }
-  }
+
 }
