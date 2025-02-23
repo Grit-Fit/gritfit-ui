@@ -11,58 +11,63 @@ const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState([]);
 
+  // Day-of-week labels (Sunday start)
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  // On mount or when currentDate changes, rebuild the array
   useEffect(() => {
     generateCalendarDays();
   }, [currentDate]);
 
-  // 1) Insert blank cells before day 1 to ensure correct alignment.
-  // 2) Then push actual days (1..lastDay).
-  // 3) The rest of your logic stays as is.
+  // EXACT changes to create a real grid:
   const generateCalendarDays = () => {
     if (!currentDate) return;
 
-    const year = currentDate?.getFullYear() || new Date().getFullYear();
-    const month = currentDate?.getMonth() || new Date().getMonth();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
 
-    // Find out how many "blank" slots before day 1.
-    const startBlanks = firstDay.getDay(); // 0=Sunday, 1=Monday, etc.
-    const blanks = Array.from({ length: startBlanks }).fill(null);
+    // Number of blanks before day 1
+    const startBlanks = firstDay.getDay(); // 0=Sunday, 1=Mon, etc.
+    // Build an array of 'null' that many times
+    const blanksArray = Array(startBlanks).fill(null);
 
-    // Actual days for the current month
+    // Then the actual days for this month
     const daysArray = [];
-    for (let i = 1; i <= lastDay.getDate(); i++) {
-      daysArray.push(i);
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+      daysArray.push(d);
     }
 
-    // Combine blank slots + real days
-    setCalendarDays([...blanks, ...daysArray]);
+    // Final array => blank cells + real days
+    setCalendarDays([...blanksArray, ...daysArray]);
   };
 
-  function getDayClass(day, currentMonth, userProgress) {
-    if (!day || !currentMonth) return "";
-
-    const year = currentMonth?.getFullYear() || new Date().getFullYear();
-    const month = String(currentMonth?.getMonth() + 1).padStart(2, "0");
+  // EXACT same getDayClass logic from your code, but not repeated
+  function getDayClass(day) {
+    if (!day) return "";
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const dayStr = String(day).padStart(2, "0");
     const dateString = `${year}-${month}-${dayStr}`;
 
-    const tasksForDay = (userProgress || []).filter((task) => {
-      const cDate = task.completion_date
-        ? task.completion_date.split("T")[0]
-        : null;
-      return cDate === dateString;
-    });
+    // From your code: searching userProgress for completion_date
+    if (userProgress) {
+      const tasksForDay = userProgress.filter((task) => {
+        if (!task.created_at || !task.completion_date) return false;
+        const creationDate = task.created_at.split("T")[0];
+        return creationDate === dateString;
+      });
 
-    if (tasksForDay.some((t) => t.taskstatus === "Not Completed")) return "red";
-    if (tasksForDay.some((t) => t.taskstatus === "Completed")) return "green";
-    if (tasksForDay.some((t) => t.taskstatus === "In Progress")) return "blue";
+      if (tasksForDay.length > 0) {
+        const status = tasksForDay[0].taskstatus;
+        if (status === "Completed") return "green";
+        if (status === "Not Completed") return "red";
+        if (status === "In Progress") return "blue";
+      }
+    }
     return "";
   }
-
-  // Day-of-week headers (starting Sunday)
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
     <div className="calendar-container">
@@ -71,7 +76,11 @@ const Calendar = ({ userProgress }) => {
           className="arrow-button"
           onClick={() =>
             setCurrentDate(
-              new Date(currentDate.setMonth(currentDate.getMonth() - 1))
+              new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() - 1,
+                1
+              )
             )
           }
         >
@@ -85,7 +94,11 @@ const Calendar = ({ userProgress }) => {
           className="arrow-button"
           onClick={() =>
             setCurrentDate(
-              new Date(currentDate.setMonth(currentDate.getMonth() + 1))
+              new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() + 1,
+                1
+              )
             )
           }
         >
@@ -93,42 +106,33 @@ const Calendar = ({ userProgress }) => {
         </button>
       </div>
 
-      {/* Row of weekday labels */}
-      <div className="days-header">
-        {dayNames.map((day) => (
-          <div key={day} className="day-name">
-            {day}
+      {/* Day-of-week row */}
+      <div className="day-names">
+        {dayNames.map((dn) => (
+          <div key={dn} className="day-name">
+            {dn}
           </div>
         ))}
       </div>
 
-      <div className="calendar-grid">
-        <div className="days-grid">
-          {/* 6 rows (some months need 5 or 6) */}
-          {[...Array(6)].map((_, weekIndex) => (
-            <div key={weekIndex} className="days-grid">
-              {/* Slice array in chunks of 7 */}
-              {calendarDays
-                .slice(weekIndex * 7, (weekIndex + 1) * 7)
-                .map((day, index) => (
-                  <div
-                    key={index}
-                    className={`calendar-day ${getDayClass(
-                      day,
-                      currentDate,
-                      userProgress
-                    )}`}
-                  >
-                    {day || ""}
-                  </div>
-                ))}
-            </div>
-          ))}
-        </div>
+      {/* We have at most 42 cells: (startBlanks + totalDays). If the month uses 31 days + offset = up to 35 or 36 etc. */}
+      <div className="month-grid">
+        {[...Array(6)].map((_, rowIndex) => (
+          <div key={rowIndex} className="week-row">
+            {calendarDays.slice(rowIndex * 7, (rowIndex + 1) * 7).map((day, i) => (
+              <div key={i} className={`calendar-day ${getDayClass(day)}`}>
+                {/* day might be null => show blank */}
+                {day || ""}
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );
 };
+
+
 
 const PieChartComponent = ({ userProgress }) => {
   const predefinedCategories = [
