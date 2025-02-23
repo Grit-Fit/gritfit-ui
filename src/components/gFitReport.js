@@ -15,6 +15,9 @@ const Calendar = ({ userProgress }) => {
     generateCalendarDays();
   }, [currentDate]);
 
+  // 1) Insert blank cells before day 1 to ensure correct alignment.
+  // 2) Then push actual days (1..lastDay).
+  // 3) The rest of your logic stays as is.
   const generateCalendarDays = () => {
     if (!currentDate) return;
 
@@ -22,13 +25,19 @@ const Calendar = ({ userProgress }) => {
     const month = currentDate?.getMonth() || new Date().getMonth();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    const days = [];
 
+    // Find out how many "blank" slots before day 1.
+    const startBlanks = firstDay.getDay(); // 0=Sunday, 1=Monday, etc.
+    const blanks = Array.from({ length: startBlanks }).fill(null);
+
+    // Actual days for the current month
+    const daysArray = [];
     for (let i = 1; i <= lastDay.getDate(); i++) {
-      days.push(i);
+      daysArray.push(i);
     }
 
-    setCalendarDays(days);
+    // Combine blank slots + real days
+    setCalendarDays([...blanks, ...daysArray]);
   };
 
   function getDayClass(day, currentMonth, userProgress) {
@@ -40,7 +49,9 @@ const Calendar = ({ userProgress }) => {
     const dateString = `${year}-${month}-${dayStr}`;
 
     const tasksForDay = (userProgress || []).filter((task) => {
-      const cDate = task.completion_date ? task.completion_date.split("T")[0] : null;
+      const cDate = task.completion_date
+        ? task.completion_date.split("T")[0]
+        : null;
       return cDate === dateString;
     });
 
@@ -50,20 +61,67 @@ const Calendar = ({ userProgress }) => {
     return "";
   }
 
+  // Day-of-week headers (starting Sunday)
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
   return (
     <div className="calendar-container">
       <div className="calendar-header">
-        <button className="arrow-button" onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))}>&lt;</button>
-        <h2>{currentDate.toLocaleString("default", { month: "long" })} {currentDate.getFullYear()}</h2>
-        <button className="arrow-button" onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))}>&gt;</button>
+        <button
+          className="arrow-button"
+          onClick={() =>
+            setCurrentDate(
+              new Date(currentDate.setMonth(currentDate.getMonth() - 1))
+            )
+          }
+        >
+          &lt;
+        </button>
+        <h2>
+          {currentDate.toLocaleString("default", { month: "long" })}{" "}
+          {currentDate.getFullYear()}
+        </h2>
+        <button
+          className="arrow-button"
+          onClick={() =>
+            setCurrentDate(
+              new Date(currentDate.setMonth(currentDate.getMonth() + 1))
+            )
+          }
+        >
+          &gt;
+        </button>
       </div>
+
+      {/* Row of weekday labels */}
+      <div className="day-names">
+        {dayNames.map((day) => (
+          <div key={day} className="day-name">
+            {day}
+          </div>
+        ))}
+      </div>
+
       <div className="calendar-grid">
         <div className="days-header">
+          {/* 6 rows (some months need 5 or 6) */}
           {[...Array(6)].map((_, weekIndex) => (
             <div key={weekIndex} className="days-grid">
-              {calendarDays.slice(weekIndex * 7, (weekIndex + 1) * 7).map((day, index) => (
-                <div key={index} className={`calendar-day ${getDayClass(day, currentDate, userProgress)}`}>{day}</div>
-              ))}
+              {/* Slice array in chunks of 7 */}
+              {calendarDays
+                .slice(weekIndex * 7, (weekIndex + 1) * 7)
+                .map((day, index) => (
+                  <div
+                    key={index}
+                    className={`calendar-day ${getDayClass(
+                      day,
+                      currentDate,
+                      userProgress
+                    )}`}
+                  >
+                    {day || ""}
+                  </div>
+                ))}
             </div>
           ))}
         </div>
