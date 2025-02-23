@@ -11,15 +11,12 @@ const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState([]);
 
-  // Start day-of-week labels at Sunday
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   useEffect(() => {
     generateCalendarDays();
   }, [currentDate]);
 
-  // 1) Insert blank cells for offsets
-  // 2) Then push actual days of the month
   const generateCalendarDays = () => {
     if (!currentDate) return;
 
@@ -28,40 +25,37 @@ const Calendar = ({ userProgress }) => {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
 
-    // 0=Sunday, 1=Monday, etc.
     const startBlanks = firstDay.getDay();
     const blanksArray = Array(startBlanks).fill(null);
 
-    // actual days
     const daysArray = [];
     for (let d = 1; d <= lastDay.getDate(); d++) {
       daysArray.push(d);
     }
 
-    // combine blank + real
     setCalendarDays([...blanksArray, ...daysArray]);
   };
 
-  // 2) EXACT color logic from your prior code:
-  //    compares created_at/completion_date & sets red/green/blue
+  // 🔴 **Fix: Ensure Proper Date Matching**
   function getDayClass(day) {
-    if (!day) return ""; // blank cell => no color
+    if (!day) return ""; // Skip empty cells
 
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const dayStr = String(day).padStart(2, "0");
     const dateString = `${year}-${month}-${dayStr}`;
 
-    // Filter tasks for this date
-    if (userProgress) {
+    // **Debug: Check if userProgress exists**
+    console.log("Checking date:", dateString);
+    console.log("userProgress:", userProgress);
+
+    if (userProgress && Array.isArray(userProgress)) {
       const matchingTasks = userProgress.filter((task) => {
-        // same check you had:
         if (!task.created_at || !task.completion_date) return false;
-        const creationDate = task.created_at.split("T")[0];
-        return creationDate === dateString;
+        const taskDate = task.completion_date.split("T")[0]; // Compare only YYYY-MM-DD
+        return taskDate === dateString;
       });
 
-      // color if a matching task has a relevant status
       if (matchingTasks.length > 0) {
         const { taskstatus } = matchingTasks[0];
         if (taskstatus === "Completed") return "green";
@@ -69,6 +63,7 @@ const Calendar = ({ userProgress }) => {
         if (taskstatus === "In Progress") return "blue";
       }
     }
+
     return "";
   }
 
@@ -109,7 +104,6 @@ const Calendar = ({ userProgress }) => {
         </button>
       </div>
 
-      {/* Day-of-week labels */}
       <div className="days-header">
         {dayNames.map((day) => (
           <div key={day} className="day-name">
@@ -118,7 +112,6 @@ const Calendar = ({ userProgress }) => {
         ))}
       </div>
 
-      {/* 6 possible rows => 7 columns each => 42 cells */}
       <div className="calendar-grid">
         {[...Array(6)].map((_, weekIndex) => (
           <div key={weekIndex} className="days-grid">
@@ -126,7 +119,6 @@ const Calendar = ({ userProgress }) => {
               .slice(weekIndex * 7, (weekIndex + 1) * 7)
               .map((day, idx) => (
                 <div key={idx} className={`calendar-day ${getDayClass(day)}`}>
-                  {/* Show day number unless null => blank */}
                   {day || ""}
                 </div>
               ))}
@@ -136,8 +128,6 @@ const Calendar = ({ userProgress }) => {
     </div>
   );
 };
-
-
 
 const PieChartComponent = ({ userProgress }) => {
   const predefinedCategories = [
