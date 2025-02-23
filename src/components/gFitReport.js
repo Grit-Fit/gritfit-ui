@@ -57,10 +57,10 @@ const Calendar = ({ userProgress }) => {
         <h2>{currentDate.toLocaleString("default", { month: "long" })} {currentDate.getFullYear()}</h2>
         <button className="arrow-button" onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))}>&gt;</button>
       </div>
-      <div className="calendar-grid-wrapper">
-        <div className="calendar-grid horizontal-calendar">
+      <div className="calendar-grid">
+        <div className="days-header">
           {[...Array(6)].map((_, weekIndex) => (
-            <div key={weekIndex} className="calendar-week">
+            <div key={weekIndex} className="days-grid">
               {calendarDays.slice(weekIndex * 7, (weekIndex + 1) * 7).map((day, index) => (
                 <div key={index} className={`calendar-day ${getDayClass(day, currentDate, userProgress)}`}>{day}</div>
               ))}
