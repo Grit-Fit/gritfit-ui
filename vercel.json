@@ -21,12 +21,8 @@
           "key": "Expires",
           "value": "0"
         }
+        
       ]
     }
-  ],
-  "functions": {
-    "api/**": {
-      "regions": ["iad1", "sfo1"]
-    }
-  }
+  ]
 }
