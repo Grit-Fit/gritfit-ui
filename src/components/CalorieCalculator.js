@@ -6,6 +6,7 @@ import female_icon from "../assets/female.png";
 import male_icon from "../assets/male.png";
 import "../css/CalorieCalculator.css";
 import "../css/NutritionTheory.css";
+import axios from "../axios";
 
 const CalorieCalculator = () => {
   const [age, setAge] = useState("");
@@ -33,7 +34,7 @@ const CalorieCalculator = () => {
       const response = await axios.post(
         "/api/generatePdf",
         {
-          username, // from your getUserProfile or state
+          // username, // from your getUserProfile or state
           maintenanceCals: maintenanceCalories,
           proteinGrams: macros.protein,
           carbGrams: macros.carbs,
