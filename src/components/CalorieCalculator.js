@@ -6,6 +6,7 @@ import female_icon from "../assets/female.png";
 import male_icon from "../assets/male.png";
 import "../css/CalorieCalculator.css";
 import "../css/NutritionTheory.css";
+import axios from "../axios";
 
 const CalorieCalculator = () => {
   const [age, setAge] = useState("");
@@ -28,34 +29,34 @@ const CalorieCalculator = () => {
     female: female_icon,
   };
 
-  const handleGeneratePdf = async () => {
-    try {
-      const response = await axios.post(
-        "/api/generatePdf",
-        {
-          username, // from your getUserProfile or state
-          maintenanceCals: maintenanceCalories,
-          proteinGrams: macros.protein,
-          carbGrams: macros.carbs,
-          fatGrams: macros.fats,
-        },
-        { responseType: "blob" } // important to get binary PDF
-      );
+  // const handleGeneratePdf = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       "/api/generatePdf",
+  //       {
+  //         // username, // from your getUserProfile or state
+  //         maintenanceCals: maintenanceCalories,
+  //         proteinGrams: macros.protein,
+  //         carbGrams: macros.carbs,
+  //         fatGrams: macros.fats,
+  //       },
+  //       { responseType: "blob" } // important to get binary PDF
+  //     );
   
-      // Create a Blob from the PDF stream
-      const file = new Blob([response.data], { type: "application/pdf" });
-      // Build a URL from the file
-      const fileURL = URL.createObjectURL(file);
-      // Force download
-      const link = document.createElement("a");
-      link.href = fileURL;
-      link.setAttribute("download", "Nutrition101.pdf");
-      document.body.appendChild(link);
-      link.click();
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-    }
-  };
+  //     // Create a Blob from the PDF stream
+  //     const file = new Blob([response.data], { type: "application/pdf" });
+  //     // Build a URL from the file
+  //     const fileURL = URL.createObjectURL(file);
+  //     // Force download
+  //     const link = document.createElement("a");
+  //     link.href = fileURL;
+  //     link.setAttribute("download", "Nutrition101.pdf");
+  //     document.body.appendChild(link);
+  //     link.click();
+  //   } catch (error) {
+  //     console.error("Error generating PDF:", error);
+  //   }
+  // };
 
   useEffect(() => {
     // Load saved values (if any) from localStorage
@@ -303,7 +304,7 @@ const CalorieCalculator = () => {
         >
           Calculate
         </button>
-        <button onClick={handleGeneratePdf}>Download Personalized PDF</button>
+        {/* <button onClick={handleGeneratePdf}>Download Personalized PDF</button> */}
 
       </div>
     </div>
