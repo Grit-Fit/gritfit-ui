@@ -1,12 +1,19 @@
-// pdf.js
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import axios from "../axios";
+import { useAuth } from "../context/AuthContext";
 
 function GeneratePdf({
   userName = "Anonymous",
   maintenanceCalories,
   macros
 }) {
+
+  const { accessToken, refreshAuthToken } = useAuth();
+
+    useEffect(() => {
+      if (!accessToken) refreshAuthToken();
+    }, [accessToken, refreshAuthToken]);
   // The button triggers the handleGeneratePdf function
   const handleGeneratePdf = async () => {
     try {
