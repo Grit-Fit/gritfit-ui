@@ -6,8 +6,8 @@ import female_icon from "../assets/female.png";
 import male_icon from "../assets/male.png";
 import "../css/CalorieCalculator.css";
 import "../css/NutritionTheory.css";
+// axios is assumed to be pre-configured in ../axios (with baseURL, interceptors, etc.)
 import axios from "../axios";
-import GeneratePdf from "./GeneratePdfButton";
 
 const CalorieCalculator = () => {
   const [age, setAge] = useState("");
@@ -393,18 +393,7 @@ const CalorieCalculator = () => {
         >
           Calculate
         </button>
-
-        <GeneratePdf
-          userName="John Smith"               // or from your DB / state
-          maintenanceCalories={maintenanceCalories}
-          // For example, add or subtract 300 from maintenance
-          targetCaloriesBulk={maintenanceCalories + bulkOffset}
-          targetCaloriesCut={maintenanceCalories + cutOffset}
-          targetCaloriesMaintain={maintenanceCalories} // same as maintenance
-          proteinGrams={macros.protein}
-          carbGrams={macros.carbs}
-          fatGrams={macros.fats}
-        />
+        
 
       </div>
     </div>
