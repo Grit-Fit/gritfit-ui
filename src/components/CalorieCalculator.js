@@ -8,6 +8,7 @@ import "../css/CalorieCalculator.css";
 import "../css/NutritionTheory.css";
 // axios is assumed to be pre-configured in ../axios (with baseURL, interceptors, etc.)
 import axios from "../axios";
+import GeneratePdfButton from "./GeneratePdfButton";
 
 const CalorieCalculator = () => {
   const [age, setAge] = useState("");
@@ -189,50 +190,6 @@ const CalorieCalculator = () => {
     });
   };
 
-  // 6. Optional: Generate a PDF from your Word doc template
-  //    Replace your placeholders server-side with docxtemplater
-  const handleGeneratePdf = async () => {
-    if (!maintenanceCalories || !macros) {
-      alert("Please calculate your maintenance first!");
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        "/api/generatePdf",
-        {
-          // Provide all the data you need to fill placeholders, e.g.:
-          userName: "John Doe", // or get from your profile
-          age,
-          gender,
-          weight,
-          weightUnit,
-          height,
-          heightUnit,
-          activity,
-          maintenanceCals: maintenanceCalories,
-          proteinGrams: macros.protein,
-          carbGrams: macros.carbs,
-          fatGrams: macros.fats,
-        },
-        { responseType: "blob" } // Important for binary PDF
-      );
-
-      // Create a Blob from the PDF stream
-      const file = new Blob([response.data], { type: "application/pdf" });
-      // Build a URL from the file
-      const fileURL = URL.createObjectURL(file);
-      // Force download
-      const link = document.createElement("a");
-      link.href = fileURL;
-      link.setAttribute("download", "Nutrition101.pdf");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-    }
-  };
 
   return (
     <div className="calculatorContainer">
@@ -383,22 +340,20 @@ const CalorieCalculator = () => {
           </div>
         </div>
 
-        <button
-          className="calculateButton"
-          onClick={handleCalculate}
-          aria-label="Calculate calories"
-        >
-          Calculate
-        </button>
-
-        {/* 7. A button to generate PDF (optional) */}
-        <button
-          style={{ marginTop: "10px" }}
-          onClick={handleGeneratePdf}
-          aria-label="Generate PDF"
-        >
-          Download Personalized PDF
-        </button>
+        <div>
+      <h2>My Nutrition Dashboard</h2>
+      {/* ...some UI... */}
+      <GeneratePdfButton
+        userName="YourName"
+        maintenanceCalories={maintenanceCalories}
+        targetCaloriesBulk={maintenanceCalories ? maintenanceCalories + 500 : 2300}
+        targetCaloriesCut={maintenanceCalories ? maintenanceCalories - 500 : 1700}
+        targetCaloriesMaintain={maintenanceCalories}
+        proteinGrams={macros?.protein}
+        carbGrams={macros?.carbs}
+        fatGrams={macros?.fats}
+      />
+    </div>
 
       </div>
     </div>
