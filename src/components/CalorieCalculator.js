@@ -23,9 +23,8 @@ const CalorieCalculator = () => {
   const [bulkOffset] = useState(500);   // e.g. +300 for bulking
   const [cutOffset] = useState(-500);   
 
-  // We'll store the calculation results in state as well
-  const [maintenanceCalories, setMaintenanceCalories] = useState(null);
-  const [macros, setMacros] = useState(null);
+  const [maintenance, setMaintenance] = useState(2500);
+  const [macros, setMacros] = useState({ protein: 150, carbs: 300, fats: 70 });
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -398,10 +397,24 @@ const CalorieCalculator = () => {
           Calculate
         </button>
         
+        <div>
+      {/* Some UI for user to see or edit data */}
+      <h2>Maintenance: {maintenance} cals</h2>
+
+      {/* Now, just place the PDF button */}
+      <GeneratePdf
+        userName="John Doe"
+        maintenanceCalories={maintenance}
+        macros={macros}
+      />
+    </div>
 
       </div>
     </div>
   );
+
+  
+
 };
 
 export default CalorieCalculator;
