@@ -1,58 +1,71 @@
+// src/components/pdf.js
 import React from "react";
-import axios from "../axios"; 
+import axios from "../axios"; // or wherever your axios is located
 
-function GeneratePdfButton(props) {
-  // We'll pass in the user data as props
-  const {
-    userName,
-    maintenanceCalories,
-    targetCaloriesBulk,
-    targetCaloriesCut,
-    targetCaloriesMaintain,
-    proteinGrams,
-    carbGrams,
-    fatGrams,
-  } = props;
-
+function GeneratePdf({
+  userName = "Anonymous",     // you can provide defaults
+  age,
+  gender,
+  weight,
+  weightUnit,
+  height,
+  heightUnit,
+  activity,
+  maintenanceCalories,
+  macros,                     // macros is an object { protein, carbs, fats }
+}) {
+  // We define a button click handler to call the backend route
   const handleGeneratePdf = async () => {
+    // For safety, ensure we have the minimal data
+    if (!maintenanceCalories || !macros) {
+      alert("Please calculate your maintenance first!");
+      return;
+    }
+
     try {
-      // 1) Make a POST request to your server
       const response = await axios.post(
         "/api/generatePdf",
         {
-          userName,
+          userName,      // if you want the user’s name from your DB
+          age,
+          gender,
+          weight,
+          weightUnit,
+          height,
+          heightUnit,
+          activity,
+          // This might differ from your server’s placeholders.
+          // Adjust the key names to match what your server expects!
           maintenanceCalories,
-          targetCaloriesBulk,
-          targetCaloriesCut,
-          targetCaloriesMaintain,
-          proteinGrams,
-          carbGrams,
-          fatGrams,
+          proteinGrams: macros.protein,
+          carbGrams: macros.carbs,
+          fatGrams: macros.fats,
         },
         { responseType: "blob" } // important for binary data
       );
 
-      // 2) Convert response blob to a downloadable file
+      // Turn the response into a Blob and trigger a download
       const file = new Blob([response.data], { type: "application/pdf" });
       const fileURL = URL.createObjectURL(file);
-
-      // 3) Create link <a> element and trigger download
       const link = document.createElement("a");
       link.href = fileURL;
       link.setAttribute("download", "Nutrition101.pdf");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
     } catch (error) {
       console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. See console for details.");
     }
   };
 
+  // The component renders just a button
   return (
     <button onClick={handleGeneratePdf}>
-      Download Personalized PDF
+      Generate Personalized PDF
     </button>
   );
 }
 
-export default GeneratePdfButton;
+export default GeneratePdf;
