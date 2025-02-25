@@ -8,6 +8,7 @@ import "../css/CalorieCalculator.css";
 import "../css/NutritionTheory.css";
 // axios is assumed to be pre-configured in ../axios (with baseURL, interceptors, etc.)
 import axios from "../axios";
+import { useAuth } from "../context/AuthContext";
 
 const CalorieCalculator = () => {
   const [age, setAge] = useState("");
@@ -17,6 +18,7 @@ const CalorieCalculator = () => {
   const [height, setHeight] = useState(""); // Default height in feet/inches
   const [heightUnit, setHeightUnit] = useState("feet"); // Default unit for height
   const [activity, setActivity] = useState(2);
+  const { accessToken, refreshAuthToken } = useAuth();
 
   const [bulkOffset] = useState(500);   // e.g. +300 for bulking
   const [cutOffset] = useState(-500);   
@@ -34,14 +36,16 @@ const CalorieCalculator = () => {
     female: female_icon,
   };
 
-  // 1. On mount, fetch user nutrition data from DB (if it exists).
-  //    If successful, set the state with that data.
+  useEffect(() => {
+    if (!accessToken) refreshAuthToken();
+  }, [accessToken, refreshAuthToken]);
+
   useEffect(() => {
     const fetchNutritionData = async () => {
       try {
         const response = await axios.get("/api/getUserNutrition", {
           // If your server requires a token, you might do:
-          // headers: { Authorization: `Bearer ${accessToken}` }
+           headers: { Authorization: `Bearer ${accessToken}` }
         });
         if (response.data?.data) {
           const userData = response.data.data;
@@ -174,7 +178,7 @@ const CalorieCalculator = () => {
         activity,
         maintenanceCalories: maintenanceCal,
       }, {
-        // headers: { Authorization: `Bearer ${accessToken}` },
+         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       console.log("Saved user nutrition data to DB!");
