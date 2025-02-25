@@ -9,6 +9,7 @@ import "../css/NutritionTheory.css";
 // axios is assumed to be pre-configured in ../axios (with baseURL, interceptors, etc.)
 import axios from "../axios";
 import { useAuth } from "../context/AuthContext";
+import GeneratePdf from "./GeneratePdfButton";
 
 const CalorieCalculator = () => {
   const [age, setAge] = useState("");
@@ -58,7 +59,7 @@ const CalorieCalculator = () => {
 
           // If you also saved maintenance_calories in DB, you can set it:
           if (userData.maintenance_calories) {
-            setMaintenanceCalories(userData.maintenance_calories);
+            setMaintenance(userData.maintenance_calories);
             // Optionally compute macros from that if you want
           }
         }
@@ -162,7 +163,7 @@ const CalorieCalculator = () => {
       fats: Math.round(fatCalories / 9),
     };
 
-    setMaintenanceCalories(maintenanceCal);
+    setMaintenance(maintenanceCal);
     setMacros(macrosData);
 
     // 5. Save data to the DB (including new maintenanceCal, etc.)
@@ -198,7 +199,7 @@ const CalorieCalculator = () => {
   // 6. Optional: Generate a PDF from your Word doc template
   //    Replace your placeholders server-side with docxtemplater
   const handleGeneratePdf = async () => {
-    if (!maintenanceCalories || !macros) {
+    if (!maintenance || !macros) {
       alert("Please calculate your maintenance first!");
       return;
     }
@@ -216,7 +217,7 @@ const CalorieCalculator = () => {
           height,
           heightUnit,
           activity,
-          maintenanceCals: maintenanceCalories,
+          maintenanceCals: maintenance,
           proteinGrams: macros.protein,
           carbGrams: macros.carbs,
           fatGrams: macros.fats,
@@ -396,7 +397,7 @@ const CalorieCalculator = () => {
         >
           Calculate
         </button>
-        
+
         <div>
       {/* Some UI for user to see or edit data */}
       <h2>Maintenance: {maintenance} cals</h2>
