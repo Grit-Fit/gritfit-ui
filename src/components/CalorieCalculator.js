@@ -398,16 +398,16 @@ const CalorieCalculator = () => {
           Calculate
         </button>
 
-        <div>
+    <div>
       {/* Some UI for user to see or edit data */}
-      <h2>Maintenance: {maintenance} cals</h2>
+      {/* <h2>Maintenance: {maintenance} cals</h2> */}
 
       {/* Now, just place the PDF button */}
-      <GeneratePdf
+      {/* <GeneratePdf
         userName="John Doe"
         maintenanceCalories={maintenance}
         macros={macros}
-      />
+      /> */}
     </div>
 
       </div>
