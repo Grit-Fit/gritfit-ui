@@ -119,9 +119,9 @@ const GritPhase = () => {
     fetchTaskData();
 
     
-    const interval = setInterval(fetchTaskData, 60000);
+    const interval = setInterval(fetchTaskData, 300000);
     return () => clearInterval(interval);
-  }, [accessToken]);
+  }, [accessToken]);                                                                   
 
  
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StatusCard from "./StatusCard";
 import { ChevronLeft } from "lucide-react";
 import logo from "../assets/GritFit_Full.png";
@@ -9,7 +9,15 @@ import "../css/NutritionTheory.css";
 const GymGoal = () => {
   const navigate = useNavigate();
   const [clickedIndex, setClickedIndex] = useState(null);
-  const [showInfo, setShowInfo] = useState(false); // State to toggle info text visibility
+  const [showInfo, setShowInfo] = useState(false);
+  const [showHint, setShowHint] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowHint(false);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const cardData = [
     { text: "Cutting", locked: false },

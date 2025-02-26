@@ -1,11 +1,11 @@
 .carousel-container {
     position: relative;
     top: 110px;
-    width: 85%;
+    width: 100%;
     max-width: 500px;
     margin: 20px auto;
     text-align: center;
-    overflow: hidden;
+    overflow: hidden;      
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     background-color: #fff;
@@ -50,11 +50,13 @@
 }
 
 .carousel-chevron.left {
-    left: 10px;
+    left: -10px;
+    height: 150px;
 }
 
 .carousel-chevron.right {
-    right: 10px;
+    right:-10px;
+    height: 150px;
 }
 
 .carousel-chevron:hover {
