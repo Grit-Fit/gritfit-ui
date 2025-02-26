@@ -383,8 +383,9 @@ const CalorieCalculator = () => {
           />
           <div className="activity-labels">
             {activityLabels.map((label, index) => (
-              <div key={label}>
-                <span className="label-text">{label}</span>
+              <div key={index} className="activity-label">
+                <span className="emoji">{label.split(" ")[0]}</span> 
+                <span className="text">{label.split(" ").slice(1).join(" ")}</span>
               </div>
             ))}
           </div>
