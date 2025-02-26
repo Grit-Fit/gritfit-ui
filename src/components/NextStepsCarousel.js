@@ -8,6 +8,7 @@ import nutritionPdf from "../assets/Nutrition101PDF.pdf";
 import "../css/NextStepsCarousel.css"; 
 import { getDeviceType } from "./deviceDetection"; 
 import "../css/NutritionTheory.css";
+import GeneratePdf from "./GeneratePdfButton";
 
 
 const NextStepsCarousel = () => {
