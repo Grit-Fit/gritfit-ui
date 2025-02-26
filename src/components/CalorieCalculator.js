@@ -381,14 +381,20 @@ const CalorieCalculator = () => {
             onChange={handleActivityChange}
             className="activity-slider"
           />
-          <div className="activity-labels">
-            {activityLabels.map((label, index) => (
-              <div key={index} className="activity-label">
-                <span className="emoji">{label.split(" ")[0]}</span> 
-                <span className="text">{label.split(" ").slice(1).join(" ")}</span>
-              </div>
-            ))}
-          </div>
+            <div className="activity-labels">
+              {activityLabels.map((label, index) => {
+                const parts = label.split(" "); // Split at the first space
+                const emoji = parts[0]; // First part is the emoji
+                const text = parts.slice(1).join(" "); // Rest is the text
+
+                return (
+                  <div key={label} style={{ textAlign: "center" }}>
+                    <span className="label-text">{emoji}</span> <br /> {/* Emoji on top */}
+                    <span className="label-text">{text}</span> {/* Text below emoji */}
+                  </div>
+                );
+              })}
+            </div>
         </div>
 
         <button
