@@ -14,7 +14,7 @@ const ContactUs = ({ isOpen, onClose }) => {
 
         <div className="popup-text">
           <h2>Hey, drop us a mail here!</h2>
-          <p className="email">gritfit.dev@gmail.com</p>
+          <p className="email">support@gritfit.site</p>
         </div>
       </div>
     </div>
