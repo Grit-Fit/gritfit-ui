@@ -123,20 +123,10 @@ html, body {
   }
   
   .activity-labels {
-    display: flex;
-    flex-direction: column; /* Stack emoji and text */
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Evenly space the labels in 5 columns */
     text-align: center;
-    width: 60px; 
-  }
-
-  .emoji {
-    font-size: 24px; /* Make emojis bigger if needed */
-  }
-  
-  .text {
-    font-size: 14px;
-    white-space: nowrap; /* Ensure text doesn't wrap awkwardly */
+    margin-top: 10px;
   }
   
   .label {
