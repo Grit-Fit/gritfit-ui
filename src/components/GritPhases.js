@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown, Info } from "lucide-react";
+import { ChevronDown, Info, Menu } from "lucide-react";
 import NavBar from "./navBar";
-import logo from "../assets/GritFit_Full.png";
+import logo from "../assets/logo1.png";
 import buttonImage from "../assets/Stepping_StoneBtn.png";
 import rightSwipeButtonImage from "../assets/RightSwipe_SteppingStoneBtn.png";
 import leftSwipeButtonImage from "../assets/LeftSwipe_SteppingStoneBtn.png";
@@ -371,18 +371,25 @@ const GritPhase = () => {
 
       <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
         <header className="header">
-          <div className="logo-container-task">
-            <img
-              src={logo}
-              alt="Logo"
-              onClick={!isNavOpen ? handleNavOpen : undefined}
-              className="logo-gritPhases-task"
-            />
-            <ChevronDown
-              className={`chevron-task ${isNavOpen ? "rotated" : ""}`}
-              size={24}
-            />
-          </div>
+        <div className="logo-container-task">
+
+          <Menu
+            className="hamburger-icon"
+            size={24} // Adjust size as needed
+            onClick={!isNavOpen ? handleNavOpen : undefined}
+            style={{ cursor: "pointer", marginLeft: "10px" }} // Adjust spacing
+          />
+
+          <img
+            src={logo}
+            alt="Logo"
+            onClick={!isNavOpen ? handleNavOpen : undefined}
+            className="logo-gritPhases-task"
+          />
+          
+         
+
+        </div>
           <div className="profile-button">
             {/* <button
               onClick={handleRefresh}
