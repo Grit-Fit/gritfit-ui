@@ -536,8 +536,9 @@
 
   .logo-gritPhases-task{
     margin-right: 0.5rem;
-    width: 200px;
-    height: 55px;
+    width: 64px;
+    height: 64px;
+    margin-left: 16px;
     }
 
   .task-button-container:nth-child(1) {

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../css/navBar.css";
@@ -13,6 +13,22 @@ const NavBar = ({ isOpen, onClose }) => {
   const { accessToken, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [showContactPopup, setShowContactPopup] = useState(false);
+  const navbarRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  const handleClickOutside = (event) => {
+    if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+      onClose(); // Close navbar if clicked outside
+    }
+  };
 
   const handleLogoClick = () => {
     if (onClose) {

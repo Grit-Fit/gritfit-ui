@@ -377,7 +377,7 @@ const GritPhase = () => {
             className="hamburger-icon"
             size={24} // Adjust size as needed
             onClick={!isNavOpen ? handleNavOpen : undefined}
-            style={{ cursor: "pointer", marginLeft: "10px" }} // Adjust spacing
+            style={{ cursor: "pointer", marginLeft: "10px", marginTop: "24px" }} // Adjust spacing
           />
 
           <img
