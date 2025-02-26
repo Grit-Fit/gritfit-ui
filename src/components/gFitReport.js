@@ -295,17 +295,7 @@ const GFitReport = () => {
                    Ready to dive deeper into your nutrition? Download our comprehensive "Nutrition 101" guide to learn all you need to start eating healthier today!
                   </p>
                   <a href={nutritionPdf} download className="downloadButton">Nutrition 101 PDF ⬇️</a>
-                  <div>
-                    {/* Some UI for user to see or edit data */}
-                    {/* <h2>Maintenance: {maintenance} cals</h2> */}
-
-                    {/* Now, just place the PDF button */}
-                    <GeneratePdf
-                      userName={username}
-                      maintenanceCalories={maintenance}
-                      macros={macros}
-                    />
-                  </div>
+                  
                 </div>
               </>
             )}
