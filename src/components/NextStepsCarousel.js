@@ -34,6 +34,7 @@ const NextStepsCarousel = () => {
   const { accessToken } = useAuth();
   const [maintenance, setMaintenance] = useState(null);
   const [macros, setMacros] = useState(null);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const fetchUserNutrition = async () => {
@@ -48,8 +49,7 @@ const NextStepsCarousel = () => {
           const m = userData.maintenance_calories;
           setMaintenance(m);
 
-          // optional: derive macros or store them in DB, whichever
-          // e.g. if you do the same 25/50/25 split:
+          
           if (m) {
             const proteinCalories = m * 0.25;
             const carbCalories = m * 0.5;
@@ -69,6 +69,20 @@ const NextStepsCarousel = () => {
     if (accessToken) {
       fetchUserNutrition();
     }
+  }, [accessToken]);
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const response = await axios.get("/api/getUserProfile", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        setUsername(response.data.username || "");
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+    if (accessToken) fetchUsername();
   }, [accessToken]);
   
   const handleNext = () => {
@@ -130,7 +144,7 @@ const NextStepsCarousel = () => {
 
       {maintenance && macros && (
         <GeneratePdf
-          userName="Jane Doe"  // Or fetch username from DB as well
+          userName={username} // Or fetch username from DB as well
           maintenanceCalories={maintenance}
           macros={macros}
         />
