@@ -11,6 +11,8 @@ import "../css/NutritionTheory.css";
 import GeneratePdf from "./GeneratePdfButton";
 import axios from "../axios";
 import { useAuth } from "../context/AuthContext";
+import { ChevronLeft, ChevronRight } from 'lucide-react'; // Navigation icons
+import { useSpring, animated } from 'react-spring';
 
 
 const NextStepsCarousel = () => {
@@ -158,6 +160,36 @@ const NextStepsCarousel = () => {
     </div>,
   ];
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [props, set] = useSpring(() => ({
+    x: 0,
+    config: { tension: 200, friction: 20 }, // Smooth animation
+  }));
+
+  const goToSlide = (index) => {
+    const direction = index > currentIndex ? 1 : -1; // Determine swipe direction
+    set({
+      x: -100 * direction, // Move current slide out
+      onRest: () => {
+        setCurrentIndex(index); // Update active index
+        set({ x: 100 * direction }); // Move new slide into view
+        set({ x: 0 }); // Center new slide
+      },
+    });
+  };
+
+  const goNext = () => {
+    if (currentIndex < slides.length - 1) {
+      goToSlide(currentIndex + 1);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentIndex > 0) {
+      goToSlide(currentIndex - 1);
+    }
+  };
+
 
   return (
     <div className="nextStepsContainer">
@@ -170,9 +202,18 @@ const NextStepsCarousel = () => {
 
       <SwipeCarousel slides={slides} />
 
-     {/* <button className="nextButton" onClick={handleNext}>
-        Next
-      </button> */}
+      <ChevronLeft
+          className="carousel-chevron left"
+          onClick={goPrev}
+          style={{ visibility: currentIndex === 0 ? 'hidden' : 'visible' }}
+      />
+
+      <ChevronRight
+          className="carousel-chevron right"
+          onClick={goNext}
+          style={{ visibility: currentIndex === slides.length - 1 ? 'hidden' : 'visible' }}
+      />
+
     </div>
   );
 };
