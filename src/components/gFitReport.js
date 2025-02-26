@@ -238,6 +238,44 @@ const GFitReport = () => {
     if (accessToken) fetchUsername();
   }, [accessToken]);
 
+  const [maintenance, setMaintenance] = useState(null);
+  const [macros, setMacros] = useState(null);
+
+  useEffect(() => {
+    const fetchUserNutrition = async () => {
+      try {
+        const response = await axios.get("/api/getUserNutrition", {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        if (response.data?.data) {
+          const userData = response.data.data;
+
+          // Suppose userData has userData.maintenance_calories, etc.
+          const m = userData.maintenance_calories;
+          setMaintenance(m);
+
+          
+          if (m) {
+            const proteinCalories = m * 0.25;
+            const carbCalories = m * 0.5;
+            const fatCalories = m * 0.25;
+            setMacros({
+              protein: Math.round(proteinCalories / 4),
+              carbs: Math.round(carbCalories / 4),
+              fats: Math.round(fatCalories / 9),
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data for carousel:", error);
+      }
+    };
+
+    if (accessToken) {
+      fetchUserNutrition();
+    }
+  }, [accessToken]);
+
   useEffect(() => {
     const fetchTaskData = async () => {
       setLoading(true);
@@ -294,7 +332,17 @@ const GFitReport = () => {
                   <p>
                    Ready to dive deeper into your nutrition? Download our comprehensive "Nutrition 101" guide to learn all you need to start eating healthier today!
                   </p>
-                  <a href={nutritionPdf} download className="downloadButton">Nutrition 101 PDF ⬇️</a>
+                  {/* <a href={nutritionPdf} download className="downloadButton">Nutrition 101 PDF ⬇️</a> */}
+
+                  <div>
+                    {maintenance && macros && (
+                      <GeneratePdf
+                        userName={username} // Or fetch username from DB as well
+                        maintenanceCalories={maintenance}
+                        macros={macros}
+                      />
+                    )}
+                  </div>
                   
                 </div>
               </>

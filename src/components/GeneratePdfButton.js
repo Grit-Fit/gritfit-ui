@@ -49,7 +49,7 @@ function GeneratePdf({
 
   return (
     <button onClick={handleGeneratePdf}>
-      Download My Edited PDF
+      Nutrition 101 PDF 📄
     </button>
   );
 }
