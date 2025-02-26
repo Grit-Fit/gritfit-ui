@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SwipeCarousel from "./SwipeCarousel";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/GritFit_Full.png"; 
@@ -8,6 +8,9 @@ import nutritionPdf from "../assets/Nutrition101PDF.pdf";
 import "../css/NextStepsCarousel.css"; 
 import { getDeviceType } from "./deviceDetection"; 
 import "../css/NutritionTheory.css";
+import GeneratePdf from "./GeneratePdfButton";
+import axios from "../axios";
+import { useAuth } from "../context/AuthContext";
 
 
 const NextStepsCarousel = () => {
@@ -28,6 +31,45 @@ const NextStepsCarousel = () => {
     },
   };
 
+  const { accessToken } = useAuth();
+  const [maintenance, setMaintenance] = useState(null);
+  const [macros, setMacros] = useState(null);
+
+  useEffect(() => {
+    const fetchUserNutrition = async () => {
+      try {
+        const response = await axios.get("/api/getUserNutrition", {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        if (response.data?.data) {
+          const userData = response.data.data;
+
+          // Suppose userData has userData.maintenance_calories, etc.
+          const m = userData.maintenance_calories;
+          setMaintenance(m);
+
+          // optional: derive macros or store them in DB, whichever
+          // e.g. if you do the same 25/50/25 split:
+          if (m) {
+            const proteinCalories = m * 0.25;
+            const carbCalories = m * 0.5;
+            const fatCalories = m * 0.25;
+            setMacros({
+              protein: Math.round(proteinCalories / 4),
+              carbs: Math.round(carbCalories / 4),
+              fats: Math.round(fatCalories / 9),
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data for carousel:", error);
+      }
+    };
+
+    if (accessToken) {
+      fetchUserNutrition();
+    }
+  }, [accessToken]);
   
   const handleNext = () => {
     navigate("/gritPhases", {});
@@ -82,6 +124,18 @@ const NextStepsCarousel = () => {
       <a href={nutritionPdf} download className="downloadButton">
         Nutrition 101 PDF ⬇️
       </a>
+
+      <div>
+      {/* The rest of your NextStepsCarousel code */}
+
+      {maintenance && macros && (
+        <GeneratePdf
+          userName="Jane Doe"  // Or fetch username from DB as well
+          maintenanceCalories={maintenance}
+          macros={macros}
+        />
+      )}
+    </div>
 
       <button className="nextButton" onClick={handleNext}>
         Next

@@ -6,6 +6,7 @@ import logo from "../assets/GritFit_Full.png";
 import "../css/gFitReport.css";
 import axios from "../axios";
 import nutritionPdf from "../assets/Nutrition101PDF.pdf";
+import GeneratePdf from "./GeneratePdfButton";
 
 const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -294,6 +295,7 @@ const GFitReport = () => {
                    Ready to dive deeper into your nutrition? Download our comprehensive "Nutrition 101" guide to learn all you need to start eating healthier today!
                   </p>
                   <a href={nutritionPdf} download className="downloadButton">Nutrition 101 PDF ⬇️</a>
+                  
                 </div>
               </>
             )}
