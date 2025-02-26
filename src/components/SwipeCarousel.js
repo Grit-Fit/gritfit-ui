@@ -51,39 +51,39 @@ const SwipeCarousel = ({ slides }) => {
   
     return (
       <div className="carousel-container">
+        {/* Chevron for previous */}
+        <ChevronLeft
+          className="carousel-chevron left"
+          onClick={goPrev}
+          style={{ visibility: currentIndex === 0 ? 'hidden' : 'visible' }}
+        />
+  
+        {/* Slide wrapper */}
         <div className="carousel-slide-wrapper">
           <animated.div
             className="carousel-slide"
             style={props}
-            {...bind()}
+            {...bind()} // Bind swipe gestures
           >
             {slides[currentIndex]}
           </animated.div>
         </div>
   
-        {/* CHANGED: We moved these arrows below the slide wrapper */}
-        <div className="carousel-controls"> {/* NEW container for the arrows */}
-          <ChevronLeft
-            className="carousel-chevron"
-            onClick={goPrev}
-            style={{
-              visibility: currentIndex === 0 ? "hidden" : "visible",
-            }}
-          />
-          <ChevronRight
-            className="carousel-chevron"
-            onClick={goNext}
-            style={{
-              visibility: currentIndex === slides.length - 1 ? "hidden" : "visible",
-            }}
-          />
-        </div>
+        {/* Chevron for next */}
+        <ChevronRight
+          className="carousel-chevron right"
+          onClick={goNext}
+          style={{ visibility: currentIndex === slides.length - 1 ? 'hidden' : 'visible' }}
+        />
   
+      
+
+        {/* Dots for navigation */}
         <div className="carousel-dots">
           {slides.map((_, index) => (
             <span
               key={index}
-              className={`carousel-dot ${index === currentIndex ? "active" : ""}`}
+              className={`carousel-dot ${index === currentIndex ? 'active' : ''}`}
               onClick={() => goToSlide(index)}
             />
           ))}
