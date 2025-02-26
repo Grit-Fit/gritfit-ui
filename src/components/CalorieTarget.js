@@ -58,6 +58,11 @@ const CalorieTarget = () => {
           Macro nutrient split for your target calories
         </h2>
 
+        <p className="macroTitle">
+          (Click on the respective macro cards to see more information about the
+          macro nutrient.)
+        </p>
+
         <div className="macroCardsContainer">
           {Object.entries(macros).map(([macro, value], index) => (
             <div key={macro} className="macroCardWrapper" onClick={() => handleCardClick(macro, value)}>
@@ -72,10 +77,7 @@ const CalorieTarget = () => {
           ))}
         </div>
 
-        <p className="helperText">
-          (Click on the respective macro cards to see more information about the
-          macro nutrient.)
-        </p>
+        
 
         <button
           className="calculateButton"

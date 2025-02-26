@@ -25,16 +25,24 @@
     justify-content: center;
     height: 100%;
     width: 100%;
-    transition: transform 0.7s ease-in-out;
+    transition: transform 0.7s ease-in-out;      
 }
+
+.carousel-controls {
+    display: flex;           /* CHANGED */
+    justify-content: center; /* CHANGED: center them horizontally */
+    align-items: center;
+    margin-top: 16px;        /* CHANGED: space above the arrows */
+  }
 
 .carousel-chevron {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    font-size: 3rem;
+    font-size: 30px;
     color: #333;
+    margin: 0 20px; 
     z-index: 10;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
@@ -64,6 +72,7 @@
 .carousel-dot {
     width: 10px;
     height: 10px;
+    margin: 0 4px;
     background: #ccc;
     border-radius: 50%;
     cursor: pointer;

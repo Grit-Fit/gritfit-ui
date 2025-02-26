@@ -135,9 +135,9 @@ const NextStepsCarousel = () => {
         information you need.<br /> (Also list of food items to hit your goals)
       </p>
       <br />
-      <a href={nutritionPdf} download className="downloadButton">
+      {/* <a href={nutritionPdf} download className="downloadButton">
         Nutrition 101 PDF ⬇️
-      </a>
+      </a> */}
 
       <div>
       {/* The rest of your NextStepsCarousel code */}
