@@ -29,13 +29,18 @@ const Auth = () => {
     e.preventDefault();
     const { data, error } = await supabase.auth.signUp(
       { email, password },
-      { redirectTo: "https://www.gritfit.site/welcome" } // Set your desired redirect URL
+      { redirectTo: "https://www.gritfit.site/welcome" } // Desired redirect URL after email verification
     );
   
     if (error) {
       setMessage(error.message);
     } else {
-      setMessage("Sign up successful! Please check your email for the verification link.");
+      // data.user.email_confirmed_at is typically null until the email is verified.
+      if (data.user && !data.user.email_confirmed_at) {
+        setMessage("Sign up successful! Please check your email for the verification link.");
+      } else {
+        setMessage("Sign up successful and email already confirmed!");
+      }
     }
   };
 
