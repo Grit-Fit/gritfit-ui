@@ -102,6 +102,13 @@ html, body {
     font: 400 25px Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
   }
 
+  .helperText {
+    color: rgb(150, 155, 159);
+    text-align: center;
+    margin-top: 33px;
+    font: 400 14px Montserrat, sans-serif;
+  }
+
   .cal-title {
     color: rgba(40, 73, 100, 1);
     text-align: center;

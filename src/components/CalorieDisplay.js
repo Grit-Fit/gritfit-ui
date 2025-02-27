@@ -106,6 +106,10 @@ const CalorieDisplay = () => {
           <NumberFormatter number={adjustedCalories} />
         </div>
 
+        <p class="helperText">
+          Disclaimer: Always consult a healthcare professional before making significant changes to your diet or exercise routine. We're here for primary education and suggestions, not medical advice!
+        </p>
+
         <button
           className="calculateButton"
           onClick={handleNext}

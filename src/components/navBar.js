@@ -25,6 +25,7 @@ const NavBar = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   const handleClickOutside = (event) => {
+    console.log("Document clicked!", event.target);
     if (navbarRef.current && !navbarRef.current.contains(event.target)) {
       onClose(); // Close navbar if clicked outside
     }
