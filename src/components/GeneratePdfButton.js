@@ -50,7 +50,7 @@ function GeneratePdf({
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
   <button
     onClick={handleGeneratePdf}
     style={{
