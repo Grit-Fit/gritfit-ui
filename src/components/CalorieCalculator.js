@@ -16,17 +16,11 @@ const CalorieCalculator = () => {
   const [gender, setGender] = useState("male");
   const [weight, setWeight] = useState(""); // Default weight in lbs
   const [weightUnit, setWeightUnit] = useState("lbs"); // Default unit for weight
-
-  // Height states:
-  const [heightUnit, setHeightUnit] = useState("feet"); // "feet" or "cm"
-  const [feet, setFeet] = useState("");     // separate state for feet
-  const [inches, setInches] = useState(""); // separate state for inches
-  const [heightCm, setHeightCm] = useState(""); // state for cm
-
+  const [height, setHeight] = useState(""); // Default height in feet/inches
+  const [heightUnit, setHeightUnit] = useState("feet"); // Default unit for height
   const [activity, setActivity] = useState(2);
-  const { accessToken, refreshAuthToken } = useAuth();
+  const { accessToken, refreshAuthToken } = useAuth(); 
 
-  // Example states for final calculation
   const [maintenance, setMaintenance] = useState(2500);
   const [macros, setMacros] = useState({ protein: 150, carbs: 300, fats: 70 });
 
@@ -39,98 +33,74 @@ const CalorieCalculator = () => {
     female: female_icon,
   };
 
-  // Attempt to refresh token if missing
   useEffect(() => {
     if (!accessToken) refreshAuthToken();
   }, [accessToken, refreshAuthToken]);
 
-  // 1) On mount, fetch user data from DB (if any)
   useEffect(() => {
     const fetchNutritionData = async () => {
       try {
         const response = await axios.get("/api/getUserNutrition", {
-          headers: { Authorization: `Bearer ${accessToken}` },
+          // If your server requires a token, you might do:
+           headers: { Authorization: `Bearer ${accessToken}` }
         });
         if (response.data?.data) {
           const userData = response.data.data;
-
           setAge(userData.age ?? "");
           setGender(userData.gender ?? "male");
           setWeight(userData.weight ?? "");
           setWeightUnit(userData.weight_unit ?? "lbs");
-
-          // If the DB stores height in feet/inches vs cm
-          const dbUnit = userData.height_unit ?? "feet";
-          setHeightUnit(dbUnit);
-
-          if (dbUnit === "feet") {
-            // If your DB stores them as userData.feet, userData.inches, for example
-            if (userData.feet) setFeet(userData.feet);
-            if (userData.inches) setInches(userData.inches);
-          } else {
-            // If DB stores centimeters in userData.height_cm
-            if (userData.height_cm) setHeightCm(userData.height_cm);
-          }
-
+          setHeight(userData.height ?? "");
+          setHeightUnit(userData.height_unit ?? "feet");
           setActivity(userData.activity ?? 2);
 
+          // If you also saved maintenance_calories in DB, you can set it:
           if (userData.maintenance_calories) {
             setMaintenance(userData.maintenance_calories);
+            // Optionally compute macros from that if you want
           }
         }
       } catch (error) {
         console.error("Error fetching user nutrition data:", error);
+        // it's okay if user doesn't have data yet
       }
     };
-    if (accessToken) {
-      fetchNutritionData();
-    }
-  }, [accessToken]);
 
-  // 2) For user convenience, also read from localStorage
+    fetchNutritionData();
+  }, []);
+
+  // 2. For user convenience, also read from localStorage (optional)
+  //    If you want to fallback on localStorage when DB is empty, or vice versa.
   useEffect(() => {
     const savedAge = localStorage.getItem("cc_age");
     const savedGender = localStorage.getItem("cc_gender");
     const savedWeight = localStorage.getItem("cc_weight");
     const savedWeightUnit = localStorage.getItem("cc_weightUnit");
-
-    // For height:
+    const savedHeight = localStorage.getItem("cc_height");
     const savedHeightUnit = localStorage.getItem("cc_heightUnit");
-    const savedFeet = localStorage.getItem("cc_feet");
-    const savedInches = localStorage.getItem("cc_inches");
-    const savedHeightCm = localStorage.getItem("cc_heightCm");
-
     const savedActivity = localStorage.getItem("cc_activity");
 
     if (savedAge) setAge(savedAge);
     if (savedGender) setGender(savedGender);
     if (savedWeight) setWeight(savedWeight);
     if (savedWeightUnit) setWeightUnit(savedWeightUnit);
-
-    // Restore height data
+    if (savedHeight) setHeight(savedHeight);
     if (savedHeightUnit) setHeightUnit(savedHeightUnit);
-    if (savedFeet) setFeet(savedFeet);
-    if (savedInches) setInches(savedInches);
-    if (savedHeightCm) setHeightCm(savedHeightCm);
-
     if (savedActivity) setActivity(parseInt(savedActivity, 10));
   }, []);
 
-  // 3) Whenever user changes a field, store in localStorage
+  // 3. Whenever user changes a field, store it in localStorage
+  //    (so if they refresh mid-flow, they don't lose it)
   useEffect(() => {
     localStorage.setItem("cc_age", age);
     localStorage.setItem("cc_gender", gender);
     localStorage.setItem("cc_weight", weight);
     localStorage.setItem("cc_weightUnit", weightUnit);
-
-    // Save height info
+    localStorage.setItem("cc_height", height);
     localStorage.setItem("cc_heightUnit", heightUnit);
-    localStorage.setItem("cc_feet", feet);
-    localStorage.setItem("cc_inches", inches);
-    localStorage.setItem("cc_heightCm", heightCm);
-
     localStorage.setItem("cc_activity", activity.toString());
-  }, [age, gender, weight, weightUnit, heightUnit, feet, inches, heightCm, activity]);
+  }, [age, gender, weight, weightUnit, height, heightUnit, activity]);
+
 
   const activityLabels = [
     "🛋️ Couch Potato",
@@ -144,39 +114,38 @@ const CalorieCalculator = () => {
     setActivity(parseInt(e.target.value, 10));
   };
 
-  // 4) Convert user’s height input => cm
-  const getHeightInCm = () => {
-    if (heightUnit === "feet") {
-      const ft = parseFloat(feet || "0");
-      const inch = parseFloat(inches || "0");
-      const totalInches = ft * 12 + inch;
-      return totalInches * 2.54;
-    } else {
-      // user typed directly in cm
-      return parseFloat(heightCm || "0");
-    }
-  };
-
-  // 5) Calculate the user’s maintenance & macros, then navigate or store
+  // 4. Calculate the user’s maintenance & macros, then navigate or store
   const handleCalculate = async () => {
-    // Basic validation
-    if (!age || !gender || !weight || !activity) {
+    if (!age || !gender || !weight || !height || !activity) {
       alert("Please fill in all fields");
       return;
     }
 
-    // Convert weight => kg if needed
-    const weightKg =
-      weightUnit === "lbs" ? parseFloat(weight || "0") * 0.453592 : parseFloat(weight || "0");
+    console.log("Age:", age);
+    console.log("Gender:", gender);
+    console.log("Weight:", weight);
+    console.log("Height:", height);
+    console.log("Activity:", activity);
 
-    // Convert height => cm
-    const finalHeightCm = getHeightInCm();
+    const weightKg = weightUnit === "lbs" ? weight * 0.453592 : weight;
+
+    let heightCm = 0;
+    if (heightUnit === "feet") {
+      const sanitized = height.replace(/['"]/g, ""); // remove ' and "
+      const [feetStr, inchesStr] = sanitized.split(" ");
+      const feet = parseFloat(feetStr) || 0;
+      const inches = parseFloat(inchesStr) || 0;
+      heightCm = feet * 30.48 + inches * 2.54;
+    } else {
+      // cm
+      heightCm = parseFloat(height);
+    }
 
     // Basic BMR
     const bmr =
       gender === "male"
-        ? 10 * weightKg + 6.25 * finalHeightCm - 5 * age + 5
-        : 10 * weightKg + 6.25 * finalHeightCm - 5 * age - 161;
+        ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
+        : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
 
     const activityMultiplier = [1.2, 1.375, 1.55, 1.725, 1.9];
     const maintenanceCal = Math.round(bmr * activityMultiplier[activity - 1]);
@@ -194,35 +163,27 @@ const CalorieCalculator = () => {
     setMaintenance(maintenanceCal);
     setMacros(macrosData);
 
-    // Save data to DB
+    // 5. Save data to the DB (including new maintenanceCal, etc.)
     try {
-      await axios.post(
-        "/api/saveUserNutrition",
-        {
-          age,
-          gender,
-          weight,
-          weight_unit: weightUnit,
+      await axios.post("/api/saveUserNutrition", {
+        age,
+        gender,
+        weight,
+        weightUnit,
+        height,
+        heightUnit,
+        activity,
+        maintenanceCalories: maintenanceCal,
+      }, {
+         headers: { Authorization: `Bearer ${accessToken}` },
+      });
 
-          // Store whichever height approach we used:
-          height_unit: heightUnit,
-          feet,
-          inches,
-          height_cm: heightCm,
-
-          activity,
-          maintenanceCalories: maintenanceCal,
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
       console.log("Saved user nutrition data to DB!");
     } catch (error) {
       console.error("Error saving user data:", error);
     }
 
-    // Navigate to next page or show results
+    // Then navigate to the next page or show them the results
     navigate("/displayCalculation", {
       state: {
         maintenanceCal,
@@ -232,7 +193,8 @@ const CalorieCalculator = () => {
     });
   };
 
-  // 6) (Optional) Generate PDF from doc template
+  // 6. Optional: Generate a PDF from your Word doc template
+  //    Replace your placeholders server-side with docxtemplater
   const handleGeneratePdf = async () => {
     if (!maintenance || !macros) {
       alert("Please calculate your maintenance first!");
@@ -243,26 +205,28 @@ const CalorieCalculator = () => {
       const response = await axios.post(
         "/api/generatePdf",
         {
-          userName: "John Doe", // or get from user profile
+          // Provide all the data you need to fill placeholders, e.g.:
+          userName: "John Doe", // or get from your profile
           age,
           gender,
           weight,
           weightUnit,
-          height_unit: heightUnit,
-          feet,
-          inches,
-          height_cm: heightCm,
+          height,
+          heightUnit,
           activity,
           maintenanceCals: maintenance,
           proteinGrams: macros.protein,
           carbGrams: macros.carbs,
           fatGrams: macros.fats,
         },
-        { responseType: "blob" }
+        { responseType: "blob" } // Important for binary PDF
       );
 
+      // Create a Blob from the PDF stream
       const file = new Blob([response.data], { type: "application/pdf" });
+      // Build a URL from the file
       const fileURL = URL.createObjectURL(file);
+      // Force download
       const link = document.createElement("a");
       link.href = fileURL;
       link.setAttribute("download", "Nutrition101.pdf");
@@ -314,11 +278,11 @@ const CalorieCalculator = () => {
             <div className="inputLabel">Age</div>
           </div>
 
-          {/* Gender */}
+          {/* Gender Selector */}
           <div className="inputContainer">
             <div className="inputBox">
               <img
-                src={gender === "male" ? male_icon : female_icon}
+                src={genderIcons[gender || "male"]}
                 alt="gender"
                 className="genderImage"
               />
@@ -366,38 +330,34 @@ const CalorieCalculator = () => {
           <div className="inputContainer">
             <div className="inputBox">
               {heightUnit === "feet" ? (
-                <>
-                  {/* Let user type something like 5 for feet and 7 for inches */}
-                  <input
-                    type="number"
-                    value={feet}
-                    onChange={(e) => setFeet(e.target.value)}
-                    className="inputValue"
-                    aria-label="Feet"
-                    placeholder="5"
-                    style={{ width: "45px", marginRight: "4px" }}
-                  />
-                  <input
-                    type="number"
-                    value={inches}
-                    onChange={(e) => setInches(e.target.value)}
-                    min="0"
-                    max="11"
-                    className="inputValue"
-                    aria-label="Inches"
-                    placeholder="7"
-                    style={{ width: "45px" }}
-                  />
-                </>
+                <input
+                  type="text"
+                  value={height}
+                  onChange={(e) => {
+                    let formattedHeight = e.target.value.replace(/[^0-9 ]/g, ""); 
+                    let parts = formattedHeight.split(" ");
+          
+                    if (parts.length === 1 && parts[0]) {
+                      formattedHeight = `${parts[0]}'`; 
+                    } else if (parts.length === 2) {
+                      formattedHeight = `${parts[0]}'${parts[1]}"`; 
+                    }
+          
+                    setHeight(formattedHeight);
+                  }}
+                  className="inputValue"
+                  aria-label="Height"
+                  placeholder="5' 7&#34;"
+                />
               ) : (
                 <input
-                  type="number"
-                  value={heightCm}
-                  onChange={(e) => setHeightCm(e.target.value)}
+                  type="text"
+                  value={height}
+                  onChange={(e) => setHeight(e.target.value)}
                   min="0"
                   className="inputValue"
                   placeholder="170"
-                  aria-label="Height (cm)"
+                  aria-label="Height"
                 />
               )}
               <div className="unitWrapper">
@@ -429,26 +389,20 @@ const CalorieCalculator = () => {
             onChange={handleActivityChange}
             className="activity-slider"
           />
-          <div className="activity-labels">
-            {[
-              "🛋️ Couch Potato",
-              "🐢 Slow & Steady",
-              "🚶‍♂️ Daily Walker",
-              "🏋️ Gym Regular",
-              "🏃‍♂️💨 Non-Stop Hustler",
-            ].map((label) => {
-              const parts = label.split(" ");
-              const emoji = parts[0];
-              const text = parts.slice(1).join(" ");
-              return (
-                <div key={label} style={{ textAlign: "center" }}>
-                  <span className="label-text">{emoji}</span>
-                  <br />
-                  <span className="label-text">{text}</span>
-                </div>
-              );
-            })}
-          </div>
+            <div className="activity-labels">
+              {activityLabels.map((label, index) => {
+                const parts = label.split(" "); // Split at the first space
+                const emoji = parts[0]; // First part is the emoji
+                const text = parts.slice(1).join(" "); // Rest is the text
+
+                return (
+                  <div key={label} style={{ textAlign: "center" }}>
+                    <span className="label-text">{emoji}</span> <br /> {/* Emoji on top */}
+                    <span className="label-text">{text}</span> {/* Text below emoji */}
+                  </div>
+                );
+              })}
+            </div>
         </div>
 
         <button
@@ -459,15 +413,21 @@ const CalorieCalculator = () => {
           Calculate
         </button>
 
-        {/* Example PDF generation button (optional) */}
-        {/* <GeneratePdf
-          userName="John Doe"
-          maintenanceCalories={maintenance}
-          macros={macros}
-        /> */}
+    <div>
+      
+      {/* <GeneratePdf
+        userName="John Doe"
+        maintenanceCalories={maintenance}
+        macros={macros}
+      /> */}
+    </div>
+
       </div>
     </div>
   );
+
+  
+
 };
 
 export default CalorieCalculator;
