@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import axios from "../axios";
 import { useAuth } from "../context/AuthContext";
 
+
 function GeneratePdf({
   userName = "Anonymous",
   maintenanceCalories,
@@ -49,7 +50,7 @@ function GeneratePdf({
 
   return (
     <button onClick={handleGeneratePdf}>
-      Nutrition 101 PDF 
+      Nutrition 101 PDF <img src="../assets/pdf.png" alt="pdf-icon" />
     </button>
   );
 }
