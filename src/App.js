@@ -21,6 +21,7 @@ import CalorieMacro from "./components/CalorieMacro";
 import NextStepsCarousel from "./components/NextStepsCarousel";
 import NutritionTheory from "./components/NutritionTheory";
 import GymGoal from "./components/GymGoal";
+import Verified from "./components/verified.js";
 
 const AppRoutes = () => {
   const { accessToken } = useContext(AuthContext);
@@ -28,29 +29,33 @@ const AppRoutes = () => {
   const [redirectPath, setRedirectPath] = useState(null);
   const [signupRedirect, setSignupRedirect] = useState(false);
 
-  useEffect(() => {
-    // console.log("🚀 App Loaded! Current Path:", location.pathname);
-    // console.log("✅ Access Token:", accessToken);
-    // console.log("📌 Signup Status:", localStorage.getItem("justSignedUp"));
+//change 33-57
 
+  useEffect(() => {
     if (accessToken) {
       const storedSignup = localStorage.getItem("justSignedUp") === "true";
-
       if (storedSignup) {
-        // console.log("🟢 New signup detected, redirecting to /welcome...");
         setRedirectPath("/welcome");
         setSignupRedirect(true);
-
-        // setTimeout(() => {
-        //   localStorage.removeItem("justSignedUp");
-        //   setSignupRedirect(false);
-        // }, 3000);
       } else {
-        // console.log("🔵 Regular login, redirecting to /gritPhases...");
         setRedirectPath("/gritPhases");
       }
     }
   }, [accessToken]);
+
+
+  // 1) If route is "/verified", allow user to proceed without token
+  if (location.pathname === "/verified") {
+    return (
+      <Routes>
+        <Route path="/verified" element={<Verified />} />
+        {/* Possibly other public routes */}
+        {/* Fallback route to /verified */}
+        <Route path="*" element={<Navigate to="/verified" />} />
+      </Routes>
+    );
+  }
+
 
   if (!accessToken) {
     // console.log("⚠️ No access token, staying on Auth page.");
