@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import axios from "../axios";
 import { useAuth } from "../context/AuthContext";
+import pdfIcon from "../assets/pdf.png";
 
 
 function GeneratePdf({
@@ -50,7 +51,7 @@ function GeneratePdf({
 
   return (
     <button onClick={handleGeneratePdf}>
-      Nutrition 101 PDF <img src="../assets/pdf.png" alt="pdf-icon" />
+      Nutrition 101 PDF <img src={pdfIcon} alt="PDF icon" width="24" height="24" />
     </button>
   );
 }
