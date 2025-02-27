@@ -333,18 +333,7 @@ const CalorieCalculator = () => {
                 <input
                   type="text"
                   value={height}
-                  onChange={(e) => {
-                    let formattedHeight = e.target.value.replace(/[^0-9 ]/g, ""); 
-                    let parts = formattedHeight.split(" ");
-          
-                    if (parts.length === 1 && parts[0]) {
-                      formattedHeight = `${parts[0]}'`; 
-                    } else if (parts.length === 2) {
-                      formattedHeight = `${parts[0]}'${parts[1]}"`; 
-                    }
-          
-                    setHeight(formattedHeight);
-                  }}
+                  onChange={(e) => setHeight(e.target.value)}
                   className="inputValue"
                   aria-label="Height"
                   placeholder="5' 7&#34;"
