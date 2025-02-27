@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from '../axios';
+import { supabase } from "../supabaseClient";
 
 export const AuthContext = createContext();
 
@@ -64,6 +65,30 @@ const login = async (_, credentials) => {
       setIsLoggingOut(true); // Reset the flag after logout process
     }
   };
+
+  useEffect(() => {
+    // Check for an existing session on load.
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setAccessToken(session.access_token);
+        setUser(session.user);
+      }
+    });
+  
+    // Subscribe to auth changes (sign in, sign out, etc.)
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        setAccessToken(session.access_token);
+        setUser(session.user);
+      } else {
+        setAccessToken(null);
+        setUser(null);
+      }
+    });
+    return () => authListener.subscription.unsubscribe();
+  }, []);
+  
+
   // Fetch the token from the backend via a refresh route
   const refreshAuthToken = async () => {
     try {
