@@ -23,36 +23,33 @@ const Auth = () => {
   const isSignup = location.pathname === "/signup";
 
   
-
+//27-50
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
     console.log("Signup initiated...");
-
+  
     try {
-        const response = await axios.post(`${API_URL}/createAccount`, {
-            email,
-            password,
-        });
-        const { token, message: responseMessage } = response.data;
-
-        if (token) {
-            const userData = { email, password };
-            login(token, userData);
-
-            // ✅ Use localStorage instead of sessionStorage
-            localStorage.setItem("justSignedUp", "true");
-            console.log("🔹 LocalStorage value after setting:", localStorage.getItem("justSignedUp"));
-
-           //  console.log("✅ Navigating to /welcome...");
-            navigate("/welcome", { replace: true });
-            setMessage(responseMessage);
-        }
+      // 1) Call your new /api/register route
+      const response = await axios.post(`${API_URL}/register`, { email, password });
+      const { message: responseMessage } = response.data;
+  
+      // 2) Show user a message: "Check your email..."
+      setMessage(responseMessage || "User created! Check your email.");
+  
+      // 3) (Optional) Store a flag in localStorage to indicate user just signed up
+      localStorage.setItem("justSignedUp", "true");
+      console.log("🔹 LocalStorage justSignedUp:", localStorage.getItem("justSignedUp"));
+  
+      // 4) Optionally navigate them to a page that says "Check your email" or keep them here
+      // If you want to stay on the same page, do nothing
+      // Or do something like: navigate("/verify-info") to show instructions
     } catch (error) {
-        console.error(error);
-        setMessage(error.response ? error.response.data.message : "Error occurred");
+      console.error("Signup error:", error);
+      setMessage(error.response?.data?.error || "Error occurred");
     }
-};
+  };
 
+  
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
     try {
