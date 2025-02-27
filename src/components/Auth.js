@@ -22,52 +22,36 @@ const Auth = () => {
   const isLogin = location.pathname === "/login";
   const isSignup = location.pathname === "/signup";
 
-  // snippet in Auth.js
-const handleSendOtp = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post("/api/sendOtp", {
-      email,
-      password,
-    });
-    setMessage(response.data.message); // e.g. "OTP sent to your email."
-    // Optionally navigate to an OTP verification page
-    navigate("/verify-otp");
-  } catch (error) {
-    console.error(error);
-    setMessage(error.response?.data?.error || "Something went wrong");
-  }
+  
+
+  const handleSubmitSignUp = async (e) => {
+    e.preventDefault();
+    console.log("Signup initiated...");
+
+    try {
+        const response = await axios.post(`${API_URL}/createAccount`, {
+            email,
+            password,
+        });
+        const { token, message: responseMessage } = response.data;
+
+        if (token) {
+            const userData = { email, password };
+            login(token, userData);
+
+            // ✅ Use localStorage instead of sessionStorage
+            localStorage.setItem("justSignedUp", "true");
+            console.log("🔹 LocalStorage value after setting:", localStorage.getItem("justSignedUp"));
+
+           //  console.log("✅ Navigating to /welcome...");
+            navigate("/welcome", { replace: true });
+            setMessage(responseMessage);
+        }
+    } catch (error) {
+        console.error(error);
+        setMessage(error.response ? error.response.data.message : "Error occurred");
+    }
 };
- 
-// snippet in Auth.js
-
-const handleSubmitSignUp = async (e) => {
-  e.preventDefault();
-  console.log("Signup initiated...");
-
-  try {
-    // 1) Call your new /api/sendOtp endpoint
-    const response = await axios.post(`${API_URL}/sendOtp`, {
-      email,
-      password,
-    });
-    const { message: responseMessage } = response.data;
-
-    // 2) (Optional) Store a flag in localStorage to track new sign-ups
-    localStorage.setItem("justSignedUp", "true");
-    console.log("🔹 LocalStorage value after setting:", localStorage.getItem("justSignedUp"));
-
-    // 3) Show any success message returned by the server
-    setMessage(responseMessage);
-
-    // 4) Navigate to your VerifyOtp page
-    navigate("/verify-otp", { replace: true });
-  } catch (error) {
-    console.error(error);
-    setMessage(error.response ? error.response.data.message : "Error occurred");
-  }
-};
-
 
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
