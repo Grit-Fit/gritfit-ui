@@ -67,7 +67,7 @@ const login = async (_, credentials) => {
   };
 
   useEffect(() => {
-    // Check for an existing session on load.
+    // On initial load, get current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setAccessToken(session.access_token);
@@ -75,8 +75,9 @@ const login = async (_, credentials) => {
       }
     });
   
-    // Subscribe to auth changes (sign in, sign out, etc.)
+    // Listen for changes (login, logout, email verification, etc.)
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth event:", event, session); // Debug log
       if (session) {
         setAccessToken(session.access_token);
         setUser(session.user);
@@ -85,9 +86,11 @@ const login = async (_, credentials) => {
         setUser(null);
       }
     });
-    return () => authListener.subscription.unsubscribe();
-  }, []);
   
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   // Fetch the token from the backend via a refresh route
   const refreshAuthToken = async () => {

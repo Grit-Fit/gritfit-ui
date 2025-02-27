@@ -27,16 +27,14 @@ const Auth = () => {
 
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
-    // Use Supabase's signUp method with email and password.
     const { data, error } = await supabase.auth.signUp(
       { email, password },
-      { redirectTo: "https://www.gritfit.site/welcome" } // change this to your desired redirect URL after verification
+      { redirectTo: "https://www.gritfit.site/welcome" } // Set your desired redirect URL
     );
   
     if (error) {
       setMessage(error.message);
     } else {
-      // Inform the user to check their email for the verification link.
       setMessage("Sign up successful! Please check your email for the verification link.");
     }
   };
@@ -51,7 +49,6 @@ const Auth = () => {
     if (error) {
       setMessage(error.message);
     } else if (data.session) {
-      // Call your AuthContext login method to store token/state if needed.
       login(data.session.access_token, data.user);
       navigate("/gritPhases");
     }
