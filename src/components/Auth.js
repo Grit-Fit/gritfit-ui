@@ -28,24 +28,25 @@ const Auth = () => {
   // ✅ Updated: Now using Supabase for sign up (email verification included)
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
-    setMessage(""); // Clear old messages
-
+    setMessage("");  // Clear old messages
     try {
-      const { data, error } = await supabase.auth.signUp(
-        { email, password },
-        { redirectTo: "https://www.gritfit.site/welcome" }
-      );
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+        }, {
+            redirectTo: "https://www.gritfit.site/welcome"
+        });
 
-      if (error) {
-        setMessage(`❌ ${error.message}`);
-      } else {
-        setMessage("✅ Account created! Please check your email to verify your account.");
-      }
+        if (error) {
+            setMessage(error.message);
+        } else {
+            setMessage("✅ Account created! Please check your email to verify your account.");
+        }
     } catch (err) {
-      setMessage("An unexpected error occurred.");
-      console.error(err);
+        setMessage("An error occurred during signup.");
+        console.error(err);
     }
-  };
+};
 
   // ✅ Updated: Now using Supabase for sign in (removes old backend API dependency)
   const handleSubmitLogin = async (e) => {
