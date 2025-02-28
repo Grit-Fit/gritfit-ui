@@ -8,6 +8,7 @@ import back from "../assets/Back.png";
 import signInIcon from "../assets/signInIcon.png";
 import signUpIcon from "../assets/signUpIcon.png";
 import RefreshButton from "./RefreshButton.js";
+import { supabase } from "../supabaseClient";
 
 const API_URL =  "https://api.gritfit.site/api";
 
@@ -26,30 +27,22 @@ const Auth = () => {
 
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
-    console.log("Signup initiated...");
+    setMessage("");  // Clear any old message
 
     try {
-        const response = await axios.post(`${API_URL}/createAccount`, {
-            email,
-            password,
-        });
-        const { token, message: responseMessage } = response.data;
+        const { data, error } = await supabase.auth.signUp(
+            { email, password },
+            { redirectTo: "https://www.gritfit.site/welcome" }  // This is your desired post-verification URL
+        );
 
-        if (token) {
-            const userData = { email, password };
-            login(token, userData);
-
-            // ✅ Use localStorage instead of sessionStorage
-            localStorage.setItem("justSignedUp", "true");
-            console.log("🔹 LocalStorage value after setting:", localStorage.getItem("justSignedUp"));
-
-           //  console.log("✅ Navigating to /welcome...");
-            navigate("/welcome", { replace: true });
-            setMessage(responseMessage);
+        if (error) {
+            setMessage(`❌ ${error.message}`);
+        } else {
+            setMessage("✅ Account created! Please check your email to verify your account.");
         }
-    } catch (error) {
-        console.error(error);
-        setMessage(error.response ? error.response.data.message : "Error occurred");
+    } catch (err) {
+        setMessage("An unexpected error occurred.");
+        console.error(err);
     }
 };
 
