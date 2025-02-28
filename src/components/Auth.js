@@ -25,47 +25,48 @@ const Auth = () => {
 
   
 
+  // ✅ Updated: Now using Supabase for sign up (email verification included)
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
-    setMessage("");  // Clear any old message
+    setMessage(""); // Clear old messages
 
     try {
-        const { data, error } = await supabase.auth.signUp(
-            { email, password },
-            { redirectTo: "https://www.gritfit.site/welcome" }  // This is your desired post-verification URL
-        );
+      const { data, error } = await supabase.auth.signUp(
+        { email, password },
+        { redirectTo: "https://www.gritfit.site/welcome" }
+      );
 
-        if (error) {
-            setMessage(`❌ ${error.message}`);
-        } else {
-            setMessage("✅ Account created! Please check your email to verify your account.");
-        }
+      if (error) {
+        setMessage(`❌ ${error.message}`);
+      } else {
+        setMessage("✅ Account created! Please check your email to verify your account.");
+      }
     } catch (err) {
-        setMessage("An unexpected error occurred.");
-        console.error(err);
+      setMessage("An unexpected error occurred.");
+      console.error(err);
     }
-};
+  };
 
+  // ✅ Updated: Now using Supabase for sign in (removes old backend API dependency)
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
+    setMessage("");
+
     try {
-      const res = await axios.post(`${API_URL}/signIn`, {
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      const { token, message: responseMessage } = res.data;
-      setMessage(responseMessage);
-      if (token) {
-        const userData = { email, password };
-        login(token, userData);
 
-        // ✅ Fix: Redirect new users to /welcome, returning users to /gritPhases
-        const fromSignup = location.state?.from === "/signup";
-        navigate(fromSignup ? "/welcome" : "/gritPhases");
+      if (error) {
+        setMessage(`❌ ${error.message}`);
+      } else {
+        login(data.session.access_token, { email });
+        navigate("/gritPhases");
       }
-    } catch (error) {
-      console.error(error);
-      setMessage(error.response ? error.response.data.message : "Error occurred");
+    } catch (err) {
+      setMessage("An unexpected error occurred.");
+      console.error(err);
     }
   };
 
