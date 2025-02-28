@@ -4,58 +4,58 @@ import { supabase } from '../supabaseClient';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
+    const [user, setUser] = useState(null);
+    const [accessToken, setAccessToken] = useState(null);
 
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setUser(session.user);
-        setAccessToken(session.access_token);
-      }
+    useEffect(() => {
+        const getSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                setUser(session.user);
+                setAccessToken(session.access_token);
+            }
+        };
+        getSession();
+
+        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+            console.log(`Auth event: ${event}`, session);
+            if (session) {
+                setUser(session.user);
+                setAccessToken(session.access_token);
+            } else {
+                setUser(null);
+                setAccessToken(null);
+            }
+        });
+
+        return () => authListener.subscription.unsubscribe();
+    }, []);
+
+    const login = async (email, password) => {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        setUser(data.user);
+        setAccessToken(data.session.access_token);
     };
-    getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth event:", event, session);
-      if (session) {
-        setUser(session.user);
-        setAccessToken(session.access_token);
-      } else {
+    const logout = async () => {
+        await supabase.auth.signOut();
         setUser(null);
         setAccessToken(null);
-      }
-    });
+    };
 
-    return () => authListener.subscription.unsubscribe();
-  }, []);
+    const sendPasswordResetEmail = async (email) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: 'https://www.gritfit.site/reset-password'
+        });
+        if (error) throw error;
+    };
 
-  const login = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    setUser(data.user);
-    setAccessToken(data.session.access_token);
-  };
-
-  const logout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setAccessToken(null);
-  };
-
-  const sendPasswordResetEmail = async (email) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://www.gritfit.site/reset-password'
-    });
-    if (error) throw error;
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, accessToken, login, logout, sendPasswordResetEmail }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider value={{ user, accessToken, login, logout, sendPasswordResetEmail }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 export const useAuth = () => useContext(AuthContext);

@@ -25,51 +25,30 @@ const Auth = () => {
 
   
 
-  // ✅ Updated: Now using Supabase for sign up (email verification included)
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
-    setMessage("");  // Clear old messages
-    try {
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-        }, {
-            redirectTo: "https://www.gritfit.site/welcome"
-        });
-
-        if (error) {
-            setMessage(error.message);
-        } else {
-            setMessage("✅ Account created! Please check your email to verify your account.");
-        }
-    } catch (err) {
-        setMessage("An error occurred during signup.");
-        console.error(err);
+    setMessage("");
+    const { error } = await supabase.auth.signUp(
+        { email, password },
+        { redirectTo: "https://www.gritfit.site/welcome" }
+    );
+    if (error) {
+        setMessage(`❌ ${error.message}`);
+    } else {
+        setMessage("✅ Check your email to verify your account.");
     }
 };
 
-  // ✅ Updated: Now using Supabase for sign in (removes old backend API dependency)
-  const handleSubmitLogin = async (e) => {
+const handleSubmitLogin = async (e) => {
     e.preventDefault();
     setMessage("");
-
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        setMessage(`❌ ${error.message}`);
-      } else {
-        login(data.session.access_token, { email });
+        await login(email, password);
         navigate("/gritPhases");
-      }
-    } catch (err) {
-      setMessage("An unexpected error occurred.");
-      console.error(err);
+    } catch (error) {
+        setMessage(`❌ ${error.message}`);
     }
-  };
+};
 
   return (
     <div className="auth-container">
