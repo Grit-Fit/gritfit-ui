@@ -8,7 +8,6 @@ import back from "../assets/Back.png";
 import signInIcon from "../assets/signInIcon.png";
 import signUpIcon from "../assets/signUpIcon.png";
 import RefreshButton from "./RefreshButton.js";
-import { supabase } from "../supabaseClient";
 
 const API_URL =  "https://api.gritfit.site/api";
 
@@ -27,28 +26,55 @@ const Auth = () => {
 
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
-    setMessage("");
-    const { error } = await supabase.auth.signUp(
-        { email, password },
-        { redirectTo: "https://www.gritfit.site/welcome?verified=true" }
-    );
-    if (error) {
-        setMessage(`❌ ${error.message}`);
-    } else {
-        setMessage("✅ Check your email to verify your account.");
+    console.log("Signup initiated...");
+
+    try {
+        const response = await axios.post(`${API_URL}/createAccount`, {
+            email,
+            password,
+        });
+        const { token, message: responseMessage } = response.data;
+
+        if (token) {
+            const userData = { email, password };
+            login(token, userData);
+
+            // ✅ Use localStorage instead of sessionStorage
+            localStorage.setItem("justSignedUp", "true");
+            console.log("🔹 LocalStorage value after setting:", localStorage.getItem("justSignedUp"));
+
+           //  console.log("✅ Navigating to /welcome...");
+            navigate("/welcome", { replace: true });
+            setMessage(responseMessage);
+        }
+    } catch (error) {
+        console.error(error);
+        setMessage(error.response ? error.response.data.message : "Error occurred");
     }
 };
 
-const handleSubmitLogin = async (e) => {
+  const handleSubmitLogin = async (e) => {
     e.preventDefault();
-    setMessage("");
     try {
-        await login(email, password);
-        navigate("/gritPhases");
+      const res = await axios.post(`${API_URL}/signIn`, {
+        email,
+        password,
+      });
+      const { token, message: responseMessage } = res.data;
+      setMessage(responseMessage);
+      if (token) {
+        const userData = { email, password };
+        login(token, userData);
+
+        // ✅ Fix: Redirect new users to /welcome, returning users to /gritPhases
+        const fromSignup = location.state?.from === "/signup";
+        navigate(fromSignup ? "/welcome" : "/gritPhases");
+      }
     } catch (error) {
-        setMessage(`❌ ${error.message}`);
+      console.error(error);
+      setMessage(error.response ? error.response.data.message : "Error occurred");
     }
-};
+  };
 
   return (
     <div className="auth-container">
