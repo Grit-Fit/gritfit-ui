@@ -7,9 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
 
-  // On mount, get the current session from Supabase and subscribe to auth state changes.
   useEffect(() => {
-    // Get initial session
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -19,9 +17,8 @@ export const AuthProvider = ({ children }) => {
     };
     getSession();
 
-    // Listen for auth state changes
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth event:", event, session);
+      console.log("Auth event:", event);
       if (session) {
         setUser(session.user);
         setAccessToken(session.access_token);
@@ -31,53 +28,31 @@ export const AuthProvider = ({ children }) => {
       }
     });
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+    return () => authListener.subscription.unsubscribe();
   }, []);
 
-  // Login using Supabase auth
-  const login = async (credentials) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: credentials.email,
-      password: credentials.password,
-    });
-    if (error) {
-      console.error("Login failed:", error.message);
-      throw error;
-    }
-    if (data.session) {
-      setUser(data.session.user);
-      setAccessToken(data.session.access_token);
-    }
-    return data;
+  const login = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    setUser(data.user);
+    setAccessToken(data.session.access_token);
   };
 
-  // Logout using Supabase auth
   const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Logout failed:", error.message);
-    }
+    await supabase.auth.signOut();
     setUser(null);
     setAccessToken(null);
   };
 
-  // Reset password: Sends a password reset email via Supabase.
-  // The email's reset link should point to your ResetPassword page.
-  const resetPassword = async (email) => {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://www.gritfit.site/reset-password', // Update with your URL
+  const sendPasswordResetEmail = async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://www.gritfit.site/reset-password'  // Set your actual reset password page URL
     });
-    if (error) {
-      console.error("Password reset failed:", error.message);
-      throw error;
-    }
-    return data;
+    if (error) throw error;
   };
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, login, logout, resetPassword }}>
+    <AuthContext.Provider value={{ user, accessToken, login, logout, sendPasswordResetEmail }}>
       {children}
     </AuthContext.Provider>
   );
