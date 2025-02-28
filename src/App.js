@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
-  useLocation,
 } from "react-router-dom";
 import Auth from "./components/Auth";
 import LogoPage from "./components/Logo";
@@ -24,80 +23,37 @@ import GymGoal from "./components/GymGoal";
 
 const AppRoutes = () => {
   const { accessToken } = useContext(AuthContext);
-  const location = useLocation();
-  const [redirectPath, setRedirectPath] = useState(null);
-  const [signupRedirect, setSignupRedirect] = useState(false);
 
-  useEffect(() => {
-    // console.log("🚀 App Loaded! Current Path:", location.pathname);
-    // console.log("✅ Access Token:", accessToken);
-    // console.log("📌 Signup Status:", localStorage.getItem("justSignedUp"));
-
-    if (accessToken) {
-      const storedSignup = localStorage.getItem("justSignedUp") === "true";
-
-      if (storedSignup) {
-        // console.log("🟢 New signup detected, redirecting to /welcome...");
-        setRedirectPath("/welcome");
-        setSignupRedirect(true);
-
-        // setTimeout(() => {
-        //   localStorage.removeItem("justSignedUp");
-        //   setSignupRedirect(false);
-        // }, 3000);
-      } else {
-        // console.log("🔵 Regular login, redirecting to /gritPhases...");
-        setRedirectPath("/gritPhases");
-      }
-    }
-  }, [accessToken]);
-
+  // If no token, show the authentication component
   if (!accessToken) {
-    // console.log("⚠️ No access token, staying on Auth page.");
     return <Auth />;
   }
 
-  if (!redirectPath) {
-  //  console.log("⏳ Waiting for redirect to be determined...");
-    return <div className="loading-screen">Loading...</div>;
-  }
-
+  // Once authenticated, display your routes.
   return (
     <Routes>
-      <Route path="/" element={<Auth />} />
-      {/* <Route
-        path="/"
-        element={
-          signupRedirect
-            ? <Navigate to="/welcome" replace />
-            : <Navigate to={redirectPath || "/gritPhases"} replace />
-        }
-      /> */}
-
-      <Route path="/login" element={!accessToken ? <Auth /> : <Navigate to="/gritPhases"  />} />
-      <Route path="/signup" element={!accessToken ? <Auth /> : <Navigate to="/welcome"  />} />
-      <Route path="/logo" element={accessToken ? <LogoPage /> : <Navigate to="/welcome" />} />
-      <Route path="/welcome" element={accessToken ? <WelcomePage /> : <Navigate to="/"  />} />
-      <Route path="/gritPhases" element={accessToken ? <GritPhases /> : <Navigate to="/" />} />
-      <Route path="/selectTheory" element={accessToken ? <NutritionTheory /> : <Navigate to="/" />} />
-      <Route path="/selectGoal" element={accessToken ? <GymGoal /> : <Navigate to="/" />} />
-      <Route path="/calorieCalc" element={accessToken ? <CalorieCalculator /> : <Navigate to="/" />} />
-      <Route path="/displayCalculation" element={accessToken ? <CalorieDisplay /> : <Navigate to="/" />} />
-      <Route path="/displayTargetCalories" element={accessToken ? <CalorieTarget /> : <Navigate to="/" />} />
-      <Route path="/macros" element={accessToken ? <CalorieMacro /> : <Navigate to="/" />} />
-      <Route path="/nextSteps" element={accessToken ? <NextStepsCarousel /> : <Navigate to="/" />} />
-      <Route path="/leftSwipe" element={accessToken ? <LeftSwipe /> : <Navigate to="/" />} />
-      <Route path="/rightSwipe" element={accessToken ? <RightSwipe /> : <Navigate to="/" />} />
-      <Route path="/gFitReport" element={accessToken ? <GFitReport /> : <Navigate to="/" />} />
-
-      {/* Default catch-all route */}
-     {/* <Route path="/" element={<AppRoutes />} /> */}
-      {/* <Route path="*" element={<Navigate to="/" />} /> */}
+      <Route path="/" element={<Navigate to="/gritPhases" replace />} />
+      <Route path="/login" element={<Navigate to="/gritPhases" replace />} />
+      <Route path="/signup" element={<Navigate to="/gritPhases" replace />} />
+      <Route path="/logo" element={<LogoPage />} />
+      <Route path="/welcome" element={<WelcomePage />} />
+      <Route path="/gritPhases" element={<GritPhases />} />
+      <Route path="/selectTheory" element={<NutritionTheory />} />
+      <Route path="/selectGoal" element={<GymGoal />} />
+      <Route path="/calorieCalc" element={<CalorieCalculator />} />
+      <Route path="/displayCalculation" element={<CalorieDisplay />} />
+      <Route path="/displayTargetCalories" element={<CalorieTarget />} />
+      <Route path="/macros" element={<CalorieMacro />} />
+      <Route path="/nextSteps" element={<NextStepsCarousel />} />
+      <Route path="/leftSwipe" element={<LeftSwipe />} />
+      <Route path="/rightSwipe" element={<RightSwipe />} />
+      <Route path="/gFitReport" element={<GFitReport />} />
+      {/* Add any other routes as needed */}
     </Routes>
   );
 };
 
-// ✅ Wrap Routes in Router
+// Wrap routes in Router
 const App = () => (
   <Router>
     <AppRoutes />
