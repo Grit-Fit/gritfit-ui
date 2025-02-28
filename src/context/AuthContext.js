@@ -1,58 +1,99 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { supabase } from '../supabaseClient';
+import { jwtDecode } from 'jwt-decode';
+import axios from '../axios';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
+  const [user, setUser] = useState(null); // Stores decoded user info
+  const [accessToken, setAccessToken] = useState(() => localStorage.getItem('accessToken') || null); // Access token stored only in localStorage
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // Flag to track manual logout
 
   useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setUser(session.user);
-        setAccessToken(session.access_token);
-      }
-    };
-    getSession();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth event:", event);
-      if (session) {
-        setUser(session.user);
-        setAccessToken(session.access_token);
-      } else {
-        setUser(null);
-        setAccessToken(null);
-      }
-    });
-
-    return () => authListener.subscription.unsubscribe();
-  }, []);
-
-  const login = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    setUser(data.user);
-    setAccessToken(data.session.access_token);
+    if (accessToken) {
+        localStorage.setItem('accessToken', accessToken);
+    } else {
+        localStorage.removeItem('accessToken');
+    }
+}, [accessToken]);
+  // Decode the access token and update the user state
+  const decodeToken = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      setUser(decoded);
+      return decoded;
+    } catch (error) {
+      console.error('Failed to decode token', error);
+      setUser(null);
+      return null;
+    }
   };
 
+// Login function
+const login = async (_, credentials) => {
+  try {
+      const response = await axios.post('api/signIn', credentials, {
+          withCredentials: true, // Include cookies
+      });
+      const { token } = response.data;
+
+      console.log("✅ Signup Successful. Storing token...");
+      
+      // ✅ Delay setting token to allow navigation to complete
+      
+          setAccessToken(token);
+          decodeToken(token);
+
+  } catch (error) {
+      console.error('Login failed:', error);
+  }
+};
+
+
+  // Logout function
+  // Logout function
   const logout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setAccessToken(null);
+    try {
+      setIsLoggingOut(true); // Set the flag to true when logging out
+      await axios.post('api/logout', {}, { withCredentials: true }); // Backend should clear the refresh token
+      setAccessToken(null);
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoggingOut(true); // Reset the flag after logout process
+    }
+  };
+  // Fetch the token from the backend via a refresh route
+  const refreshAuthToken = async () => {
+    try {
+      const response = await axios.post('/refreshToken', {}, { withCredentials: true });
+      const { accessToken } = response.data; // New access token from backend
+      setAccessToken(accessToken);
+      decodeToken(accessToken); // Decode the new token
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      logout(); // Handle logout if refresh fails
+    }
   };
 
-  const sendPasswordResetEmail = async (email) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://www.gritfit.site/reset-password'  // Set your actual reset password page URL
-    });
-    if (error) throw error;
-  };
+
+  // Check token validity on app load
+  useEffect(() => {
+    if (accessToken && !isLoggingOut) {
+      const decoded = jwtDecode(accessToken);
+      const expiryTime = decoded.exp * 1000; // Convert to milliseconds
+      console.log("expired: ", new Date(expiryTime).toUTCString());
+      const timeout = expiryTime - Date.now() - 60000; // Refresh 1 minute before expiry
+      console.log("today: ", new Date(Date.now() - 60000).toUTCString());
+  
+      const refreshTimer = setTimeout(refreshAuthToken, timeout);
+      return () => clearTimeout(refreshTimer); // Cleanup on unmount
+    }
+  }, [accessToken, isLoggingOut]);
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, login, logout, sendPasswordResetEmail }}>
+    <AuthContext.Provider value={{ user, accessToken, refreshAuthToken, login, logout  }}>
       {children}
     </AuthContext.Provider>
   );
