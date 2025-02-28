@@ -25,13 +25,22 @@ const AppRoutes = () => {
   const { accessToken } = useContext(AuthContext);
 
   // If no token, show the authentication component
-  if (!accessToken) {
-    return <Auth />;
-  }
+  
 
   // Once authenticated, display your routes.
   return (
     <Routes>
+      {!accessToken ? (
+          <>
+            <Route path="/" element={<Auth />} />
+            <Route path="/welcome" element={<WelcomePage />} />
+          </>
+        ) : (
+          <>
+            <Route path="/gritPhases" element={<GritPhases />} />
+            <Route path="*" element={<Navigate to="/gritPhases" />} />
+          </>
+        )}
       <Route path="/" element={<Navigate to="/gritPhases" replace />} />
       <Route path="/login" element={<Navigate to="/gritPhases" replace />} />
       <Route path="/signup" element={<Navigate to="/gritPhases" replace />} />
