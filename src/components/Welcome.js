@@ -15,6 +15,15 @@ const WelcomePage = () => {
 
   const [clickedIndex, setClickedIndex] = useState(null);
 
+  // add-19-24
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("verified") === "true") {
+        navigate("/welcome", { state: { fromEmailVerification: true } });
+    }
+}, [navigate]);
+
+
   const cardData = [
     { text: "Progress in the gym", locked: false },
     { text: "Overall health and longevity", locked: true },

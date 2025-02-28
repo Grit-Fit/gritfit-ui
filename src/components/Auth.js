@@ -30,7 +30,7 @@ const Auth = () => {
     setMessage("");
     const { error } = await supabase.auth.signUp(
         { email, password },
-        { redirectTo: "https://www.gritfit.site/welcome" }
+        { redirectTo: "https://www.gritfit.site/welcome?verified=true" }
     );
     if (error) {
         setMessage(`❌ ${error.message}`);
