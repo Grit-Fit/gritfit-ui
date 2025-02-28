@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from "../supabaseClient";
-import './Auth.css';  // Keeping your styling intact
-import backIcon from '../assets/back-icon.svg'; // Example, in case you have a back icon button like in the screenshots
+import "../css/Auth.css";
+import backIcon from "../assets/Back.png";
 
 const CreateAccountForm = ({ setAuthMode }) => {
     const [email, setEmail] = useState('');
