@@ -15,7 +15,6 @@ const WelcomePage = () => {
 
   const [clickedIndex, setClickedIndex] = useState(null);
 
-
   const cardData = [
     { text: "Progress in the gym", locked: false },
     { text: "Overall health and longevity", locked: true },

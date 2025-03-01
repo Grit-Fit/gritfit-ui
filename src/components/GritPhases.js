@@ -212,43 +212,50 @@ const GritPhase = () => {
   // Flipable Button (used for phases like 3, 6, etc.)
   const FlipableButton = ({ dayNumber, taskDesc, buttonImage, taskRefKey }) => {
     const [isFlipped, setIsFlipped] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const handleFlip = () => {
-      setIsFlipped((prev) => !prev);
+        setIsFlipped((prev) => !prev);
+    };
+
+    const handleOpenModal = (e) => {
+        e.stopPropagation();  // Prevent accidental flip
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setIsFlipped(false);  // Flip back when modal closes
     };
 
     return (
-      <div
-        className={`flip-card ${isFlipped ? "flipped" : ""}`}
-        onClick={handleFlip}
-      >
-        <div className="flip-card-inner">
-          {/* Front side */}
-          <div
-            ref={(el) => (taskRefs.current[taskRefKey] = el)}
-            className="flip-card-front"
-          >
-            <img
-              src={buttonImage}
-              className="button-image"
-              alt={`Task ${dayNumber}`}
-            />
-            <div className="day-label">{dayNumber}</div>
-          </div>
+        <div className={`flip-card ${isFlipped ? 'flipped' : ''}`} onClick={handleFlip}>
+            <div className="flip-card-inner">
+                <div className="flip-card-front">
+                    <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
+                    <div className="day-label">{dayNumber}</div>
+                </div>
+                <div className="flip-card-back">
+                    <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
+                    <div className="task-desc">
+                        {taskDesc}
+                        <button className="info-button" onClick={handleOpenModal}>ℹ️</button>
+                    </div>
+                </div>
+            </div>
 
-          {/* Back side */}
-          <div className="flip-card-back">
-            <img
-              src={buttonImage}
-              className="button-image"
-              alt={`Task ${dayNumber}`}
-            />
-            <div className="task-desc">{taskDesc}</div>
-          </div>
+            {showModal && (
+                <div className="modal-overlay" onClick={handleCloseModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h3>Goal Details</h3>
+                        <p>{taskDesc}</p>
+                        <button onClick={handleCloseModal}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
-      </div>
     );
-  };
+};
 
   // Render phases and their days
   const renderPhasesWithDays = (phases) => {
