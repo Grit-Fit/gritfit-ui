@@ -251,7 +251,7 @@ const GritPhase = () => {
                     <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                         <h3>Goal Details</h3>
                         <p>{taskDesc}</p>
-                        <button onClick={onClose} className="close-button">
+                        <button onClick={handleCloseModal} className="close-button">
                           ✕
                         </button>
                     </div>
