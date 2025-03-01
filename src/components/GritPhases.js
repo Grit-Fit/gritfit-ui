@@ -219,31 +219,33 @@ const GritPhase = () => {
     };
 
     const handleOpenModal = (e) => {
-        e.stopPropagation();  // Prevent accidental flip
+        e.stopPropagation();  // Prevent accidental flip while opening modal
         setShowModal(true);
     };
 
     const handleCloseModal = () => {
         setShowModal(false);
-        setIsFlipped(false);  // Flip back when modal closes
+        setIsFlipped(false);  // Reset to front side when modal closes
     };
 
     return (
         <div className={`flip-card ${isFlipped ? 'flipped' : ''}`} onClick={handleFlip}>
             <div className="flip-card-inner">
+                {/* Front Side */}
                 <div className="flip-card-front">
                     <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
                     <div className="day-label">{dayNumber}</div>
                 </div>
+
+                {/* Back Side */}
                 <div className="flip-card-back">
                     <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
-                    <div className="task-desc">
-                        {taskDesc}
-                        <button className="info-button" onClick={handleOpenModal}>ℹ️</button>
-                    </div>
+                    {/* Info button to open modal */}
+                    <button className="info-button" onClick={handleOpenModal}>ℹ️</button>
                 </div>
             </div>
 
+            {/* Modal - Shows taskDesc */}
             {showModal && (
                 <div className="modal-overlay" onClick={handleCloseModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>

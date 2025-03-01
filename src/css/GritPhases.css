@@ -289,14 +289,16 @@
   transform: rotateY(180deg);
 }
 
+
 .info-button {
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: 4px;
+  right: 4px;
   background: none;
   border: none;
-  cursor: pointer;
   font-size: 16px;
+  cursor: pointer;
+  color: #007bff;
 }
 
 .modal-overlay {
@@ -313,22 +315,30 @@
 }
 
 .modal-content {
-  background: #fff;
+  background: white;
   padding: 20px;
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
   text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .modal-content h3 {
-  margin-top: 0;
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.modal-content p {
+  margin: 0 0 15px;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .modal-content button {
-  margin-top: 10px;
-  padding: 6px 12px;
+  padding: 8px 16px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .day-label, .task-desc {
