@@ -244,7 +244,7 @@
 }
 
 .flip-card {
-  width: 80px;
+  width: 120px;
   height: 80px;
   perspective: 1000px;
   cursor: pointer;
@@ -292,8 +292,8 @@
 
 .info-button {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 24px;
+  right: 46px;
   background: none;
   border: none;
   font-size: 16px;

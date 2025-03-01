@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import SwipeImageWithSpring from "./SwipeImageWithSpring";
 import axios from "../axios";
 import "../css/NutritionTheory.css";
-import RefreshButton from "./RefreshButton.js";
+import "../css/contactUs.css";
 
 const GritPhase = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -247,11 +247,13 @@ const GritPhase = () => {
 
             {/* Modal - Shows taskDesc */}
             {showModal && (
-                <div className="modal-overlay" onClick={handleCloseModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="popup-overlay" onClick={handleCloseModal}>
+                    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                         <h3>Goal Details</h3>
                         <p>{taskDesc}</p>
-                        <button onClick={handleCloseModal}>Close</button>
+                        <button onClick={onClose} className="close-button">
+                          ✕
+                        </button>
                     </div>
                 </div>
             )}
