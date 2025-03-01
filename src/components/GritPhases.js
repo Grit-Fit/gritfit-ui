@@ -13,6 +13,7 @@ import SwipeImageWithSpring from "./SwipeImageWithSpring";
 import axios from "../axios";
 import "../css/NutritionTheory.css";
 import "../css/contactUs.css";
+import ReactDOM from 'react-dom';
 
 const GritPhase = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -219,45 +220,41 @@ const GritPhase = () => {
     };
 
     const handleOpenModal = (e) => {
-        e.stopPropagation();  // Prevent accidental flip while opening modal
+        e.stopPropagation(); // Prevent accidental flip
         setShowModal(true);
     };
 
     const handleCloseModal = () => {
         setShowModal(false);
-        setIsFlipped(false);  // Reset to front side when modal closes
+        setIsFlipped(false); // Flip back when modal closes
     };
 
     return (
-        <div className={`flip-card ${isFlipped ? 'flipped' : ''}`} onClick={handleFlip}>
-            <div className="flip-card-inner">
-                {/* Front Side */}
-                <div className="flip-card-front">
-                    <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
-                    <div className="day-label">{dayNumber}</div>
-                </div>
-
-                {/* Back Side */}
-                <div className="flip-card-back">
-                    <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
-                    {/* Info button to open modal */}
-                    <button className="info-button" onClick={handleOpenModal}>ℹ️</button>
+        <>
+            <div className={`flip-card ${isFlipped ? 'flipped' : ''}`} onClick={handleFlip}>
+                <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                        <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
+                        <div className="day-label">{dayNumber}</div>
+                    </div>
+                    <div className="flip-card-back">
+                        <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
+                        <button className="info-button" onClick={handleOpenModal}>ℹ️</button>
+                    </div>
                 </div>
             </div>
 
-            {/* Modal - Shows taskDesc */}
-            {showModal && (
-                <div className="popup-overlay" onClick={handleCloseModal}>
-                    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+            {showModal && ReactDOM.createPortal(
+                <div className="modal-overlay" onClick={handleCloseModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <h3>Goal Details</h3>
                         <p>{taskDesc}</p>
-                        <button onClick={handleCloseModal} className="close-button">
-                          ✕
-                        </button>
+                        <button className="close-button" onClick={handleCloseModal}>✕</button>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
-        </div>
+        </>
     );
 };
 
