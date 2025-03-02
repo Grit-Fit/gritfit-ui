@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import nutritionData from "./nutritionData"; // Import data file
 import "../css/nutritionPage.css"; // For consistent styling
+import "../css/gFitReport.css";
+import logo from "../assets/GritFit_Full.png";
 
 const NutritionPage = () => {
     const [selectedStore, setSelectedStore] = useState(null);
+    const [isNavOpen, setIsNavOpen] = useState(false);
 
     const handleStoreClick = (store) => {
         setSelectedStore(selectedStore === store ? null : store);
@@ -11,7 +14,12 @@ const NutritionPage = () => {
 
     return (
         <div className="nutrition-page-container">
-            <h2 className="page-title">Nutrition Information</h2>
+        <header className="gfit-report-header">
+          <div className="logo-container1">
+            <img src={logo} alt="Logo" onClick={() => setIsNavOpen(!isNavOpen)} />
+          </div>
+        </header>                    
+            <h2 className="report_header-text">Nutrition Information</h2>
 
             <ul className="nutrition-store-list">
                 {Object.keys(nutritionData).map((store) => (
@@ -27,8 +35,7 @@ const NutritionPage = () => {
 
             {selectedStore && (
                 <div className="store-food-table">
-                    <h4>Available Foods at {selectedStore}</h4>
-
+                    <h4 style= "text-align: center; font-weight: 700;">Available Foods at {selectedStore}</h4>
                     {['Proteins', 'Carbohydrates', 'Fats'].map((category) => (
                         <div key={category}>
                             <h5>{category}</h5>
