@@ -21,6 +21,7 @@ import CalorieMacro from "./components/CalorieMacro";
 import NextStepsCarousel from "./components/NextStepsCarousel";
 import NutritionTheory from "./components/NutritionTheory";
 import GymGoal from "./components/GymGoal";
+import NutritionPage from "./components/NutritionPage";
 
 const AppRoutes = () => {
   const { accessToken } = useContext(AuthContext);
@@ -89,6 +90,7 @@ const AppRoutes = () => {
       <Route path="/leftSwipe" element={accessToken ? <LeftSwipe /> : <Navigate to="/" />} />
       <Route path="/rightSwipe" element={accessToken ? <RightSwipe /> : <Navigate to="/" />} />
       <Route path="/gFitReport" element={accessToken ? <GFitReport /> : <Navigate to="/" />} />
+      <Route path="/nutrition" element={accessToken ? <NutritionPage /> : <Navigate to="/" />} />
 
       {/* Default catch-all route */}
      {/* <Route path="/" element={<AppRoutes />} /> */}
