@@ -304,7 +304,7 @@ const GFitReport = () => {
                         className="hamburger-icon"
                         size={24} // Adjust size as needed
                         onClick={() => setIsNavOpen(!isNavOpen)} 
-                        style={{ cursor: "pointer", marginLeft: "10px", marginTop: "24px" }} // Adjust spacing
+                        style={{cursor: "pointer", marginLeft: "-16px", marginTop: "10px", marginRight: "8px" }} // Adjust spacing
             />
             <img src={logo} alt="Logo" onClick={() => setIsNavOpen(!isNavOpen)} />
           </div>

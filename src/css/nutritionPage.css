@@ -25,14 +25,14 @@
 .text{
     color: #666;
     margin-bottom: 1rem;
-    font-size: 1.2rem;
-    margin-top: 10px;
+    font-size: 1rem;
+    margin-top: 16px;
 }
 
 .store-button {
     color: #e5e7eb;
     border-color: rgb(63, 133, 211);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     height: 34px;
     margin-top: -13px;
     background: linear-gradient(135deg, rgb(53, 153, 240), rgb(0, 242, 254));
