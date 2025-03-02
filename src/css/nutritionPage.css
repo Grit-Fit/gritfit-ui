@@ -19,6 +19,7 @@
     align-content: flex-start;
     flex-wrap: nowrap;
     align-items: stretch;
+    margin-top: 64px;
 }
 
 .store-button {
@@ -30,7 +31,10 @@
     background: linear-gradient(135deg, rgb(53, 153, 240), rgb(0, 242, 254));
     border-radius: 25px;
     width: 100%;
-    height: 48px;
+    height: auto;
+    text-align: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .store-button:hover {
