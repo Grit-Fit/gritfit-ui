@@ -1,5 +1,5 @@
 .nutrition-page-container {
-    padding: 20px;
+    padding: 0px 20px 20px 20px;
     background: radial-gradient(90.87% 58.95% at 53.33% 50.1%, #fff 0, #edf9fd 20%, #b7e9f7 200%);
     min-height: 100vh;
     font-family: 'Montserrat', sans-serif;
@@ -20,6 +20,13 @@
     flex-wrap: nowrap;
     align-items: stretch;
     margin-top: 64px;
+}
+
+.text{
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    margin-top: 10px;
 }
 
 .store-button {
@@ -54,6 +61,7 @@
     padding: 10px;
     max-height: 400px;
     overflow-y: auto;
+    margin-top: 28px;
 }
 
 .store-food-table h5 {
