@@ -7,6 +7,7 @@ import "../css/gFitReport.css";
 import axios from "../axios";
 import nutritionPdf from "../assets/Nutrition101PDF.pdf";
 import GeneratePdf from "./GeneratePdfButton";
+import { ChevronDown, Info, Menu } from "lucide-react";
 
 const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -299,6 +300,12 @@ const GFitReport = () => {
       <div className="main-content">
         <header className="gfit-report-header">
           <div className="logo-container1">
+          <Menu
+                        className="hamburger-icon"
+                        size={24} // Adjust size as needed
+                        onClick={() => setIsNavOpen(!isNavOpen)} 
+                        style={{ cursor: "pointer", marginLeft: "10px", marginTop: "24px" }} // Adjust spacing
+            />
             <img src={logo} alt="Logo" onClick={() => setIsNavOpen(!isNavOpen)} />
           </div>
         </header>
