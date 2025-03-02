@@ -8,11 +8,13 @@ import gfitIcon from "../assets/gfit.png";
 import signout from "../assets/singout.png";
 import ContactUs from "./contactUs";
 import { MessageSquare } from "lucide-react";
+import nutritionData from "./nutritionData"; // Importing Nutrition Data
 
 const NavBar = ({ isOpen, onClose }) => {
   const { accessToken, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [showContactPopup, setShowContactPopup] = useState(false);
+  const [selectedStore, setSelectedStore] = useState(null);
   const navbarRef = useRef(null);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ const NavBar = ({ isOpen, onClose }) => {
   const handleContactClick = (e) => {
     e.preventDefault();
     if (onClose) {
-      onClose(); 
+      onClose();
     }
     setShowContactPopup(true);
   };
@@ -72,18 +74,19 @@ const NavBar = ({ isOpen, onClose }) => {
   // NEW: Back button handler
   const handleBackButton = (e) => {
     e.preventDefault();
-    // 1) Close the navbar
     if (onClose) {
       onClose();
     }
+  };
 
-    // 2) Optionally go back in history if you want:
-    // navigate(-1);
+  // Nutrition Section Handler
+  const handleStoreClick = (store) => {
+    setSelectedStore(selectedStore === store ? null : store);
   };
 
   return (
     <>
-      <nav className={`navbar ${isOpen ? "open" : ""}`}>
+      <nav className={`navbar ${isOpen ? "open" : ""}`} ref={navbarRef}>
         <div className="navbar-header">
           <div className="logo-container-navbar">
             <img
@@ -95,7 +98,6 @@ const NavBar = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Simple button with arrow text (no imports) */}
           <button className="back-button" onClick={handleBackButton}>
             ←
           </button>
@@ -117,7 +119,7 @@ const NavBar = ({ isOpen, onClose }) => {
             </a>
           </li>
           <li>
-          <a href="#contact-us" onClick={handleContactClick}>
+            <a href="#contact-us" onClick={handleContactClick}>
               <MessageSquare size={20} className="nav-icon" />
               Contact Us
             </a>
@@ -129,12 +131,61 @@ const NavBar = ({ isOpen, onClose }) => {
             </a>
           </li>
         </ul>
+
+        {/* Nutrition Section - ADDED BELOW WITHOUT CHANGING ANYTHING ELSE */}
+        <div className="navbar-separator" />
+        <li className="nav-title">Nutrition</li>
+        <ul className="nutrition-store-list">
+          {Object.keys(nutritionData).map((store) => (
+            <li
+              key={store}
+              className={`store-button ${selectedStore === store ? "active" : ""}`}
+              onClick={() => handleStoreClick(store)}
+            >
+              {store}
+            </li>
+          ))}
+        </ul>
+
+        {selectedStore && (
+          <div className="store-food-table">
+            <h4>Available Foods at {selectedStore}</h4>
+
+            {['Proteins', 'Carbohydrates', 'Fats'].map((category) => (
+              <div key={category}>
+                <h5>{category}</h5>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Food Item</th>
+                      <th>Calories/100g</th>
+                      <th>
+                        {category === 'Proteins' ? 'Protein/100g' :
+                          category === 'Carbohydrates' ? 'Carbs/100g' : 'Fat/100g'}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {nutritionData[selectedStore]?.[category]?.map((food, index) => (
+                      <tr key={index}>
+                        <td>{food.foodItem}</td>
+                        <td>{food.calories}</td>
+                        <td>
+                          {category === 'Proteins' ? `${food.protein}g` :
+                            category === 'Carbohydrates' ? `${food.carbs}g` :
+                            `${food.fat}g`}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))}
+          </div>
+        )}
       </nav>
 
-      <ContactUs
-        isOpen={showContactPopup}
-        onClose={() => setShowContactPopup(false)}
-      />
+      <ContactUs isOpen={showContactPopup} onClose={() => setShowContactPopup(false)} />
     </>
   );
 };

@@ -247,7 +247,7 @@ const GritPhase = () => {
             {showModal && ReactDOM.createPortal(
                 <div className="modal-overlay" onClick={handleCloseModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h3>Goal Details</h3>
+                        <h3>Goal Details:</h3>
                         <p>{taskDesc}</p>
                         <button className="close-button" onClick={handleCloseModal}>✕</button>
                     </div>
