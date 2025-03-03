@@ -25,11 +25,13 @@ const Auth = () => {
   const [betaCode, setBetaCode] = useState(""); //authenticates beta code
   const [betaError, setBetaError] = useState("");
   const BETA_CODE = "MYBETA123";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   
 
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // ✅ Add loading state
     console.log("Signup initiated...");
 
     try {
@@ -60,11 +62,15 @@ const Auth = () => {
     } catch (error) {
         console.error(error);
         setMessage(error.response ? error.response.data.message : "Error occurred");
+    }  finally {
+      // 6) Done trying sign-up
+      setIsSubmitting(false);
     }
 };
 
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // ✅ Add loading state
     try {
       const res = await axios.post(`${API_URL}/signIn`, {
         email,
@@ -83,6 +89,8 @@ const Auth = () => {
     } catch (error) {
       console.error(error);
       setMessage(error.response ? error.response.data.message : "Error occurred");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -134,6 +142,12 @@ const Auth = () => {
         ) : (
           <>
             <h2 className="welcome">Create Account</h2>
+            {isSubmitting ? (
+              // Show a simple loading or spinner
+              <div style={{ marginTop: "40px" }}>
+                <p>Creating your account... Please wait.</p>
+              </div>
+            ) : (
             <div className="form-container create-account-form">
             <form onSubmit={handleSubmitSignUp}> 
                 <input
@@ -164,11 +178,9 @@ const Auth = () => {
                   <RefreshButton />
                 </div>
             </form>
-
-            
-
               {message && <p className="message">{message}</p>}
-            </div>
+              </div>
+            )}
           </>
         )}
       </div>
