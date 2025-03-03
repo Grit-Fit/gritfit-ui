@@ -1,3 +1,4 @@
+// App.js
 import React, { useContext, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -6,10 +7,12 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+import { AuthContext } from "./context/AuthContext";
 import Auth from "./components/Auth";
+import Landing from "./components/Landing";   // <-- your new Landing page component
+
 import LogoPage from "./components/Logo";
 import WelcomePage from "./components/Welcome";
-import { AuthContext } from "./context/AuthContext";
 import GritPhases from "./components/GritPhases";
 import LeftSwipe from "./components/leftSwipe";
 import RightSwipe from "./components/rightSwipe";
@@ -23,87 +26,69 @@ import NutritionTheory from "./components/NutritionTheory";
 import GymGoal from "./components/GymGoal";
 import NutritionPage from "./components/NutritionPage";
 
-const AppRoutes = () => {
+function AppRoutes() {
   const { accessToken } = useContext(AuthContext);
   const location = useLocation();
   const [redirectPath, setRedirectPath] = useState(null);
-  const [signupRedirect, setSignupRedirect] = useState(false);
 
   useEffect(() => {
-    // console.log("🚀 App Loaded! Current Path:", location.pathname);
-    // console.log("✅ Access Token:", accessToken);
-    // console.log("📌 Signup Status:", localStorage.getItem("justSignedUp"));
-
     if (accessToken) {
       const storedSignup = localStorage.getItem("justSignedUp") === "true";
-
-      if (storedSignup) {
-        // console.log("🟢 New signup detected, redirecting to /welcome...");
-        setRedirectPath("/welcome");
-        setSignupRedirect(true);
-
-        // setTimeout(() => {
-        //   localStorage.removeItem("justSignedUp");
-        //   setSignupRedirect(false);
-        // }, 3000);
-      } else {
-        // console.log("🔵 Regular login, redirecting to /gritPhases...");
-        setRedirectPath("/gritPhases");
-      }
+      setRedirectPath(storedSignup ? "/welcome" : "/gritPhases");
     }
   }, [accessToken]);
 
+  // 1) If NOT logged in:
   if (!accessToken) {
-    // console.log("⚠️ No access token, staying on Auth page.");
-    return <Auth />;
+    return (
+      <Routes>
+        {/* Show Landing at root */}
+        <Route path="/" element={<Landing />} />
+
+        {/* Existing Auth routes */}
+        <Route path="/login" element={<Auth />} />
+        <Route path="/signup" element={<Auth />} />
+
+        {/* Catch-all: unrecognized paths go back to Landing */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    );
   }
 
+  // 2) If logged in but haven't decided where to redirect yet
   if (!redirectPath) {
-  //  console.log("⏳ Waiting for redirect to be determined...");
     return <div className="loading-screen">Loading...</div>;
   }
 
+  // 3) If logged in, send them to their normal in-app routes
   return (
     <Routes>
-      <Route path="/" element={<Auth />} />
-      {/* <Route
-        path="/"
-        element={
-          signupRedirect
-            ? <Navigate to="/welcome" replace />
-            : <Navigate to={redirectPath || "/gritPhases"} replace />
-        }
-      /> */}
+      <Route path="/" element={<Navigate to={redirectPath} replace />} />
 
-      <Route path="/login" element={!accessToken ? <Auth /> : <Navigate to="/gritPhases"  />} />
-      <Route path="/signup" element={!accessToken ? <Auth /> : <Navigate to="/welcome"  />} />
-      <Route path="/logo" element={accessToken ? <LogoPage /> : <Navigate to="/welcome" />} />
-      <Route path="/welcome" element={accessToken ? <WelcomePage /> : <Navigate to="/"  />} />
-      <Route path="/gritPhases" element={accessToken ? <GritPhases /> : <Navigate to="/" />} />
-      <Route path="/selectTheory" element={accessToken ? <NutritionTheory /> : <Navigate to="/" />} />
-      <Route path="/selectGoal" element={accessToken ? <GymGoal /> : <Navigate to="/" />} />
-      <Route path="/calorieCalc" element={accessToken ? <CalorieCalculator /> : <Navigate to="/" />} />
-      <Route path="/displayCalculation" element={accessToken ? <CalorieDisplay /> : <Navigate to="/" />} />
-      <Route path="/displayTargetCalories" element={accessToken ? <CalorieTarget /> : <Navigate to="/" />} />
-      <Route path="/macros" element={accessToken ? <CalorieMacro /> : <Navigate to="/" />} />
-      <Route path="/nextSteps" element={accessToken ? <NextStepsCarousel /> : <Navigate to="/" />} />
-      <Route path="/leftSwipe" element={accessToken ? <LeftSwipe /> : <Navigate to="/" />} />
-      <Route path="/rightSwipe" element={accessToken ? <RightSwipe /> : <Navigate to="/" />} />
-      <Route path="/gFitReport" element={accessToken ? <GFitReport /> : <Navigate to="/" />} />
-      <Route path="/nutrition" element={accessToken ? <NutritionPage /> : <Navigate to="/" />} />
+      <Route path="/welcome" element={<WelcomePage />} />
+      <Route path="/gritPhases" element={<GritPhases />} />
+      <Route path="/selectTheory" element={<NutritionTheory />} />
+      <Route path="/selectGoal" element={<GymGoal />} />
+      <Route path="/calorieCalc" element={<CalorieCalculator />} />
+      <Route path="/displayCalculation" element={<CalorieDisplay />} />
+      <Route path="/displayTargetCalories" element={<CalorieTarget />} />
+      <Route path="/macros" element={<CalorieMacro />} />
+      <Route path="/nextSteps" element={<NextStepsCarousel />} />
+      <Route path="/leftSwipe" element={<LeftSwipe />} />
+      <Route path="/rightSwipe" element={<RightSwipe />} />
+      <Route path="/gFitReport" element={<GFitReport />} />
+      <Route path="/nutrition" element={<NutritionPage />} />
 
-      {/* Default catch-all route */}
-     {/* <Route path="/" element={<AppRoutes />} /> */}
-      {/* <Route path="*" element={<Navigate to="/" />} /> */}
+      {/* Catch-all: if user is logged in but hits something weird, just go to redirectPath */}
+      <Route path="*" element={<Navigate to={redirectPath} replace />} />
     </Routes>
   );
-};
+}
 
-// ✅ Wrap Routes in Router
-const App = () => (
-  <Router>
-    <AppRoutes />
-  </Router>
-);
-
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppRoutes />
+    </Router>
+  );
+}
