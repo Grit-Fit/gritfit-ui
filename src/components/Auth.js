@@ -142,12 +142,7 @@ const Auth = () => {
         ) : (
           <>
             <h2 className="welcome">Create Account</h2>
-            {isSubmitting ? (
-              // Show a simple loading or spinner
-              <div style={{ marginTop: "40px" }}>
-                <p>Creating your account... Please wait.</p>
-              </div>
-            ) : (
+            
             <div className="form-container create-account-form">
             <form onSubmit={handleSubmitSignUp}> 
                 <input
@@ -179,8 +174,7 @@ const Auth = () => {
                 </div>
             </form>
               {message && <p className="message">{message}</p>}
-              </div>
-            )}
+            </div>
           </>
         )}
       </div>
