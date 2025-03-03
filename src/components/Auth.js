@@ -22,6 +22,10 @@ const Auth = () => {
   const isLogin = location.pathname === "/login";
   const isSignup = location.pathname === "/signup";
 
+  const [betaCode, setBetaCode] = useState(""); //authenticates beta code
+  const [betaError, setBetaError] = useState("");
+  const BETA_CODE = "MYBETA123";
+
   
 
   const handleSubmitSignUp = async (e) => {
@@ -34,6 +38,12 @@ const Auth = () => {
             password,
         });
         const { token, message: responseMessage } = response.data;
+
+          // if user code mismatch, show error
+        if (betaCode.trim() !== BETA_CODE) {
+          setBetaError("Invalid Beta Code. Please check and try again."); //authenticates beta code
+          return;
+        }
 
         if (token) {
             const userData = { email, password };
@@ -139,6 +149,13 @@ const Auth = () => {
                     placeholder="Create Password*"
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                />
+                <input
+                  type="text"
+                  placeholder="Beta Code*"     //authenticates beta code
+                  value={betaCode}
+                  onChange={(e) => setBetaCode(e.target.value)}
+                  required
                 />
                 {/* ✅ Fix: Ensure button acts as submit */}
                 <button type="submit" className="createAcc-button">Create Account</button>
