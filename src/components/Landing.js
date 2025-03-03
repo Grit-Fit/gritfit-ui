@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import logo from "../assets/GritFit_Full.png";
+import { AuthContext } from "../context/AuthContext";
+import axios from "../axios";
 
 const API_URL =  "https://api.gritfit.site/api";
 
@@ -51,7 +53,7 @@ function Landing() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/betaSignup`, {  
+      const response = await axios.post(`${API_URL}/betaSignup`, {  
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
