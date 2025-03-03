@@ -51,29 +51,34 @@ function Landing() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submitting Beta Signup Form...");
 
     try {
-      const response = await axios.post(`${API_URL}/betaSignup`, {  
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+        const response = await axios.post(`${API_URL}/betaSignup`, formData);  // ✅ Pass formData directly
 
-      const data = await response.json();
+        console.log("✅ Beta Signup Response:", response.data);
 
-      if (response.ok) {
-        alert(data.message);  // Success message from server
-        setFormData({ name: '', email: '', message: '' });  // Clear the form after submission
-      } else {
-        alert("Failed to submit form. Please try again.");
-      }
+        // Show success message from server
+        alert(response.data.message);  
+
+        // Clear form after successful submission
+        setFormData({ name: '', email: '', message: '' });
+
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("An error occurred. Please try again later.");
+        console.error("❌ Error submitting beta signup form:", error);
+
+        if (error.response) {
+            // Server responded with a status code outside 2xx range
+            alert(error.response.data.message || "Failed to submit form. Please try again.");
+        } else if (error.request) {
+            // Request was made but no response received
+            alert("No response from server. Please check your network.");
+        } else {
+            // Something else happened
+            alert("An error occurred. Please try again later.");
+        }
     }
-  };
+};
 
   return (
     <>
