@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from "../assets/GritFit_Full.png";
+
+const API_URL =  "https://api.gritfit.site/api";
 
 function Landing() {
   // This effect replicates the original IntersectionObserver behavior.
@@ -31,9 +33,44 @@ function Landing() {
     return () => observer.disconnect();
   }, []);
 
-  const handleFormSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  // Function to update formData as user types
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    alert('Thanks for your interest! Our team will get back to you soon. 💪');
+
+    try {
+      const response = await fetch(`${API_URL}/betaSignup`, {  
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message);  // Success message from server
+        setFormData({ name: '', email: '', message: '' });  // Clear the form after submission
+      } else {
+        alert("Failed to submit form. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An error occurred. Please try again later.");
+    }
   };
 
   return (
