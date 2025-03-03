@@ -750,9 +750,29 @@ function Landing() {
         </p>
 
         <form className="beta-form" onSubmit={handleFormSubmit}>
-          <input type="text" placeholder="Your Name 💼" required />
-          <input type="email" placeholder="Your Email 📧" required />
-          <textarea placeholder="Tell us why you want to join 💬" required />
+          <input
+                type="text"
+                name="name"
+                placeholder="Your Name 💼"
+                value={formData.name}
+                onChange={handleChange}
+                required
+            />
+            <input
+                type="email"
+                name="email"
+                placeholder="Your Email 📧"
+                value={formData.email}
+                onChange={handleChange}
+                required
+            />
+            <textarea
+                name="message"
+                placeholder="Tell us what makes you a great beta tester! 🚀"
+                value={formData.message}
+                onChange={handleChange}
+                required
+            />
           <button type="submit" className="apply-button emoji-button">
             🔥 Apply as Beta Tester
           </button>
