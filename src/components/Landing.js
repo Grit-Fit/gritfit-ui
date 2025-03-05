@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import logo from "../assets/GritFit_Full.png";
-import { AuthContext } from "../context/AuthContext";
 import axios from "../axios";
+import "../css/Landing.css";
+import samay from "../assets/samay.jpg";
+import jay from "../assets/jay.jpg";
+import shayan from "../assets/shayan.jpg";
+import bhargav from "../assets/bhargav.jpg";
+import Slider from 'react-slick';               
+import 'slick-carousel/slick/slick.css';        
+import 'slick-carousel/slick/slick-theme.css';
+import link from '../assets/linkedin.png'; 
 
 const API_URL =  "https://api.gritfit.site/api";
 
 function Landing() {
-  // This effect replicates the original IntersectionObserver behavior.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -20,9 +27,8 @@ function Landing() {
       { threshold: 0.1 }
     );
 
-    // Select all sections except the hero plus all cards and observe them
     const elements = document.querySelectorAll(
-      'section:not(.hero), .card, .feature-card, .testimonial-card'
+      'section:not(.hero), .card, .feature-card, .testimonial-card , .founder-card'
     );
     elements.forEach((el) => {
       el.style.opacity = 0;
@@ -31,7 +37,7 @@ function Landing() {
       observer.observe(el);
     });
 
-    // Optional cleanup if needed
+   
     return () => observer.disconnect();
   }, []);
 
@@ -41,7 +47,7 @@ function Landing() {
     message: ''
   });
 
-  // Function to update formData as user types
+  
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -56,697 +62,273 @@ function Landing() {
         const response = await axios.post(`${API_URL}/betaSignup`, formData);  
         alert(response.data.message);
         setFormData({ name: '', email: '', message: '' });
-        console.log("Submitting form data:", formData);
+        window.open("https://forms.gle/tdjn5EedwoZRNWGg9", "_blank");
     } catch (error) {
         console.error("Error submitting beta signup form:", error);
         alert(error.response?.data?.message || "Failed to submit form.");
     }
 };
 
+  // Slick slider settings
+  const sliderSettings = {
+    dots: true,            
+    infinite: false,       
+    speed: 500,            
+    slidesToShow: 1,      
+    slidesToScroll: 1, 
+    centerMode: true,      
+    centerPadding: "0",    
+  };
+
 
   return (
     <>
-      {/* Inline style block for demonstration; you can place this in a .css file */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            :root {
-              --primary: #00B5FF;
-              --secondary: #00E1A0;
-              --accent: #FF5C87;
-              --dark: #121820;
-              --light: #ffffff;
-              --text-dark: #222;
-              --gradient: linear-gradient(135deg, #00B5FF, #00E1A0);
-              --background-light: linear-gradient(to bottom right, #e0f1ff, #c1f0e6);
-              --card-hover: rgba(0, 181, 255, 0.1);
-            }
-
-            * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-            }
-
-            body {
-              font-family: 'Outfit', sans-serif;
-              background: var(--background-light);
-              color: var(--text-dark);
-              scroll-behavior: smooth;
-              overflow-x: hidden;
-            }
-
-            header {
-              background: var(--gradient);
-              color: var(--light);
-              padding-top: 10px;
-              padding-bottom: 10px;
-              padding-left: 10px;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              position: sticky;
-              top: 0;
-              z-index: 1000;
-              box-shadow: 0 4px 12px rgba(0, 181, 255, 0.2);
-            }
-
-            header img {
-              height: 48px;
-              padding-right: 8px;
-            }
-
-            nav {
-              display: flex;
-              gap: 0px;
-              padding-left: 20px;
-              align-items: center;
-            }
-
-            nav a {
-              color: var(--light);
-              text-decoration: none;
-              font-weight: 600;
-              padding: 6px 12px;
-              transition: background 0.3s ease, transform 0.2s ease;
-              border-radius: 20px;
-            }
-
-            nav a:hover {
-              background: rgba(255, 255, 255, 0.15);
-              transform: translateY(-2px);
-            }
-
-            section {
-              padding: 100px 20px;
-              text-align: center;
-              position: relative;
-            }
-
-            h1, h2 {
-              font-weight: 800;
-              margin-bottom: 20px;
-              line-height: 1.2;
-            }
-
-            p {
-              max-width: 700px;
-              margin: 0 auto 30px;
-              font-size: 1.1em;
-              line-height: 1.6;
-            }
-
-            button {
-              background: var(--gradient);
-              color: var(--light);
-              padding: 16px 32px;
-              border: none;
-              border-radius: 30px;
-              font-size: 16px;
-              font-weight: 600;
-              cursor: pointer;
-              transition: all 0.3s ease;
-              box-shadow: 0 4px 15px rgba(0, 181, 255, 0.3);
-              position: relative;
-              overflow: hidden;
-              z-index: 1;
-            }
-
-            button::after {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background: linear-gradient(135deg, #00E1A0, #00B5FF);
-              z-index: -1;
-              opacity: 0;
-              transition: opacity 0.3s ease;
-            }
-
-            button:hover {
-              transform: translateY(-5px);
-              box-shadow: 0 8px 25px rgba(0, 181, 255, 0.4);
-            }
-
-            button:hover::after {
-              opacity: 1;
-            }
-
-            .user{
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .btn {
-              background: var(--gradient);
-              color: var(--light);
-              padding: 16px 32px;
-              border: none;
-              border-radius: 30px;
-              font-size: 16px;
-              font-weight: 600;
-              cursor: pointer;
-              transition: all 0.3s ease;
-              box-shadow: 0 4px 15px rgba(0, 181, 255, 0.3);
-              width: 100%;
-              height: 100%;
-
-              /* Make <a> behave like a block-level button */
-              display: inline-block;
-              text-decoration: none; /* Remove underline for links */
-
-              position: relative;
-              overflow: hidden;
-              z-index: 1;
-            }
-
-            /* Hover effect */
-            .btn:hover {
-              transform: translateY(-5px);
-              box-shadow: 0 8px 25px rgba(0, 181, 255, 0.4);
-            }
-
-            /* The gradient overlay effect */
-            .btn::after {
-              content: "";
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background: linear-gradient(135deg, #00E1A0, #00B5FF);
-              z-index: -1;
-              opacity: 0;
-              transition: opacity 0.3s ease;
-            }
-
-            .btn:hover::after {
-              opacity: 1;
-            }
-
-
-            .hero {
-              background: var(--background-light);
-              color: var(--dark);
-              position: relative;
-              overflow: hidden;
-              padding: 160px 20px 140px;
-            }
-
-            .hero::before {
-              content: '';
-              position: absolute;
-              top: -10%;
-              right: -10%;
-              width: 60%;
-              height: 70%;
-              background: radial-gradient(circle, rgba(0, 225, 160, 0.15) 0%, rgba(0, 181, 255, 0.05) 70%);
-              border-radius: 50%;
-            }
-
-            .hero::after {
-              content: '';
-              position: absolute;
-              bottom: -10%;
-              left: -10%;
-              width: 60%;
-              height: 70%;
-              background: radial-gradient(circle, rgba(0, 181, 255, 0.15) 0%, rgba(0, 225, 160, 0.05) 70%);
-              border-radius: 50%;
-            }
-
-            .hero h1 {
-              font-size: 4em;
-              background: var(--gradient);
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              margin-bottom: 30px;
-              filter: drop-shadow(0 2px 2px rgba(0, 181, 255, 0.3));
-            }
-
-            .emoji {
-              font-size: 1.5em;
-              vertical-align: middle;
-              margin-right: 10px;
-            }
-
-            .card-container {
-              display: flex;
-              flex-wrap: wrap;
-              justify-content: center;
-              gap: 20px;
-              margin-top: 40px;
-            }
-
-            .card {
-              background: var(--light);
-              padding: 30px 25px;
-              border-radius: 16px;
-              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-              margin: 15px;
-              transition: all 0.3s ease;
-              text-align: left;
-              width: 100%;
-              max-width: 300px;
-              position: relative;
-              overflow: hidden;
-              border: 1px solid rgba(0, 181, 255, 0.1);
-            }
-
-            .card:hover {
-              transform: translateY(-8px) scale(1.02);
-              box-shadow: 0 12px 40px rgba(0, 181, 255, 0.12);
-              background: linear-gradient(to bottom right, white, rgba(224, 241, 255, 0.5));
-            }
-
-            .card-icon {
-              font-size: 2em;
-              margin-bottom: 20px;
-              display: inline-block;
-              background: var(--gradient);
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-            }
-
-            .card h3 {
-              font-weight: 700;
-              margin-bottom: 15px;
-              font-size: 1.3em;
-            }
-
-            .card p {
-              font-size: 1em;
-              opacity: 0.9;
-              margin-bottom: 0;
-            }
-
-            .dark-section {
-              background: var(--dark);
-              color: var(--light);
-              padding: 100px 20px;
-              position: relative;
-              overflow: hidden;
-            }
-
-            .dark-section::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background: radial-gradient(circle at 70% 30%, rgba(0, 181, 255, 0.2) 0%, transparent 60%);
-            }
-
-            .dark-section h2 {
-              background: var(--gradient);
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              display: inline-block;
-              margin-bottom: 40px;
-              font-size: 2.5em;
-            }
-
-            .feature-card {
-              background: rgba(255, 255, 255, 0.05);
-              padding: 25px;
-              border-radius: 16px;
-              border: 1px solid rgba(255, 255, 255, 0.1);
-              backdrop-filter: blur(5px);
-              transition: all 0.3s ease;
-              text-align: left;
-              width: 100%;
-              max-width: 320px;
-            }
-
-            .feature-card:hover {
-              transform: translateY(-5px);
-              box-shadow: 0 10px 30px rgba(0, 181, 255, 0.1);
-              background: rgba(255, 255, 255, 0.08);
-            }
-
-            .testimonial-section {
-              background: linear-gradient(to bottom, rgba(224, 241, 255, 0.8), rgba(193, 240, 230, 0.8));
-              padding: 100px 20px;
-            }
-
-            .testimonial-section h2 {
-              font-size: 2.5em;
-              margin-bottom: 40px;
-              color: var(--dark);
-            }
-
-            .testimonial-card {
-              background: var(--light);
-              padding: 30px;
-              border-radius: 16px;
-              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-              width: 100%;
-              max-width: 350px;
-              position: relative;
-              text-align: left;
-            }
-
-            .testimonial-card::before {
-              content: '"';
-              position: absolute;
-              top: 20px;
-              left: 20px;
-              font-size: 5em;
-              opacity: 0.1;
-              font-family: Georgia, serif;
-              line-height: 0;
-            }
-
-            .testimonial-text {
-              font-size: 1.1em;
-              line-height: 1.6;
-              margin-bottom: 20px;
-              position: relative;
-              z-index: 1;
-            }
-
-            .testimonial-author {
-              display: flex;
-              align-items: center;
-              border-top: 1px solid rgba(0, 0, 0, 0.1);
-              padding-top: 15px;
-            }
-
-            .author-avatar {
-              width: 40px;
-              height: 40px;
-              border-radius: 50%;
-              background: var(--gradient);
-              margin-right: 15px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              color: white;
-              font-weight: bold;
-            }
-
-            .author-info h4 {
-              margin: 0;
-              font-weight: 600;
-            }
-
-            .author-info p {
-              margin: 0;
-              font-size: 0.9em;
-              opacity: 0.7;
-            }
-
-            .beta-section {
-              background: linear-gradient(to right, #e0f1ff, #c1f0e6);
-              padding: 80px 20px;
-              text-align: center;
-              position: relative;
-              overflow: hidden;
-            }
-
-            .beta-section::before {
-              content: '';
-              position: absolute;
-              top: -100px;
-              right: -100px;
-              width: 300px;
-              height: 300px;
-              background: radial-gradient(circle, rgba(0, 225, 160, 0.2) 0%, transparent 70%);
-              border-radius: 50%;
-            }
-
-            .beta-section h2 {
-              font-size: 2.2em;
-              margin-bottom: 20px;
-              color: var(--dark);
-            }
-
-            .beta-form {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              gap: 15px;
-              width: 100%;
-              max-width: 500px;
-              margin: 30px auto 0;
-              position: relative;
-              z-index: 2;
-            }
-
-            .beta-form input,
-            .beta-form textarea {
-              width: 100%;
-              padding: 18px 20px;
-              border: none;
-              border-radius: 12px;
-              font-size: 1em;
-              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-              font-family: 'Outfit', sans-serif;
-              transition: all 0.3s ease;
-            }
-
-            .beta-form input:focus,
-            .beta-form textarea:focus {
-              outline: none;
-              box-shadow: 0 6px 25px rgba(0, 181, 255, 0.15);
-              transform: translateY(-2px);
-            }
-
-            .beta-form textarea {
-              min-height: 120px;
-              resize: none;
-            }
-
-            .apply-button {
-              background: var(--gradient);
-              width: 100%;
-              padding: 18px;
-              border-radius: 12px;
-              font-weight: 700;
-              font-size: 1.1em;
-              margin-top: 10px;
-            }
-
-            .apply-button:hover {
-              transform: translateY(-5px);
-            }
-
-            .emoji-button {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 10px;
-            }
-
-            footer {
-              background: var(--dark);
-              color: var(--light);
-              padding: 40px 20px;
-              text-align: center;
-              position: relative;
-            }
-
-            footer::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 5px;
-              background: var(--gradient);
-            }
-
-            @media (max-width: 768px) {
-              .hero h1 {
-                font-size: 2.8em;
-              }
-              nav a {
-                padding: 6px 9px;
-                font-size: 0.9em;
-              }
-              .card-container {
-                align-items: center;
-              }
-              .card, .feature-card, .testimonial-card {
-                max-width: 100%;
-              }
-            }
-
-            @media (max-width: 480px) {
-              .hero h1 {
-                font-size: 2.8em;
-              }
-              nav a {
-                padding: 6px 9px;
-                font-size: 0.9em;
-              }
-              .card-container {
-                align-items: center;
-              }
-              .card, .feature-card, .testimonial-card {
-                max-width: 100%;
-              }
-            }
-
-            @keyframes fadeInUp {
-              from {
-                opacity: 0;
-                transform: translateY(30px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0);
-              }
-            }
-
-            .animate-fadeInUp {
-              animation: fadeInUp 0.8s ease forwards;
-            }
-            .delay-1 {
-              animation-delay: 0.1s;
-            }
-            .delay-2 {
-              animation-delay: 0.3s;
-            }
-            .delay-3 {
-              animation-delay: 0.5s;
-            }
-          `,
-        }}
-      />
-
-      {/* Main content structure */}
       <header>
+       <a href="#home">
         <img src={logo} alt="GritFit Logo" />
+       </a> 
         <nav>
-          <a href="#home">Home</a>
           <a href="#about">About</a>
+          <a href="#founders">Team</a>
           <a href="#contact">Join Beta</a>
         </nav>
       </header>
 
-      <section className="hero" id="home">
+      <section className="dark-section" id="home">
         <h1 className="animate-fadeInUp">Grit Today,<br />Fit Tomorrow</h1>
         <p className="animate-fadeInUp delay-1">
-          Small daily tasks designed to make gym beginners consistent and help
-          them build muscle — without the overwhelm.
+        GritFit helps you seamlessly build nutrition habits that support your training. Start simple, build consistency, and gradually level up to tracking calories—without feeling overwhelmed.
         </p>
-        {/* <button className="animate-fadeInUp delay-2">Start Your Fitness Journey</button> */}
-        <div class = "user">
+        <div className = "user">
         <a href="/login"  className="btn animate-fadeInUp delay-2">Sign In</a>
         <a href="/signup" className="btn animate-fadeInUp delay-2">Create Account</a>
         </div>
       </section>
 
-      <section id="about">
+      <section id = "about" className="dark-section">
         <h2>About GritFit</h2>
-        <p>
-          GritFit helps beginners develop gym habits through micro-tasks focused
-          on consistency, protein tracking, hydration, and reflection — all
-          essential for muscle growth.
-        </p>
-
-        <div className="card-container">
-          <div className="card">
-            <span className="card-icon">🔔</span>
-            <h3>Daily Micro-Tasks</h3>
-            <p>Small, achievable steps that add up to major gains. No more feeling lost at the gym.</p>
+        <Slider {...sliderSettings}>
+          <div>
+          <div className="feature-card">
+            <h4>What is GritFit?</h4>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
+              <li>A nutrition habit-building app designed for people training for hypertrophy.</li>
+              <li>Helps you stay accountable and build solid nutrition habits without feeling overwhelmed.</li>
+              <li>Uses an intuitive swipe-based interaction for daily habit tracking.</li>
+            </ul>
+          </div>
           </div>
 
-          <div className="card">
-            <span className="card-icon">📊</span>
-            <h3>Track Consistency</h3>
-            <p>Watch your streaks grow as you build the foundation for serious muscle gains.</p>
+          <div>
+          <div className="feature-card">
+            <h4>Why GritFit?</h4>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
+              <li>Nutrition consistency is the hardest part of muscle growth.</li>
+              <li>Most apps focus on calorie tracking & meal plans—GritFit focuses on <strong>building habits first</strong>.</li>
+              <li>No information overload, just one simple habit a day to focus on.</li>
+            </ul>
+          </div>
           </div>
 
-          <div className="card">
-            <span className="card-icon">💬</span>
-            <h3>Reflect & Improve</h3>
-            <p>Learn from what worked (or didn't) each day to level up your fitness journey.</p>
+          <div>
+          <div className="feature-card">
+            <h4>How It Works?</h4>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
+              <li>Each day, you get a <strong>GritPhase Task</strong> to complete.</li>
+              <li>Swipe right ✅ if completed, swipe left ❌ if not.</li>
+              <li>Track progress through a <strong>consistency calendar & insights</strong>.</li>
+            </ul>
           </div>
-        </div>
+          </div>
+
+          <div>
+          <div className="feature-card">
+            <h4>Who is it for?</h4>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
+              <li>Beginners starting their hypertrophy journey.</li>
+              <li>Lifters who struggle with <strong>sticking to nutrition habits</strong>.</li>
+              <li>Anyone who wants <strong>structure & accountability</strong> without micromanaging every calorie.</li>
+            </ul>
+          </div>
+          </div>
+
+          <div>
+          <div className="feature-card">
+            <h4>Why It’s Different?</h4>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
+              <li>Habit-first approach, not just numbers.</li>
+              <li>GritFit guides you through setbacks, not just successes.</li>
+              <li>No rigid meal plans—<strong>you build your own routine</strong>.</li>
+              <li>Access top macronutrients from leading U.S. grocery outlets.</li>
+              <li>Fun, engaging, and frictionless design.</li>
+            </ul>
+          </div>
+          </div>
+        
+        </Slider>
+        
       </section>
 
       <section className="dark-section">
-        <h2>Why GritFit Works</h2>
-        <div className="card-container">
+        <h2>Value Statements</h2>
+        <Slider {...sliderSettings}>
+        <div>
           <div className="feature-card">
-            <span className="emoji">✅</span>
-            <h3>Focus on Consistency</h3>
+            <h4>MISSION 🎯</h4>
             <p>
-              The #1 key to hypertrophy success that most beginners miss. We make
-              it easy to never skip a day.
+            To enable people to understand their nutritional needs and empower them with the necessary tools to maintain discipline while they enjoy their journey to a healthier lifestyle. Guided by our core belief that a positive impact should be the pinnacle of our efforts, we aim to become the product of choice when intrinsic motivation is not.
             </p>
           </div>
+        </div>  
 
+        <div>
           <div className="feature-card">
-            <span className="emoji">📚</span>
-            <h3>Science-backed Habits</h3>
+          <h4>VISION 🔭</h4>
             <p>
-              Combining nutrition, hydration & training habits that are proven to
-              maximize muscle growth.
+            We envision a future where maintaining a disciplined routine no longer feels burdensome but becomes a natural and enjoyable process. We desire to make GritFit a daily companion for individuals who lack the motivation to follow a disciplined lifestyle. Our future success will be defined impact, resourcefulness, being inspiring, and maintaining a fun environment.
             </p>
           </div>
+        </div>  
 
+        <div>
           <div className="feature-card">
-            <span className="emoji">🎉</span>
-            <h3>Celebrate Small Wins</h3>
+          <h4>PURPOSE 💡</h4>
             <p>
-              Every completed task builds momentum and gets you closer to your
-              dream physique.
-            </p>
+            To instill and promote a disciplined lifestyle through our product. We aspire to bring about a tangible difference in the lives of individuals by aiding them in their path to a sustainable and disciplined life. We believe that having an honest, disciplined, and passion-driven approach can gather amazing energy to get tasks accomplished, making us your reliable fitness partner.
+            </p> 
           </div>
-        </div>
+        </div>  
+        
+        </Slider>
       </section>
 
-      <section className="testimonial-section">
-        <h2>What Our Users Say</h2>
-        <div className="card-container">
-          <div className="testimonial-card">
-            <p className="testimonial-text">
-              "GritFit made me consistent for the first time ever. I finally see
-              my gains stacking! No cap, this app changed my fitness game."
+      <section id="founders" className="dark-section">
+        <h2 className="animate-fadeInUp">Meet The Team</h2>
+        <p className="animate-fadeInUp delay-1">
+          Our founders are dedicated individuals striving to make health and fitness exciting for everyone.
+        </p>
+        <Slider {...sliderSettings}>
+          <div>
+          <div className="feature-card animate-fadeInUp delay-2">
+            <img
+              src={jay}
+              alt="Jay Shah"
+              className="founder-image"
+            />
+            <p style={{ display: "flex", justifyContent: "center", alignItems: "baseline" }}>
+            <h3>Jay Shah</h3>
+            <a
+                href="https://www.linkedin.com/in/jayshah2000/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ marginLeft: "8px" }}
+              >
+                <img
+                  src={link}
+                  alt="LinkedIn"
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+                />
+              </a>
             </p>
-            <div className="testimonial-author">
-              
-            </div>
+            <h5>Founder</h5>
+            <p>
+              Jay is dedicated to making nutrition plan knowledge simple and accessible.
+              Inspired by his own journey to maintain a balanced diet, Jay created GritFit
+              to help others achieve their fitness goals.
+            </p>
+           
+          </div>
           </div>
 
-          <div className="testimonial-card">
-            <p className="testimonial-text">
-              "I used to skip the gym after bad days. Now I reflect, reset, and
-              show up again. The streak system is lowkey addictive!"
+          <div className="feature-card animate-fadeInUp delay-3">
+            <img
+              src={samay}
+              alt="Samay Jain"
+              className="founder-image"
+            />
+            <p style={{ display: "flex", justifyContent: "center", alignItems: "baseline" }}>
+            <h3>Samay Jain</h3>
+            <a
+                href="https://www.linkedin.com/in/samay-jain-b19583233/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ marginLeft: "8px" }}
+              >
+                <img
+                  src={link}
+                  alt="LinkedIn"
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+                />
+              </a>
             </p>
-            <div className="testimonial-author">
-              
-            </div>
+            <h5>Technical Dumbbell</h5>
+            <p>Samay, a key contributor and technical wizard at GritFit, ensures the platform is robust, user-friendly, and always evolving. Driven by a passion for tech innovation and fitness, he helps deliver a seamless experience that supports everyone’s goals.
+            </p>
           </div>
 
-          <div className="testimonial-card">
-            <p className="testimonial-text">
-              "Tracking my hydration and protein daily helped me understand my
-              body better. The micro-tasks made everything more manageable."
+          {/* Founder 2 */}
+          <div className="feature-card animate-fadeInUp delay-3">
+            <img
+              src={shayan}
+              alt="Shayan Shah"
+              className="founder-image"
+            />
+            <p style={{ display: "flex", justifyContent: "center", alignItems: "baseline" }}>
+            <h3>Shayan Shah</h3>
+            <a
+                href="https://www.linkedin.com/in/shayanshah/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ marginLeft: "8px" }}
+              >
+                <img
+                  src={link}
+                  alt="LinkedIn"
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+                />
+              </a>
             </p>
-            <div className="testimonial-author">
-             
-            </div>
+            <h5>Research & Insights Consultant</h5>
+            <p>
+            Fitness is not just a goal, it's a lifestyle. Shayan wants to help people realize that eating healthy doesn't have to be tedious. With GritFit, we aim to revolutionize the way people approach their diet, making it both exciting and effortless
+            </p>
           </div>
-        </div>
+          
+          <div className="feature-card animate-fadeInUp delay-3">
+            <img
+              src={bhargav}
+              alt="Bhargav Patel"
+              className="founder-image"
+            />
+            <p style={{ display: "flex", justifyContent: "center", alignItems: "baseline" }}>
+            <h3>Bhargav Patel</h3>
+            <a
+                href="https://www.linkedin.com/company/gritfitv1/about/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ marginLeft: "8px" }}
+              >
+                <img
+                  src={link}
+                  alt="LinkedIn"
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+                />
+              </a>
+            </p>
+            
+            <h5>Technical Consultant</h5>
+            <p>
+            Bhargav is passionate about using technology to enhance fitness and health. Drawing from his own experiences, he has played a key role in developing an app that makes habit-building and wellness accessible, helping users stay consistent and achieve their fitness goals.
+            </p>
+          </div>
+          </Slider>
       </section>
 
-      <section id="contact" className="beta-section">
-        <h2>💪 Want to be a GritFit Beta Tester? 🚀</h2>
+
+      <section id="contact" className="dark-section">
+        <h3>Want to be a GritFit Beta Tester?</h3>
         <p>
-          We're looking for beginners ready to build muscle and smash their gym
-          goals — one daily habit at a time! Apply below and join our exclusive
-          beta team.
+        Ever had an expert nutrition plan and consistency guaranteed for FREE? Just put in your contact details and we'll provide you the product to test soon!
         </p>
 
         <form className="beta-form" onSubmit={handleFormSubmit}>
@@ -756,6 +338,7 @@ function Landing() {
                 placeholder="Your Name 💼"
                 value={formData.name}
                 onChange={handleChange}
+                style={{ color: '#000' }} 
                 required
             />
             <input
@@ -764,14 +347,15 @@ function Landing() {
                 placeholder="Your Email 📧"
                 value={formData.email}
                 onChange={handleChange}
+                style={{ color: '#000' }} 
                 required
             />
             <textarea
                 name="message"
-                placeholder="Tell us what makes you a great beta tester! 🚀"
+                placeholder="Tell us what makes you a great beta tester! 🚀 (optional)"
                 value={formData.message}
                 onChange={handleChange}
-                required
+                style={{ color: '#000' }} 
             />
           <button type="submit" className="apply-button emoji-button">
             🔥 Apply as Beta Tester
@@ -780,8 +364,35 @@ function Landing() {
       </section>
 
       <footer>
-        &copy; 2025 GritFit. Build Consistency. Build Muscle.
-      </footer>
+  <p>2025 GritFit<br></br> Swipe. Commit. Transform</p>
+
+  
+  <p>
+    Need help? Email us at{" "}
+    <a href="mailto:support@gritfit.com" style={{ color: "#fff", textDecoration: "underline" }}>
+      support@gritfit.com
+    </a>
+  </p>
+
+  
+  <p style={{ display: "flex", justifyContent: "center" }}>
+    Connect with us:
+    
+    <a
+      href="https://www.linkedin.com/company/gritfitv1/about/"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ marginLeft: "8px" }}
+    >
+      <img
+        src={link}
+        alt="LinkedIn"
+        style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+      />
+    </a>
+  </p>
+</footer>
+    
     </>
   );
 }
