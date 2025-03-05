@@ -335,7 +335,7 @@ const GFitReport = () => {
                   <PieChartComponent userProgress={taskData} />
                 </div>
                 <div className="pie_section">
-                  <h3>Fitness Guide</h3>
+                <div className="pie-heading">Fitness Guide</div>
                   <p>
                    Ready to dive deeper into your nutrition? Download our comprehensive "Nutrition 101" guide to learn all you need to start eating healthier today!
                   </p>
