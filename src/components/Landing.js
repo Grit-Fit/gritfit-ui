@@ -83,7 +83,7 @@ function Landing() {
 
   return (
     <>
-      <header>
+      <header classname="landing">
        <a href="#home">
         <img src={logo} alt="GritFit Logo" />
        </a> 
@@ -95,7 +95,7 @@ function Landing() {
       </header>
 
       <section className="dark-section" id="home">
-        <h1 className="animate-fadeInUp">Grit Today,<br />Fit Tomorrow</h1>
+        <h1 className="landingh1 animate-fadeInUp">Grit Today,<br />Fit Tomorrow</h1>
         <p className="animate-fadeInUp delay-1">
         GritFit helps you seamlessly build nutrition habits that support your training. Start simple, build consistency, and gradually level up to tracking calories—without feeling overwhelmed.
         </p>
@@ -106,7 +106,7 @@ function Landing() {
       </section>
 
       <section id = "about" className="dark-section">
-        <h2>About GritFit</h2>
+        <h2 className='landingh2'>About GritFit</h2>
         <Slider {...sliderSettings}>
           <div>
           <div className="feature-card">
@@ -170,7 +170,7 @@ function Landing() {
       </section>
 
       <section className="dark-section">
-        <h2>Value Statements</h2>
+        <h2 className='landingh2'>Value Statements</h2>
         <Slider {...sliderSettings}>
         <div>
           <div className="feature-card">
@@ -203,7 +203,7 @@ function Landing() {
       </section>
 
       <section id="founders" className="dark-section">
-        <h2 className="animate-fadeInUp">Meet The Team</h2>
+        <h2 className="landingh2 animate-fadeInUp">Meet The Team</h2>
         <p className="animate-fadeInUp delay-1">
           Our founders are dedicated individuals striving to make health and fitness exciting for everyone.
         </p>

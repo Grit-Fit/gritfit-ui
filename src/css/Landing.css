@@ -33,7 +33,7 @@ body {
 }
 
 /* Header */
-header {
+.landing {
   background: var(--gradient);
   color: var(--light);
   padding-top: 10px;
@@ -74,15 +74,10 @@ nav a:hover {
   transform: translateY(-2px);
 }
 
-/* Sections */
-section {
-  padding: 100px 20px;
-  text-align: center;
-  position: relative;
-}
+
 
 /* Headings */
-h1, h2 {
+.landingh1, .landingh2 {
   font-weight: 800;
   margin-bottom: 20px;
   line-height: 1.2;
@@ -97,7 +92,7 @@ p {
 }
 
 /* Buttons */
-button {
+.apply-button {
   background: var(--gradient);
   color: var(--light);
   padding: 16px 32px;
@@ -113,7 +108,7 @@ button {
   z-index: 1;
 }
 
-button::after {
+.apply-button::after {
   content: "";
   position: absolute;
   top: 0;
@@ -126,12 +121,12 @@ button::after {
   transition: opacity 0.3s ease;
 }
 
-button:hover {
+.apply-button:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(0, 181, 255, 0.4);
 }
 
-button:hover::after {
+.apply-button:hover::after {
   opacity: 1;
 }
 
@@ -269,7 +264,7 @@ margin-right: auto;
   background: linear-gradient(to bottom right, white, rgba(224, 241, 255, 0.5));
 }
 
-.card-icon {
+.landingcard-icon {
   font-size: 2em;
   margin-bottom: 20px;
   display: inline-block;
@@ -304,6 +299,7 @@ margin-right: auto;
   padding: 100px 20px;
   position: relative;
   overflow: hidden;
+  text-align: center;
 }
 
 .dark-section::before {
