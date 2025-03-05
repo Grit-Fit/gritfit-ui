@@ -87,7 +87,7 @@ function Landing() {
        <a href="#home">
         <img src={logo} alt="GritFit Logo" />
        </a> 
-        <nav>
+        <nav className='landingnav'>
           <a href="#about">About</a>
           <a href="#founders">Team</a>
           <a href="#contact">Join Beta</a>
