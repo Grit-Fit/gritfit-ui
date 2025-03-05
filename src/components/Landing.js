@@ -370,7 +370,7 @@ function Landing() {
   <p>
     Need help? Email us at{" "}
     <a href="mailto:support@gritfit.site" style={{ color: "#fff", textDecoration: "underline" }}>
-      support@gritfit.com
+      support@gritfit.site
     </a>
   </p>
 
