@@ -226,7 +226,7 @@ function Landing() {
                 <img
                   src={link}
                   alt="LinkedIn"
-                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle" , borderRadius: "3px"}}
                 />
               </a>
             </p>
@@ -257,7 +257,7 @@ function Landing() {
                 <img
                   src={link}
                   alt="LinkedIn"
-                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle", borderRadius: "3px" }}
                 />
               </a>
             </p>
@@ -284,7 +284,7 @@ function Landing() {
                 <img
                   src={link}
                   alt="LinkedIn"
-                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle", borderRadius: "3px" }}
                 />
               </a>
             </p>
@@ -303,7 +303,7 @@ function Landing() {
             <p style={{ display: "flex", justifyContent: "center", alignItems: "baseline" }}>
             <h3>Bhargav Patel</h3>
             <a
-                href="https://www.linkedin.com/company/gritfitv1/about/"
+                href="https://www.linkedin.com/in/bhargav2024/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ marginLeft: "8px" }}
@@ -311,7 +311,7 @@ function Landing() {
                 <img
                   src={link}
                   alt="LinkedIn"
-                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle", borderRadius: "3px" }}
                 />
               </a>
             </p>
@@ -369,7 +369,7 @@ function Landing() {
   
   <p>
     Need help? Email us at{" "}
-    <a href="mailto:support@gritfit.com" style={{ color: "#fff", textDecoration: "underline" }}>
+    <a href="mailto:support@gritfit.site" style={{ color: "#fff", textDecoration: "underline" }}>
       support@gritfit.com
     </a>
   </p>
