@@ -83,11 +83,11 @@ function Landing() {
 
   return (
     <>
-      <header classname="landing">
+      <header className="landing">
        <a href="#home">
         <img src={logo} alt="GritFit Logo" />
        </a> 
-        <nav className='landingnav'>
+        <nav>
           <a href="#about">About</a>
           <a href="#founders">Team</a>
           <a href="#contact">Join Beta</a>
