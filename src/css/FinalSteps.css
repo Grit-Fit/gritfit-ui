@@ -149,7 +149,7 @@
   /* Responsive adjustments */
   @media (max-width: 480px) {
     .final-steps-container {
-      padding: 20px;
+      padding: 0px;
     }
     .final-logo {
       width: 120px;

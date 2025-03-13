@@ -144,7 +144,7 @@
   /* Responsive for smaller screens */
   @media (max-width: 480px) {
     .welcome-container {
-      padding: 20px;
+      padding: 0px;
     }
     .welcome-back-button {
       top: 16px;
