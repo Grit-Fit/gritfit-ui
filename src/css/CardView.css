@@ -1,0 +1,687 @@
+.gritphase-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    height: 70px; 
+    background-color: #fff;
+    padding: 0 1rem; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    /* box-shadow: 0 1px 4px rgba(0,0,0,0.1); */
+  }
+  
+  .logo-container-task {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-gritPhases-task {
+    width: 40px;
+    height: 40px;
+    object-fit: contain; 
+  }
+
+  .logo-gritPhases-header{
+    
+  }
+  
+  
+  .header-phase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .phase-title {
+    font-size: 1.2rem;
+    margin: 6px;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .phase-row{
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin-left: -22px;
+    margin-top: 30px;
+  }
+  
+  /* Progress bar container */
+  .progress-bar-container {
+    width: 130px;
+    height: 8px;
+    background-color: #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .progress-bar-fill {
+    height: 100%;
+    background-color: #13D7E9FF;
+    transition: width 0.3s;
+  }
+  
+  /* Right side icon */
+  .grid-icon {
+    cursor: pointer;
+    color: #4d4dc3;
+  }
+  
+
+  .cardview-container {
+    /* Let header remain fixed, so add padding-top */
+    padding-top: 60px; 
+    min-height: 100vh;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 60px;
+  }
+  
+  .loading-text,
+  .error-text {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: #666;
+  }
+  
+  .card-wrapper {
+    width: 100%;
+    max-width: 400px;
+    margin: 2rem auto;
+    position: relative;
+  }
+  
+
+  .big-card {
+    width: 90%;
+    background: linear-gradient(180deg, #13D7E9FF 33%, #5677B8FF 83%);
+    color: #fff;
+    border-radius: 12px;
+    padding: 2rem 1rem;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    cursor: grab;
+    user-select: none;
+    position: relative;
+    min-height: 620px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .task-descrip {
+    flex: 1;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    text-align: center;
+    font-size: 1.3rem;
+    line-height: 1.4;
+    max-width: 80%; 
+    margin: 0 auto;
+    margin-top: -50px;
+  }
+
+  .task-date {
+    margin-top: 1rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+
+  .swipe-hints {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .left-hint,
+  .right-hint {
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .right-hint {
+    margin-top: -140px;
+    margin-left: -10px;
+  }
+
+  .left-hint{
+    margin-left: -24px;
+  }
+  
+  .swipe-left,
+  .swipe-right {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /************************************************************
+    PLACEHOLDER / NO-TASK CARD
+  *************************************************************/
+  .placeholder-card {
+    width: 90%;
+    background: linear-gradient(
+    180deg,
+    rgba(19, 215, 233, 0.5) 33%,
+    rgba(86, 119, 184, 0.5) 83%
+  );
+    color: #fff;
+    border-radius: 12px;
+    padding: 2rem 1rem;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    cursor: grab;
+    user-select: none;
+    position: relative;
+    min-height: 620px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    left: 20px;
+  }
+  
+  .placeholder-logo {
+    width: 140px;
+    margin-bottom: 4rem;
+    object-fit: contain;
+    white-space: nowrap;
+  }
+  
+  .placeholder-title {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+  
+  .placeholder-text {
+    font-size: 1rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+  
+  .placeholder-date {
+    font-size: 0.9rem;
+    color: #ffffff;
+  }
+  
+  /************************************************************
+    MEDIA QUERIES (EXAMPLES)
+  *************************************************************/
+  /* Tablet (>=768px) */
+  @media (min-width: 768px) {
+    .phase-title {
+      font-size: 1.4rem;
+    }
+    .big-card {
+      min-height: 750px;
+    }
+    .placeholder-card {
+      min-height: 750px;
+    }
+  }
+  
+  /* Desktop (>=1024px) */
+  @media (min-width: 1024px) {
+    .phase-title {
+      font-size: 1.6rem;
+    }
+    .big-card {
+      min-height: 500px;
+    }
+    .placeholder-card {
+      min-height: 500px;
+    }
+  }
+
+
+  /************************************************************
+  LEFTSWIPE.CSS BELOW (verbatim)
+************************************************************/
+
+.fullpage-left {
+  background: linear-gradient(180deg, #EFB034FF 0%, #EF5634FF 47%);
+  width: 100vw;
+  min-height: 100vh;
+  animation: fadeIn 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-left {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 1rem;
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: transparent;
+}
+
+.logo-left {
+  display: none;
+}
+
+.undo_swipe_btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: black;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 6px 10px;
+  margin-left: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.undo{
+  display: flex;
+  gap: 8px;
+  color: black;
+  font-weight: 700;
+  margin-left: 160px;
+}
+
+.undo_swipe_btn:hover {
+  color: #333;
+  background: rgba(255,255,255,0.5);
+}
+
+.body-leftSwipe {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 1rem 1rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.body_text {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.goal-selection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.goal-buttons {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.goalBtn {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  color: #FF9A9E;
+  background-color: #fff;
+  border: 2px solid #FF9A9E;
+  border-radius: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.goalBtn:hover {
+  background: #ffe7e8;
+}
+
+.body_images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5rem;          
+  margin: 2rem 0;
+  width: 100%;
+  height: auto;
+}
+
+.reason-card {
+  width: 90px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.reason-card:hover {
+  transform: scale(1.05);
+}
+.reason-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+}
+.selected-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  animation: fadeIn 0.3s ease forwards;
+}
+.selected-button {
+  width: 90px !important;
+  height: 90px !important;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  object-fit: contain;
+  position: static !important;
+  animation: scaleUp 0.3s ease forwards;
+}
+.its-ok-text {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+.other-reason-container {
+  width: 100%;
+  max-width: 500px; 
+  margin: 20px 0;
+}
+.other-reason-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 2px solid #FF9A9E;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: #333;
+  outline: none;
+}
+.other-reason-input::placeholder {
+  color: rgba(231, 140, 139, 0.8);
+}
+.other-reason-input:focus {
+  border-color: #FF9A9E;
+  box-shadow: 0 0 0 2px rgba(255, 154, 158, 0.2);
+}
+.doneBtn {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-top: 1rem;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+}
+.doneBtn:hover {
+  background: #333;
+}
+.doneBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.pulse-button {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleUp {
+  from { transform: scale(0.8); opacity: 0.5; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@media screen and (max-width: 768px) {
+  .body_text {
+    font-size: 1.3rem;
+    margin-top: 60px;
+  }
+  .body_images img {
+    width: 80px;
+    height: 80px;
+  }
+  .selected-button {
+    width: 80px !important;
+    height: 80px !important;
+  }
+}
+@media screen and (max-width: 480px) {
+  .header-left { height: 50px; }
+  .undo_swipe_btn {
+    font-size: 0.9rem;
+    padding: 4px 8px;
+  }
+  .body_text {
+    font-size: 1.1rem;
+    margin-top: 7rem;
+  }
+  .body_images {
+    margin: 1.5rem 0;
+    margin-top: 5.5rem;
+  }
+  .body_images img {
+    width: 70px;
+    height: 70px;
+  }
+  .selected-button {
+    width: 70px !important;
+    height: 70px !important;
+  }
+  .other-reason-container {
+    max-width: 300px;
+  }
+  .doneBtn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/************************************************************
+  RIGHTSWIPE.CSS BELOW (verbatim)
+************************************************************/
+
+.fullpage {
+  background: linear-gradient(180deg, #1DD75BFF 0%, #D79D1DFF 100%);
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+.header-rightSwipe {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #bde5c8;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  z-index: 1000;
+}
+
+.btn-rightSwipe {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2b7a4b;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.body-text {
+  color: black;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  text-align: center;
+  flex-grow: 0.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(24px, 5vw, 36px);
+  max-width: 100%;
+  padding: 0 20px;
+  line-height: 1.4;
+  margin-top: 66px;
+}
+
+.swipe-icon {
+  margin-right: 10px;
+  animation: bounceLeft 1.5s infinite;
+}
+
+.logo-rightSwipe {
+  width: 120px;
+  cursor: pointer;
+}
+
+.btn-right {
+  display: flex;
+  align-items: center;
+}
+
+.chev {
+  stroke: rgba(72, 159, 88, 1);
+  width: clamp(18px, 4vw, 24px);
+  height: auto;
+}
+
+@media screen and (max-width: 767px) {
+  .body-text {
+    font-size: 20px;
+  }
+  .doneBtnRight {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(to right, #42c966, #2b7a4b);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+  .pulse-button {
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .doneBtnRight {
+    min-width: 150px;
+  }
+}
+
+.error-message {
+  color: #ff4444;
+  text-align: center;
+  margin: 10px 0;
+  padding: 8px;
+}
+
+.doneBtnRight {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(17px, 1.7vw, 15px);
+  padding: 8px 35px;
+  background-color: black;
+  width: 150px;
+  border: 2px solid rgba(72, 159, 88, 1);
+  border-radius: 15px;
+  font-weight: light;
+  display: block;
+  margin: 0 auto;
+}
+
+.btn-rightSwipe,
+.logo-rightSwipe,
+.chev {
+  transition: all 0.3s ease;
+}
+
+.btn-right:hover {
+  opacity: 0.8;
+}
+
+.fade-in {
+  animation: fadeInSub 2s forwards ease-in-out;
+}
+
+@keyframes fadeInSub {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+

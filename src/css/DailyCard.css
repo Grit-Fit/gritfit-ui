@@ -1,0 +1,45 @@
+/* src/components/DailyCard.css */
+
+.dailyCardContainer {
+    width: 85%;
+    max-width: 400px;
+    margin: 2rem auto;
+    background: linear-gradient(to bottom, #00bfff, #5ec8f2);
+    border-radius: 12px;
+    color: #fff;
+    padding: 1.5rem 1rem;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .dailyCardHeader {
+    text-align: center;
+  }
+  
+  .dailyCardDate {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dailyCardDesc {
+    text-align: center;
+    margin: 1rem 0;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  
+  /* If locked, show an overlay or text */
+  .dailyCardLockedOverlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0,0,0,0.4);
+    backdrop-filter: blur(2px);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #fff;
+  }
+  

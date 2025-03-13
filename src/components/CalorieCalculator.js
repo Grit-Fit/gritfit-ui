@@ -1,50 +1,57 @@
+// src/components/CalorieCalculator.js
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/GritFit_Full.png";
 import female_icon from "../assets/female.png";
 import male_icon from "../assets/male.png";
-import "../css/CalorieCalculator.css";
-import "../css/NutritionTheory.css";
-// axios is assumed to be pre-configured in ../axios (with baseURL, interceptors, etc.)
+import { PieChart } from "react-minimal-pie-chart";
 import axios from "../axios";
 import { useAuth } from "../context/AuthContext";
+import "../css/CalorieCalculator.css";
+import "../css/CardView.css";
+import calc from "../assets/calc.png";
+import TabBar from "./TabBar";
 
-const CalorieCalculator = () => {
+export default function CalorieCalculator() {
+  // 1) States for user inputs
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("male");
-  const [weight, setWeight] = useState(""); // Default weight in lbs
-  const [weightUnit, setWeightUnit] = useState("lbs"); // Default unit for weight
-  const [height, setHeight] = useState(""); // Default height in feet/inches
-  const [heightUnit, setHeightUnit] = useState("feet"); // Default unit for height
+  const [weight, setWeight] = useState("");
+  const [weightUnit, setWeightUnit] = useState("lbs");
+  const [height, setHeight] = useState("");
+  const [heightUnit, setHeightUnit] = useState("feet");
   const [activity, setActivity] = useState(2);
-  const { accessToken, refreshAuthToken } = useAuth(); 
 
-  const [maintenance, setMaintenance] = useState(2500);
-  const [macros, setMacros] = useState({ protein: 150, carbs: 300, fats: 70 });
+  // 2) Goal => "recomp", "bulk", "cut"
+  const [goal, setGoal] = useState("recomp");
 
+  // 3) "maintenance" for the base Mifflin-St Jeor cals, "theoryCals" for goal-adjusted cals
+  const [maintenance, setMaintenance] = useState(0);    // raw Mifflin cals
+  const [theoryCals, setTheoryCals] = useState(0);      // +500/-500 if needed
+
+  // 4) Macros from the raw "maintenance"
+  const [macros, setMacros] = useState({ protein: 0, fats: 0, carbs: 0 });
+
+  const { accessToken, refreshAuthToken } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { calGoal } = location.state || {};
 
-  const genderIcons = {
-    male: male_icon,
-    female: female_icon,
-  };
-
+  // If no token, try refreshing
   useEffect(() => {
-    if (!accessToken) refreshAuthToken();
+    if (!accessToken) {
+      refreshAuthToken();
+    }
   }, [accessToken, refreshAuthToken]);
 
+  // Optionally fetch user data from your DB
   useEffect(() => {
     const fetchNutritionData = async () => {
       try {
-        const response = await axios.get("/api/getUserNutrition", {
-          // If your server requires a token, you might do:
-           headers: { Authorization: `Bearer ${accessToken}` }
+        const res = await axios.get("/api/getUserNutrition", {
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
-        if (response.data?.data) {
-          const userData = response.data.data;
+        if (res.data?.data) {
+          const userData = res.data.data;
           setAge(userData.age ?? "");
           setGender(userData.gender ?? "male");
           setWeight(userData.weight ?? "");
@@ -53,325 +60,328 @@ const CalorieCalculator = () => {
           setHeightUnit(userData.height_unit ?? "feet");
           setActivity(userData.activity ?? 2);
 
-          // If you also saved maintenance_calories in DB, you can set it:
           if (userData.maintenance_calories) {
+            // For convenience, assume the DB only stored the base Mifflin. 
+            // You can also store the "theory" if you want.
             setMaintenance(userData.maintenance_calories);
-            // Optionally compute macros from that if you want
           }
         }
       } catch (error) {
-        console.error("Error fetching user nutrition data:", error);
-        // it's okay if user doesn't have data yet
+        console.error("Error fetching user data:", error);
       }
     };
+    if (accessToken) {
+      fetchNutritionData();
+    }
+  }, [accessToken]);
 
-    fetchNutritionData();
-  }, []);
-
-  // 2. For user convenience, also read from localStorage (optional)
-  //    If you want to fallback on localStorage when DB is empty, or vice versa.
-  useEffect(() => {
-    const savedAge = localStorage.getItem("cc_age");
-    const savedGender = localStorage.getItem("cc_gender");
-    const savedWeight = localStorage.getItem("cc_weight");
-    const savedWeightUnit = localStorage.getItem("cc_weightUnit");
-    const savedHeight = localStorage.getItem("cc_height");
-    const savedHeightUnit = localStorage.getItem("cc_heightUnit");
-    const savedActivity = localStorage.getItem("cc_activity");
-
-    if (savedAge) setAge(savedAge);
-    if (savedGender) setGender(savedGender);
-    if (savedWeight) setWeight(savedWeight);
-    if (savedWeightUnit) setWeightUnit(savedWeightUnit);
-    if (savedHeight) setHeight(savedHeight);
-    if (savedHeightUnit) setHeightUnit(savedHeightUnit);
-    if (savedActivity) setActivity(parseInt(savedActivity, 10));
-  }, []);
-
-  // 3. Whenever user changes a field, store it in localStorage
-  //    (so if they refresh mid-flow, they don't lose it)
-  useEffect(() => {
-    localStorage.setItem("cc_age", age);
-    localStorage.setItem("cc_gender", gender);
-    localStorage.setItem("cc_weight", weight);
-    localStorage.setItem("cc_weightUnit", weightUnit);
-    localStorage.setItem("cc_height", height);
-    localStorage.setItem("cc_heightUnit", heightUnit);
-    localStorage.setItem("cc_activity", activity.toString());
-  }, [age, gender, weight, weightUnit, height, heightUnit, activity]);
-
-
-  const activityLabels = [
-    "🛋️ Couch Potato",
-    "🐢 Slow & Steady",
-    "🚶‍♂️ Daily Walker",
-    "🏋️ Gym Regular",
-    "🏃‍♂️💨 Non-Stop Hustler",
-  ];
-
-  const handleActivityChange = (e) => {
-    setActivity(parseInt(e.target.value, 10));
-  };
-
-  // 4. Calculate the user’s maintenance & macros, then navigate or store
+  // 5) Calculation
   const handleCalculate = async () => {
     if (!age || !gender || !weight || !height || !activity) {
       alert("Please fill in all fields");
       return;
     }
 
-    console.log("Age:", age);
-    console.log("Gender:", gender);
-    console.log("Weight:", weight);
-    console.log("Height:", height);
-    console.log("Activity:", activity);
-
+    // Convert weight => kg if needed
     const weightKg = weightUnit === "lbs" ? weight * 0.453592 : weight;
 
+    // Convert height => cm
     let heightCm = 0;
     if (heightUnit === "feet") {
-      const sanitized = height.replace(/['"]/g, ""); // remove ' and "
+      const sanitized = height.replace(/['"]/g, "");
       const [feetStr, inchesStr] = sanitized.split(" ");
       const feet = parseFloat(feetStr) || 0;
       const inches = parseFloat(inchesStr) || 0;
       heightCm = feet * 30.48 + inches * 2.54;
     } else {
-      // cm
       heightCm = parseFloat(height);
     }
 
-    // Basic BMR
+    // Mifflin-St Jeor
     const bmr =
       gender === "male"
         ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
         : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
 
-    const activityMultiplier = [1.2, 1.375, 1.55, 1.725, 1.9];
-    const maintenanceCal = Math.round(bmr * activityMultiplier[activity - 1]);
+    // Activity factor array
+    const actMultipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
+    const baseMaintenance = Math.round(bmr * actMultipliers[activity - 1]);
 
-    const proteinCalories = maintenanceCal * 0.25;
-    const carbCalories = maintenanceCal * 0.5;
-    const fatCalories = maintenanceCal * 0.25;
-
-    const macrosData = {
-      protein: Math.round(proteinCalories / 4),
-      carbs: Math.round(carbCalories / 4),
-      fats: Math.round(fatCalories / 9),
-    };
-
-    setMaintenance(maintenanceCal);
-    setMacros(macrosData);
-
-    // 5. Save data to the DB (including new maintenanceCal, etc.)
-    try {
-      await axios.post("/api/saveUserNutrition", {
-        age,
-        gender,
-        weight,
-        weightUnit,
-        height,
-        heightUnit,
-        activity,
-        maintenanceCalories: maintenanceCal,
-      }, {
-         headers: { Authorization: `Bearer ${accessToken}` },
-      });
-
-      console.log("Saved user nutrition data to DB!");
-    } catch (error) {
-      console.error("Error saving user data:", error);
+    // Adjust for goal => "theoryCals"
+    let finalCals = baseMaintenance;
+    if (goal === "bulk") {
+      finalCals += 500;
+    } else if (goal === "cut") {
+      finalCals -= 500;
     }
 
-    // Then navigate to the next page or show them the results
-    navigate("/displayCalculation", {
-      state: {
-        maintenanceCal,
-        macrosData,
-        calGoal,
-      },
-    });
+    // The macros are from the raw "maintenance" only
+    const proteinCal = baseMaintenance * 0.25;
+    const carbCal = baseMaintenance * 0.5;
+    const fatCal = baseMaintenance * 0.25;
+
+    const macrosData = {
+      protein: Math.round(proteinCal / 4),
+      carbs: Math.round(carbCal / 4),
+      fats: Math.round(fatCal / 9),
+    };
+
+    // Update state
+    setMaintenance(baseMaintenance); 
+    setTheoryCals(finalCals);       
+    setMacros(macrosData);
+
+    // Save data to DB if you want
+    try {
+      await axios.post(
+        "/api/saveUserNutrition",
+        {
+          age,
+          gender,
+          weight,
+          weightUnit,
+          height,
+          heightUnit,
+          activity,
+          maintenanceCalories: baseMaintenance,
+          // If you want to store finalCals => add "goalCalories: finalCals"
+        },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+    } catch (err) {
+      console.error("Error saving user data:", err);
+    }
   };
 
+  // 6) Navigation
+  const handleBack = () => {
+    navigate(-1);
+  };
+  const handleBackProfile = () => {
+    navigate("/UserProfile");
+  };
+
+  // Data for the "maintenance-based" pie chart
+  const chartData = [
+    { title: "Protein", value: macros.protein, color: "#4caf50" },
+    { title: "Fats", value: macros.fats, color: "#ff9800" },
+    { title: "Carbs", value: macros.carbs, color: "#2196f3" },
+  ];
 
   return (
-    <div className="calculatorContainer">
-      <div className="contentWrapper">
-        <div className="theory-header">
-          <div>
-            <ChevronLeft
-              className="chevron-left"
-              onClick={() => window.history.back()}
-            />
+    <>
+    <header className="gritphase-header">
+        <ChevronLeft className="backIcon" onClick={handleBackProfile} />
+                <img src={logo} alt="Logo" className="logo-gritPhases-header" style={{marginLeft: "-12rem"}}  onClick={handleBackProfile}/>
+                <div className="phase-row">
+                </div>
+        </header>
+    <div className="calcContainer">
+    <div className="report_header_cal">
+            <div className="report_header-text"><img src = {calc} />Calorie Calculator</div>
           </div>
-          <div className="logo-container-nut">
-            <img src={logo} alt="Logo" className="logo-gritPhases-nut" />
-          </div>
-        </div>
+      <div className="calcContentWrapper">
 
-        <h3 className="cal-title">Set Your Fuel!</h3>
-        <p className="description">
-          We’ll help you discover your daily target calorie, tailored just for you!
-        </p>
-
-        <div className="inputGrid">
+        {/* 2x2 Grid => Age, Gender, Weight, Height */}
+        <div className="inputsGrid">
           {/* Age */}
-          <div className="inputContainer">
-            <div className="inputBox">
-              <input
-                type="number"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                min="0"
-                className="inputValue"
-                aria-label="Age"
-                placeholder="25"
-              />
-              <div className="unitWrapper">
-                <div className="unitText">Years</div>
-              </div>
-            </div>
-            <div className="inputLabel">Age</div>
+          <div className="infoBlock">
+            <label className="infoLabel">Age</label>
+            <input
+              type="number"
+              className="infoInput"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              placeholder="25"
+            />
+            Years
           </div>
-
-          {/* Gender Selector */}
-          <div className="inputContainer">
-            <div className="inputBox">
-              <img
-                src={genderIcons[gender || "male"]}
-                alt="gender"
-                className="genderImage"
-              />
-              <div className="genderWrapper">
-                <select
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                  className="selectGender"
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-            </div>
-            <div className="inputLabel">Gender</div>
+          {/* Gender */}
+          <div className="infoBlock">
+            <label className="infoLabel">Gender</label>
+            <img
+              src={gender === "male" ? male_icon : female_icon}
+              alt="gender"
+              className="genderImageCard"
+            />
+            <select
+              className="infoSelect"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
           </div>
-
           {/* Weight */}
-          <div className="inputContainer">
-            <div className="inputBox">
-              <input
-                type="number"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                min="0"
-                className="inputValue"
-                aria-label="Weight"
-                placeholder="150"
-              />
-              <div className="unitWrapper">
-                <select
-                  value={weightUnit}
-                  onChange={(e) => setWeightUnit(e.target.value)}
-                  className="unitText"
-                >
-                  <option value="lbs">lbs</option>
-                  <option value="kg">kg</option>
-                </select>
-              </div>
-            </div>
-            <div className="inputLabel">Weight</div>
+          <div className="infoBlock">
+            <label className="infoLabel">Weight</label>
+            <input
+              type="number"
+              className="infoInput"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              placeholder="150"
+            />
+            <select
+              className="infoSelect"
+              value={weightUnit}
+              onChange={(e) => setWeightUnit(e.target.value)}
+            >
+              <option value="lbs">lbs</option>
+              <option value="kg">kg</option>
+            </select>
           </div>
-
           {/* Height */}
-          <div className="inputContainer">
-            <div className="inputBox">
-              {heightUnit === "feet" ? (
-                <input
-                  type="text"
-                  value={height}
-                  onChange={(e) => setHeight(e.target.value)}
-                  className="inputValue"
-                  aria-label="Height"
-                  placeholder="5' 7&#34;"
-                />
-              ) : (
-                <input
-                  type="text"
-                  value={height}
-                  onChange={(e) => setHeight(e.target.value)}
-                  min="0"
-                  className="inputValue"
-                  placeholder="170"
-                  aria-label="Height"
-                />
-              )}
-              <div className="unitWrapper">
-                <select
-                  value={heightUnit}
-                  onChange={(e) => setHeightUnit(e.target.value)}
-                  className="unitText"
-                >
-                  <option value="feet">feet</option>
-                  <option value="cm">cm</option>
-                </select>
-              </div>
-            </div>
-            <div className="inputLabel">Height</div>
+          <div className="infoBlock">
+            <label className="infoLabel">Height</label>
+            {heightUnit === "feet" ? (
+              <input
+                type="text"
+                className="infoInput"
+                placeholder="5' 7"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+              />
+            ) : (
+              <input
+                type="text"
+                className="infoInput"
+                placeholder="170"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+              />
+            )}
+            <select
+              className="infoSelect"
+              value={heightUnit}
+              onChange={(e) => setHeightUnit(e.target.value)}
+            >
+              <option value="feet">feet</option>
+              <option value="cm">cm</option>
+            </select>
           </div>
         </div>
 
-        {/* Activity Scale */}
-        <div className="activity-scale">
-          <h3 className="activityTitle">Activity Scale</h3>
-          <p className="activityDescription">
-            On a scale of 1-5, how active are you?
-          </p>
+        {/* Activity slider */}
+        <div className="activityContainer">
+          <h3>Activity Scale</h3>
+          <p>How active are you?</p>
           <input
             type="range"
+            className="activitySlider"
             min="1"
             max="5"
             value={activity}
-            onChange={handleActivityChange}
-            className="activity-slider"
+            onChange={(e) => setActivity(parseInt(e.target.value, 10))}
           />
-            <div className="activity-labels">
-              {activityLabels.map((label, index) => {
-                const parts = label.split(" "); // Split at the first space
-                const emoji = parts[0]; // First part is the emoji
-                const text = parts.slice(1).join(" "); // Rest is the text
-
-                return (
-                  <div key={label} style={{ textAlign: "center" }}>
-                    <span className="label-text">{emoji}</span> <br /> {/* Emoji on top */}
-                    <span className="label-text">{text}</span> {/* Text below emoji */}
-                  </div>
-                );
-              })}
-            </div>
+          <div className="activityLabels">
+            {["🛋️ Couch Potato", "🐢 Slow & Steady", "🚶‍♂️ Daily Walker", "🏋️ Gym Freak" , "🏃‍♂️ Hustler"].map((lbl) => (
+              <div key={lbl}>{lbl}</div>
+            ))}
+          </div>
         </div>
 
-        <button
-          className="calculateButton"
-          onClick={handleCalculate}
-          aria-label="Calculate calories"
-        >
+        {/* Goal dropdown */}
+        <div className="goalContainer">
+          <h3>Goal</h3>
+          <select
+            className="goalSelect"
+            value={goal}
+            onChange={(e) => setGoal(e.target.value)}
+          >
+            <option value="recomp">Recomposition</option>
+            <option value="bulk">Bulking</option>
+            <option value="cut">Cutting</option>
+          </select>
+
+          {/* Explanation text based on current goal */}
+          <p className="goalExplanation">
+            {goal === "bulk" && (
+              <>
+                Bulking means adding about 500 extra calories daily to gain muscle mass
+                gradually.
+              </>
+            )}
+            {goal === "cut" && (
+              <>
+                Cutting means reducing about 500 calories daily to shed fat while
+                preserving muscle.
+              </>
+            )}
+            {goal === "recomp" && (
+              <>
+                Recomposition means eating roughly at maintenance while focusing on
+                building muscle and losing fat simultaneously.
+              </>
+            )}
+          </p>
+        </div>
+
+
+        {/* Calculate */}
+        <button className="calcButton" onClick={handleCalculate}>
           Calculate
         </button>
 
-    <div>
-      
-      {/* <GeneratePdf
-        userName="John Doe"
-        maintenanceCalories={maintenance}
-        macros={macros}
-      /> */}
-    </div>
+        {/* RESULTS */}
+        <div className="resultsContainer">
+          {/* Always show maintenance */}
+          <div className="caloriesBox">
+            <h4>Maintenance/Recomposition</h4>
+            <p>{maintenance > 0 ? `${maintenance} cal` : "----"}</p>
+          </div>
 
+          {/* Show "theory" cals if user picks something else */}
+          <div className="caloriesBox">
+            <h4>{goal.charAt(0).toUpperCase() + goal.slice(1)} Calories</h4>
+            <p>{/* If goal=bulk => maintenance+500, etc. We stored in setTheoryCals. */}
+              {goal === "bulk" ? `${maintenance + 500} cal`
+               : goal === "cut" ? `${maintenance - 500} cal`
+               : `${maintenance} cal`
+              }
+            </p>
+          </div>
+
+          {/* Pie chart => from maintenance macros */}
+          <div className="pieBox">
+          Now let's talk about your current macros split: to help you go through your day.
+            <PieChart
+              data={[
+                { title: "Protein", value: macros.protein, color: "#4caf50" },
+                { title: "Fats", value: macros.fats, color: "#ff9800" },
+                { title: "Carbs", value: macros.carbs, color: "#2196f3" },
+              ]}
+              lineWidth={20}
+              paddingAngle={5}
+              rounded
+              label={({ dataEntry }) => dataEntry.value}
+              labelStyle={{ fontSize: "5px", fill: "#fff" }}
+              labelPosition={60}
+              style={{ height: "120px" }}
+            />
+            
+            <div className="macroLegend">
+              <div className="legendItem">
+                <span className="legendColor" style={{ background: "#4caf50" }} />
+                Protein: {macros.protein}g
+              </div>
+              <div className="legendItem">
+                <span className="legendColor" style={{ background: "#ff9800" }} />
+                Fats: {macros.fats}g
+              </div>
+              <div className="legendItem">
+                <span className="legendColor" style={{ background: "#2196f3" }} />
+                Carbs: {macros.carbs}g
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
       </div>
     </div>
+    <TabBar />
+    </>
   );
-
-  
-
-};
-
-export default CalorieCalculator;
+}

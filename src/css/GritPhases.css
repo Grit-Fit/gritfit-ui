@@ -31,6 +31,36 @@
   transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
 }
 
+.gritphase-header-bubble {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  height: 110px; 
+  background-color: #fff;
+  padding: 0 1rem; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  /* box-shadow: 0 1px 4px rgba(0,0,0,0.1); */
+}
+
+.phase-title {
+  font-size: 1.2rem;
+  margin: 6px;
+  color: #333;
+  font-weight: bold;
+}
+
+.phase-row{
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-left: -22px;
+  margin-top: 30px;
+}
+
 .nav-open .header {
   left: 250px;
   width: calc(100% - 250px);
@@ -143,7 +173,9 @@
   scroll-snap-type: y mandatory;
   margin-top: calc(65px + 45px); 
   position: relative;
+  padding-bottom: 5rem;
 }
+
 .fasting-header {
   position: fixed;
   top: 70px;

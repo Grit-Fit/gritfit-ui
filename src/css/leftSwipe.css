@@ -1,397 +1,315 @@
-/* leftSwipe.css */
+/* ---------------------------------
+   GLOBAL RESETS & BASE
+----------------------------------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-html, body {
+  }
+  
+  html, body {
     max-width: 100%;
     overflow-x: hidden;
-    background: rgba(251, 220, 219, 1);
-}
-
-.chev {
-    stroke: rgba(72, 159, 88, 1);
-    width: clamp(18px, 4vw, 24px);
-    height: auto;
-}
-
-.fullpage-left {
-    background: linear-gradient(to bottom, #ffdde1, #ee9ca7);
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  /* ---------------------------------
+     PAGE BACKGROUND
+  ----------------------------------- */
+  .fullpage-left {
+    /* NEW: Warmer orange/pink gradient */
+    background: linear-gradient(180deg, #EFB034FF 0%, #EF5634FF 47%);
     width: 100vw;
     min-height: 100vh;
     animation: fadeIn 0.5s ease-in-out;
-}
-
-.header-left {
-    width: 100%;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+  }
+  
+  /* ---------------------------------
+     HEADER
+  ----------------------------------- */
+  .header-left {
+    width: 100%;
+    height: 60px; /* shorter header */
+    display: flex;
     align-items: center;
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.8);
-    position: fixed;
+    justify-content: flex-start;
+    padding: 0 1rem;
+    position: relative;
     top: 0;
     left: 0;
     right: 0;
-    height: 70px;
     z-index: 1000;
+    box-shadow: none;
+    background: transparent;
   }
-
-.logo-left {
-    width: clamp(120px, 30vw, 180px);
-    height: auto;
-    margin-bottom: 15px;
-    align-self: flex-start;
-}
-
-.goal-buttons{
-    padding-top: 200px;
-    display: grid;
-    place-items: center;
-}
-
-.body-leftSwipe {
-    max-width: 100%;
-    align-content: center;
-    padding: clamp(15px, 5vh, 40px);
-    padding-top: 0px;
-}
-
-.body_text {
-    /* color: rgba(153, 8, 56, 1); */
-    font-family: 'Montserrat', sans-serif;
+  
+  .logo-left {
+    /* Hide or reduce the logo if you want the reference look 
+       Remove display: none if you want to keep it */
+    display: none;
+  }
+  
+  /* "Undo Swipe" button */
+  .undo_swipe_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: black; /* white text on gradient */
+    background: transparent;
+    box-shadow: none;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 6px 10px;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .undo_swipe_btn:hover {
+    color: #333;
+    background: rgba(255,255,255,0.5);
+  }
+  
+  .chev, .c {
+    width: 20px;
+    height: 20px;
+    stroke: black;
+  }
+  
+  /* ---------------------------------
+     BODY CONTAINER
+  ----------------------------------- */
+  .body-leftSwipe {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 1rem 1rem; /* top padding to clear header */
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  /* Title text (e.g. "Sometimes life gets in the way :(") */
+  .body_text {
     text-align: center;
     font-weight: bold;
-    font-size: clamp(18px, 2.5vw, 30px);
-    margin-top:100px;
-}
-
-.undo_swipe_btn {
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-    font-weight: bold;
-    color: #a50632;
-    padding: 8px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    background: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-}
-
-.body_images {
-    position: relative;
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 2rem;
+  }
+  
+  /* ---------------------------------
+     STEP 1: "Which goal?" (Phase 3)
+  ----------------------------------- */
+  .goal-selection {
     width: 100%;
-    height: 400px;
-    min-height: 400px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    margin: 40px 0;
-}
-
-.body_images img {
-    position: absolute;
-    /* width: clamp(80px, 15vw, 120px); */
-    height: clamp(80px, 15vw, 120px);
-    object-fit: contain;
-    transition: all 0.3s ease;
+  }
+  
+  .goal-buttons {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .goalBtn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    padding: 0.5rem 1.5rem;
+    color: #FF9A9E;
+    background-color: #fff;
+    border: 2px solid #FF9A9E;
+    border-radius: 15px;
+    font-weight: bold;
     cursor: pointer;
-    padding: 10px;
-}
+  }
+  
+  .goalBtn:hover {
+    background: #ffe7e8;
+  }
+  
+  /* ---------------------------------
+     STEP 2: Reason Cards (Sick, CheatDay, etc.)
+  ----------------------------------- */
+  .body_images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2.5rem;          
+    margin: 2rem 0;
+    width: 100%;
+    height: auto;
+  }
 
-
-.body_images img:nth-child(1) {
-    top: 12%;
-    left: 24%;
-}
-
-.body_images img:nth-child(2) {
-    top: 12%;
-    right: 24%;
-}
-
-.body_images img:nth-child(3) {
-    top: 60%;
-}
-
-.body_images img:nth-child(4) {
-    top: 64%;
-    left: 8%;
-}
-
-.body_images img:nth-child(5) {
-    top: 64%;
-    right: 8%;
-}
-
-.c {
-    stroke: rgba(153, 8, 56, 1);
-}
-
-/* Tablet Responsive */
-@media screen and (max-width: 768px) {
-    .body_images {
-        height: 350px;
-        min-height: 350px;
-    }
-
-    .body_images img {
-        width: clamp(120px, 12vw, 150px);
-        height: clamp(120px, 12vw, 150px);
-    }
-
-    .body_images img:nth-child(1) {
-        top: 10%;
-        left: 25%;
-    }
-    
-    .body_images img:nth-child(2) {
-        top: 10%;
-        right: 25%;
-    }
-    
-    .body_images img:nth-child(3) {
-        top: 60%;
-    }
-    
-    .body_images img:nth-child(4) {
-        position: relative;
-        top: 75%;
-        left: 25%;
-    }
-    
-    .body_images img:nth-child(5) {
-        position: relative;
-        top: 75%;
-        right: 25%;
-    }
-}
-
-/* Mobile Responsive */
-@media screen and (max-width: 480px) {
-    .body_images {
-        height: 300px;
-        min-height: 300px;
-    }
-
-    .body_images img {
-        width: clamp(90px, 12vw, 100px);
-        height: clamp(90px, 12vw, 100px);
-    }
-
-    .body_images img:nth-child(1) {
-        top: 70%;
-        left: -30%;
-        width: 100%;
-    }
-    
-    .body_images img:nth-child(2) {
-        top: 70%;
-        right: -30%;
-        width: 100%;
-    }
-    
-    .body_images img:nth-child(3) {
-        top: 30%;
-        width: 100%;
-        right: -26%;
-    }
-    
-    .body_images img:nth-child(4) {
-        /* position: relative; */
-        top: -5%;
-        left: -2%;
-        width: 100%;
-    }
-    
-    .body_images img:nth-child(5) {
-        /* position: relative; */
-        top: 70%;
-        left: -22%;
-        width: 100%;
-    }
-
-    .body_text {
-        margin-bottom: 10px;
-        padding-top: 34px;
-    }
-
-    .undo_swipe_btn {
-        padding: clamp(5px, 1vh, 10px);
-        margin-top: -44px;
-        position: fixed;
-        top: 57px;
-        right: 12px;
-    }
-}
-
-/* Small Mobile Responsive */
-@media screen and (max-width: 360px) {
-    .body_images img {
-        width: clamp(90px, 12vw, 100px);
-        height: clamp(90px, 12vw, 100px);
-    }
-
-    .body_images img:nth-child(1) {
-        top: 10%;
-        left: 10%;
-    }
-    
-    .body_images img:nth-child(2) {
-        top: 10%;
-        right: 10%;
-    }
-    
-    .body_images img:nth-child(3) {
-        top: 50%;
-    }
-    
-    .body_images img:nth-child(4) {
-        position: relative;
-        top: 55%;
-        left: 40%;
-    }
-    
-    .body_images img:nth-child(5) {
-        position: relative;
-        top: 55%;
-        right: 40%;
-    }
-}
-/* Add these new styles to your existing CSS */
-
-.selected-button-container {
+  /* Each clickable card */
+.reason-card {
+    width: 90px;        /* adjust to your preference or use clamp(...) */
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    gap: 20px;  /* Space between image and text */
-    padding-bottom: 50px;
-}
-
-.selected-button {
-    position: static !important;
-    height: clamp(80px, 20vw, 120px) !important;
-    animation: scaleUp 0.3s ease forwards;
-}
-
-.its-ok-text {
-    color: rgba(150, 155, 159, 1);
-    font-family: 'Montserrat', sans-serif;
-    font-weight: bold;
-    font-size: clamp(12px, 1.7vw, 20px);
-    animation: fadeIn 0.3s ease forwards;
-    text-align: center;
-    margin-top: 24px;
-}
-.goalBtn{
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(10px, 1.7vw, 15px);
-    padding: 8px 35px;
-    color:  rgba(231, 140, 139, 1);
-    background-color: white;
-    border: 2px solid rgba(231, 140, 139, 1);
-    border-radius: 15px;
-    font-weight: bold;
-}
-
-.doneBtn{
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(16px, 1.7vw, 15px);
-    padding: 8px 35px;
-    /* color:  rgba(231, 140, 139, 1); */
-    background-color: white;
-    border: 2px solid rgba(231, 140, 139, 1);
-    border-radius: 15px;
-    font-weight: light;
-    margin-top: 30px;
-    background: linear-gradient(to right, #FF9A9E, #FAD0C4);
-    width: 150px;
-}
-
-@keyframes scaleUp {
-    from {
-        transform: scale(0.8);
-        opacity: 0.5;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive adjustments */
-@media screen and (max-width: 768px) {
-    .selected-button-container {
-        gap: 15px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .selected-button-container {
-        gap: 10px;
-        margin-top: 90px;
-    }
-}
-/* Add these styles to your leftSwipe.css file */
-
-.other-reason-container {
-  width: 100%;
-  max-width: 500px; 
-  margin: 40px 0;
-}
-
-.other-reason-input {
-  width: 100%;
-  padding: 8px 22px;
-  border: 2px solid  rgba(150, 155, 159, 1);
-  border-radius: 8px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: clamp(14px, 1.5vw, 16px);
-  color: rgba(153, 8, 56, 1);
-  background-color: white;
-  outline: none;
-}
-
-.other-reason-input::placeholder {
-  color: rgba(231, 140, 139, 0.8);
-}
-
-.other-reason-input:focus {
-  border-color: rgba(150, 155, 159, 1);
-  box-shadow: 0 0 0 2px rgba(153, 8, 56, 0.1);
-}
-
-.doneBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-@media screen and (max-width: 480px) {
-  .other-reason-container {
-    max-width: 400px;
+    padding: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
   }
-}
-
-@keyframes fadeIn {
+  
+  /* On hover, slightly scale up */
+  .reason-card:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Icon at the top */
+  /* .reason-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+  } */
+  
+  /* Text label below icon */
+  .reason-label {
+    font-size: 0.85rem; /* adjust as needed */
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+  }
+  
+  .body_images img {
+    width: 90px;
+    height: 90px;
+    background: #fff;
+    border-radius: 12px;
+    object-fit: contain;
+    margin: 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  /* Show alt text as label under icon */
+  .body_images img::after {
+    content: attr(alt);
+    display: block;
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #333;
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .body_images img:hover {
+    transform: scale(1.05);
+  }
+  
+  /* ---------------------------------
+     WHEN A REASON IS SELECTED
+  ----------------------------------- */
+  .selected-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 3rem;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  
+  .selected-button {
+    width: 90px !important;
+    height: 90px !important;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    object-fit: contain;
+    position: static !important;
+    animation: scaleUp 0.3s ease forwards;
+  }
+  
+  .its-ok-text {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  
+  /* For 'other' reason input */
+  .other-reason-container {
+    width: 100%;
+    max-width: 500px; 
+    margin: 20px 0;
+  }
+  
+  .other-reason-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 2px solid #FF9A9E;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #333;
+    outline: none;
+  }
+  
+  .other-reason-input::placeholder {
+    color: rgba(231, 140, 139, 0.8);
+  }
+  
+  .other-reason-input:focus {
+    border-color: #FF9A9E;
+    box-shadow: 0 0 0 2px rgba(255, 154, 158, 0.2);
+  }
+  
+  /* ---------------------------------
+     DONE BUTTON
+  ----------------------------------- */
+  .doneBtn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 1rem;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .doneBtn:hover {
+    background: #333;
+  }
+  
+  .doneBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* Pulse effect for the Done button */
+  .pulse-button {
+    animation: pulse 1.5s infinite;
+  }
+  
+  /* ---------------------------------
+     KEYFRAMES
+  ----------------------------------- */
+  @keyframes fadeIn {
     from {
       opacity: 0;
       transform: translateY(10px);
@@ -402,17 +320,82 @@ html, body {
     }
   }
   
-  @keyframes slideUp {
+  @keyframes scaleUp {
     from {
-      opacity: 0;
-      transform: translateY(15px);
+      transform: scale(0.8);
+      opacity: 0.5;
     }
     to {
+      transform: scale(1);
       opacity: 1;
-      transform: translateY(0);
     }
   }
-  .pulse-button {
-    animation: pulse 1.5s infinite;
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    70% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
   
+  /* ---------------------------------
+     MEDIA QUERIES
+  ----------------------------------- */
+  /* Tablet */
+  @media screen and (max-width: 768px) {
+    .body_text {
+      font-size: 1.3rem;
+      margin-top: 60px;
+    }
+    .body_images img {
+      width: 80px;
+      height: 80px;
+    }
+    .selected-button {
+      width: 80px !important;
+      height: 80px !important;
+    }
+  }
+  
+  /* Mobile */
+  @media screen and (max-width: 480px) {
+    .header-left {
+      height: 50px;
+    }
+    .undo_swipe_btn {
+      font-size: 0.9rem;
+      padding: 4px 8px;
+    }
+    .body_text {
+      font-size: 1.1rem;
+      margin-top: 7rem;
+    }
+    .body_images {
+      margin: 1.5rem 0;
+      margin-top: 5.5rem;
+    }
+    .body_images img {
+      width: 70px;
+      height: 70px;
+    }
+    .selected-button {
+      width: 70px !important;
+      height: 70px !important;
+    }
+    .other-reason-container {
+      max-width: 300px;
+    }
+    .doneBtn {
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+
+  
+
+

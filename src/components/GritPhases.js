@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown, Info, Menu } from "lucide-react";
 import NavBar from "./navBar";
 import logo from "../assets/logo1.png";
 import buttonImage from "../assets/Stepping_StoneBtn.png";
@@ -9,33 +8,33 @@ import activeButtonImage from "../assets/Active_SteppingStoneBtn.png";
 import "../css/GritPhases.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import SwipeImageWithSpring from "./SwipeImageWithSpring";
 import axios from "../axios";
 import "../css/NutritionTheory.css";
 import "../css/contactUs.css";
-import ReactDOM from 'react-dom';
+import "../css/CardView.css";
+import { SquareMenu } from "lucide-react";
+import TabBar from "./TabBar";
 
 const GritPhase = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [currentPhase, setCurrentPhase] = useState(1);
-  const scrollableRef = useRef(null);
-  const taskRefs = useRef({}); 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { accessToken, refreshAuthToken } = useAuth();
+  const [currentTask, setCurrentTask] = useState(null);
+  const [phaseProgress, setPhaseProgress] = useState(0);
   const [taskData, setTaskData] = useState(null);
   const [phases, setPhases] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [requestTime, setRequestTime] = useState(null); 
-
+  const [requestTime, setRequestTime] = useState(null);
+  const scrollableRef = useRef(null);
+  const taskRefs = useRef({});
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { accessToken, refreshAuthToken } = useAuth();
   const { phase, day } = location.state || {};
-
-  // Toggle Nav
   const handleNavClose = () => setIsNavOpen(false);
   const handleNavOpen = () => setIsNavOpen(true);
 
-  // Make sure we have an access token. If not, try to refresh.
+
   useEffect(() => {
     if (!accessToken) {
       refreshAuthToken();
@@ -65,35 +64,24 @@ const GritPhase = () => {
         setRequestTime(elapsed);
 
         const mergedData = response.data.data;
-        console.log("[GritPhases] Merged Data from server:", mergedData);
+        console.log("[GritPhases_NoSwipe] Data from server:", mergedData);
 
-
+        // If all tasks are "Not Started", start from Phase1 Day1
         const allTasksNotStarted = mergedData.every(
           (task) => task.taskstatus === "Not Started"
         );
         if (allTasksNotStarted && mergedData.length > 0) {
-         
           await axios.post(
             "/api/userprogressStart",
-            {
-              phaseId: 1,
-              taskId: 1,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
+            { phaseId: 1, taskId: 1 },
+            { headers: { Authorization: `Bearer ${accessToken}` } }
           );
-          // Refetch to see the updated status
-          return fetchTaskData();
+          return fetchTaskData(); // re-fetch
         }
 
-    
+        // auto-activate tasks
         const now = new Date();
         const updatedData = mergedData.map((task) => {
-          // console.log("Fetched Task Data:", mergedData);
-
           if (task.taskstatus === "Not Started" && task.task_activation_date) {
             const activationDate = new Date(task.task_activation_date);
             if (now >= activationDate) {
@@ -102,15 +90,37 @@ const GritPhase = () => {
           }
           return task;
         });
-        
 
         setTaskData(updatedData);
 
-       
+        // Optionally find in-progress for progress bar
+        const inProgress = updatedData.find(
+          (t) => t.taskstatus === "In Progress"
+        );
+        setCurrentTask(inProgress || null);
+
+        if (inProgress) {
+          const phId = inProgress.phaseid;
+          const tasksInPhase = updatedData.filter((t) => t.phaseid === phId);
+          const completedCount = tasksInPhase.filter(
+            (t) => t.taskstatus === "Completed"
+          ).length;
+          const totalCount = tasksInPhase.length;
+          const progress =
+            totalCount === 0
+              ? 0
+              : Math.round((completedCount / totalCount) * 100);
+          setPhaseProgress(progress);
+        } else {
+          setPhaseProgress(0);
+        }
+
+        // Group tasks by phase
         const groupedByPhase = groupTasksByPhase(updatedData);
         setPhases(groupedByPhase);
+
       } catch (err) {
-        console.error("[GritPhases] Error fetching data:", err);
+        console.error("[GritPhases_NoSwipe] Error fetching data:", err);
         setError("Failed to fetch user data. Please try again later.");
       } finally {
         setLoading(false);
@@ -119,12 +129,11 @@ const GritPhase = () => {
 
     fetchTaskData();
 
-    
     const interval = setInterval(fetchTaskData, 300000);
     return () => clearInterval(interval);
-  }, [accessToken]);                                                                   
+  }, [accessToken]);
 
- 
+
   useEffect(() => {
     const handleScroll = () => {
       if (!scrollableRef.current) return;
@@ -145,17 +154,19 @@ const GritPhase = () => {
     const scrollableElement = scrollableRef.current;
     if (scrollableElement) {
       scrollableElement.addEventListener("scroll", handleScroll);
-      return () =>
+      return () => {
         scrollableElement.removeEventListener("scroll", handleScroll);
+      };
     }
   }, []);
 
+  // 7) Merge duplicates by highest priority
   const mergeDuplicateTasks = (tasks) => {
     const statusPriority = {
-      "Completed": 3,
-      "In Progress": 2,  
+      Completed: 3,
+      "In Progress": 2,
       "Not Completed": 1,
-      "Not Started": 0
+      "Not Started": 0,
     };
     const uniqueMap = {};
 
@@ -164,7 +175,6 @@ const GritPhase = () => {
       if (!uniqueMap[key]) {
         uniqueMap[key] = t;
       } else {
-        // Compare priorities
         const existingTask = uniqueMap[key];
         if (
           statusPriority[t.taskstatus] >
@@ -177,7 +187,7 @@ const GritPhase = () => {
     return Object.values(uniqueMap);
   };
 
-  // Utility function to group tasks by phase
+  // 8) Group tasks by phase
   const groupTasksByPhase = (tasks) => {
     const deduped = mergeDuplicateTasks(tasks);
     return deduped.reduce((acc, task) => {
@@ -189,94 +199,23 @@ const GritPhase = () => {
     }, {});
   };
 
-  // On swipe or button press, we navigate to rightSwipe or leftSwipe
-  const handleSwipe = (direction, phaseNumber, dayNumber) => {
-    if (direction === "right") {
-      
-      navigate("/rightSwipe", {
-        state: {
-          phaseNumber,
-          dayNumber,
-        },
-      });
-    } else if (direction === "left") {
-     
-      navigate("/leftSwipe", {
-        state: {
-          phaseNumber,
-          dayNumber,
-        },
-      });
-    }
-  };
-
-  // Flipable Button (used for phases like 3, 6, etc.)
-  const FlipableButton = ({ dayNumber, taskDesc, buttonImage, taskRefKey }) => {
-    const [isFlipped, setIsFlipped] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-
-    const handleFlip = () => {
-        setIsFlipped((prev) => !prev);
-    };
-
-    const handleOpenModal = (e) => {
-        e.stopPropagation(); // Prevent accidental flip
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setIsFlipped(false); // Flip back when modal closes
-    };
-
-    return (
-        <>
-            <div className={`flip-card ${isFlipped ? 'flipped' : ''}`} onClick={handleFlip}>
-                <div className="flip-card-inner">
-                    <div className="flip-card-front">
-                        <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
-                        <div className="day-label">{dayNumber}</div>
-                    </div>
-                    <div className="flip-card-back">
-                        <img src={buttonImage} className="button-image" alt={`Task ${dayNumber}`} />
-                        <button className="info-button" onClick={handleOpenModal}>ℹ️</button>
-                    </div>
-                </div>
-            </div>
-
-            {showModal && ReactDOM.createPortal(
-                <div className="modal-overlay" onClick={handleCloseModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h3>Goal Details:</h3>
-                        <p>{taskDesc}</p>
-                        <button className="close-button" onClick={handleCloseModal}>✕</button>
-                    </div>
-                </div>,
-                document.body
-            )}
-        </>
-    );
-};
-
-  // Render phases and their days
+  // 9) Render phases
   const renderPhasesWithDays = (phases) => {
-    const phaseKeys = Object.keys(phases); // Get all phase IDs
-  
+    const phaseKeys = Object.keys(phases);
+
     return phaseKeys.map((phaseId) => {
-      const tasks = phases[phaseId]; // Get tasks for the current phase
-      
-      // 1) Conditionally set the phase title
+      const tasks = phases[phaseId];
+
       let phaseTitle = tasks[0]?.title || `GritPhase ${phaseId}`;
       if (parseInt(phaseId, 10) === 3) {
-        phaseTitle = "Mystery Phase ❓"; 
+        phaseTitle = "Mystery Phase ❓";
       }
-  
-      // 2) Conditionally set the phase description
+
       let phaseDescription =
         parseInt(phaseId, 10) % 3 === 0
           ? "Flip the Day to see the task!"
           : tasks[0].taskdesc;
-  
+
       return (
         <section key={phaseId} className={`section section-${phaseId}`}>
           <div className="grit-phase-title">
@@ -288,9 +227,8 @@ const GritPhase = () => {
       );
     });
   };
-  
 
-  
+  // 10) Render day buttons (non-swipeable)
   const renderDayButtons = (phaseId, tasks) => {
     return (
       <div className="task-buttons">
@@ -298,63 +236,29 @@ const GritPhase = () => {
           const taskRefKey = `${task.phaseid}-${task.taskid}`;
           const dayNumber = task.taskid;
           const taskStatus = task.taskstatus;
-          const taskDescription = task.taskdesc || "";
 
-          
           let dayButton = buttonImage;
           if (taskStatus === "Completed") {
-            dayButton = rightSwipeButtonImage; 
+            dayButton = rightSwipeButtonImage;
           } else if (taskStatus === "Not Completed") {
-            dayButton = leftSwipeButtonImage; 
+            dayButton = leftSwipeButtonImage;
           } else if (taskStatus === "In Progress") {
-            dayButton = activeButtonImage; 
+            dayButton = activeButtonImage;
           }
-
-          const shouldEnableSwipe = taskStatus === "In Progress";
 
           return (
             <div key={dayNumber} className="task-button-container">
-              {shouldEnableSwipe ? (
-                <SwipeImageWithSpring
-                  onSwipe={handleSwipe}
-                  phaseNumber={phaseId}
-                  dayNumber={dayNumber}
-                >
-                  {phaseId % 3 === 0 ? (
-                    <FlipableButton
-                      dayNumber={dayNumber}
-                      taskDesc={taskDescription}
-                      buttonImage={dayButton}
-                      taskRefKey={taskRefKey}
-                    />
-                  ) : (
-                    <button
-                      ref={(el) => (taskRefs.current[taskRefKey] = el)}
-                      className="task-button"
-                    >
-                      <img
-                        src={dayButton}
-                        className="button-image"
-                        alt={`Task ${dayNumber}`}
-                      />
-                      <div className="day-label">{dayNumber}</div>
-                    </button>
-                  )}
-                </SwipeImageWithSpring>
-              ) : (
-            
-                <button
-                  ref={(el) => (taskRefs.current[taskRefKey] = el)}
-                  className="task-button"
-                >
-                  <img
-                    src={dayButton}
-                    className="button-image"
-                    alt={`Task ${dayNumber}`}
-                  />
-                  <div className="day-label">{dayNumber}</div>
-                </button>
-              )}
+              <button
+                ref={(el) => (taskRefs.current[taskRefKey] = el)}
+                className="task-button"
+              >
+                <img
+                  src={dayButton}
+                  className="button-image"
+                  alt={`Task ${dayNumber}`}
+                />
+                <div className="day-label">{dayNumber}</div>
+              </button>
             </div>
           );
         })}
@@ -362,80 +266,40 @@ const GritPhase = () => {
     );
   };
 
-  const handleRefresh = () => {
-    caches.keys().then((names) => {
-      names.forEach((name) => caches.delete(name));
-    });
-    localStorage.clear();
-    sessionStorage.clear();
-    setTimeout(() => {
-      window.location.reload(true);
-    }, 1000);
-  };
+
+  function goToCard() {
+    navigate("/cardView");
+  }
 
   return (
-    <div className="grit-phase-container">
-      <NavBar isOpen={isNavOpen} onClose={handleNavClose} />
+    <>
+      
 
-      <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
-        <header className="header">
-        <div className="logo-container-task">
-
-          <Menu
-            className="hamburger-icon"
-            size={24} // Adjust size as needed
-            onClick={!isNavOpen ? handleNavOpen : undefined}
-            style={{ cursor: "pointer", marginLeft: "10px", marginTop: "24px" }} // Adjust spacing
-          />
-
-          <img
-            src={logo}
-            alt="Logo"
-            onClick={!isNavOpen ? handleNavOpen : undefined}
-            className="logo-gritPhases-task"
-          />
-          
-         
-
-        </div>
-          <div className="profile-button">
-            {/* <button
-              onClick={handleRefresh}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "transparent",
-                color: "#007bff",
-                borderRadius: "32px",
-                fontSize: "25px",
-                fontWeight: "500",
-                cursor: "pointer",
-                transition: "all 0.2s ease-in-out",
-                marginTop: "38px",
-                marginLeft: "92px",
-              }}
-            >
-              🔄
-            </button> */}
-                      <button className="profile-button">
-                        <Info size={24} />
-                      </button>
+      <div className="grit-phase-container">
+      <header className="gritphase-header-bubble">
+          <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+          <div className="phase-row">
+            <span className="phase-title">GritPhase {currentTask ? currentTask.phaseid : "?"}</span>
+            <div className="progress-bar-container">
+              <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
+            </div>
           </div>
+          <SquareMenu size={24} onClick={goToCard} className="grid-icon" />
         </header>
 
-        {/* Show loading or errors */}
-        {loading && <h3>Loading...</h3>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
+          {loading && <h3>Loading...</h3>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
 
-        {/* Render phases + tasks if we have them */}
-        {taskData && !loading && !error && (
-          <div className="scrollable-content" ref={scrollableRef}>
-            {renderPhasesWithDays(phases)}
-          </div>
-        )}
+          {taskData && !loading && !error && (
+            <div className="scrollable-content" ref={scrollableRef}>
+              {renderPhasesWithDays(phases)}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+      <TabBar />
+    </>
   );
 };
 

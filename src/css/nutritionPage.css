@@ -1,70 +1,122 @@
-.nutrition-page-container {
-    padding: 0px 20px 20px 20px;
-    background: radial-gradient(90.87% 58.95% at 53.33% 50.1%, #fff 0, #edf9fd 20%, #b7e9f7 200%);
-    min-height: 100vh;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.page-title {
+  
+  @media (min-width: 768px) {
+    .nutrition-page-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr; /* store list on left, table on right */
+      gap: 1.5rem;
+      align-items: start;
+    }
+  }
+  
+  /* The subheader background (light teal) behind "Top Picks" text */
+  .gritfit-subheader {
+    position: absolute;
+    top: 42px;
+    left: 0;
+    width: 100%;       /* ensure it spans the page */
+    max-width: 393px;  /* if you want to limit it on bigger screens, or remove this */
+    height: 126px;
+    background: #13D7E92E;
+    border-radius: 6px;
+  }
+  
+  /* "Top Picks" text inside subheader */
+  .subheader-text {
+    position: absolute;
+    top: 43px;
+    left: 63px;
+    width: 298px;
+    height: 39px;
+    font-family: 'Archivo', sans-serif;
     font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 12px;
-    color: #007bff;
-}
-
-.nutrition-store-list {
+    line-height: 36px;
+    font-weight: 600;
+    color: #0D909CFF;
+  }
+  
+  /* 
+    Title: "Your Personalized Nutrition Hub"
+    Centered, margin at top, etc.
+  */
+  .report_header-text {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0D909CFF;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-content: flex-start;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    margin-top: 64px;
-}
-
-.text{
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Paragraph describing the page */
+  .text {
     color: #666;
     margin-bottom: 1rem;
+    margin-top: 54px;
     font-size: 1rem;
-    margin-top: 16px;
-}
-
-.store-button {
-    color: #e5e7eb;
-    border-color: rgb(63, 133, 211);
-    font-size: 1.2rem;
-    height: 34px;
-    margin-top: -13px;
+    line-height: 1.4;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* The store list (ul) on the left side (on larger screens) */
+  .nutrition-store-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px; 
+    /* 
+      On mobile, it appears above the table.
+      On bigger screens, it's the left column (due to .nutrition-page-container grid).
+    */
+    padding: 0;
+    list-style: none;
+  }
+  
+  /* Each store button (li) */
+  .store-button {
+    font-size: 1rem;
+    color: #333;
     background: linear-gradient(135deg, rgb(53, 153, 240), rgb(0, 242, 254));
     border-radius: 25px;
-    width: 100%;
-    height: auto;
     text-align: center;
-    padding-top: 4px;
-    padding-bottom: 4px;
-}
+    padding: 8px 0;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    border: none;
+    outline: none;
+    font-weight: 500;
+  }
+  
+  .store-button:hover {
+    background: linear-gradient(135deg, rgb(53, 153, 240, 0.8), rgb(0, 242, 254, 0.8));
+    transform: translateY(-2px);
+  }
+  
 
-.store-button:hover {
-    background: #e0e0e0;
-}
-
-.store-button.active {
+  /* Active store style */
+  .store-button.active {
     background: #007bff;
-    color: white;
+    color: #fff;
     font-weight: bold;
-}
-
-.store-food-table {
-    background: white;
+  }
+  
+  /* The table container (on the right side for large screens) */
+  .store-food-table {
+    background: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 10px;
+    margin-top: 20px;
     max-height: 400px;
     overflow-y: auto;
-    margin-top: 28px;
-}
-
-.store-food-table h5 {
+    /* 
+      On bigger screens, this is the second column in the grid.
+    */
+  }
+  
+  /* Category heading (Proteins, Carbohydrates, Fats) */
+  .store-food-table h5 {
     margin: 10px 0 5px;
     font-weight: bold;
     color: #007bff;
@@ -72,22 +124,187 @@
     padding-bottom: 3px;
     padding-top: 12px;
     text-align: center;
-}
-
-.store-food-table table {
+  }
+  
+  /* The table styling */
+  .store-food-table table {
     width: 100%;
     border-collapse: collapse;
-}
-
-.store-food-table th,
-.store-food-table td {
+    margin-bottom: 1rem;
+  }
+  
+  .store-food-table th,
+  .store-food-table td {
     padding: 6px;
     border: 1px solid #ddd;
     text-align: center;
-}
-
-.store-food-table th {
+  }
+  
+  .store-food-table th {
     background-color: #f0f0f0;
     font-weight: bold;
     color: #555;
-}
+  }
+  
+
+  /* Overall container for the page */
+.nutrition-page-container {
+    padding: 0 20px 20px 20px;
+    background: #fff;
+    min-height: 100vh;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 8rem;
+    margin-top: -32px;
+  }
+  
+  /* If you want the table to appear on the right for bigger screens, uncomment:
+  @media (min-width: 768px) {
+    .nutrition-page-container {
+      display: grid;
+      grid-template-columns: 2fr 3fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+  }
+  */
+  
+  /* The subheader background (light teal) behind "Top Picks" text */
+  .gritfit-subheader {
+    position: absolute;
+    top: 42px;
+    left: 0;
+    width: 100%;
+    max-width: 393px; 
+    height: 126px;
+    border-radius: 6px;
+  }
+  
+  /* "Top Picks" text inside subheader */
+  .subheader-text {
+    position: absolute;
+    top: 43px;
+    left: 63px;
+    width: 298px;
+    height: 39px;
+    font-family: 'Archivo', sans-serif;
+    font-size: 24px;
+    line-height: 36px;
+    font-weight: 600;
+    color: #0D909CFF;
+  }
+  
+
+  .report_header_nut {
+    margin-bottom: 2rem;
+    background: #13D7E92E;
+    display: flex;
+    flex-direction: column;
+    height: 120px;
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+  
+  /* Paragraph describing the page */
+  .text {
+    color: #666;
+    margin-bottom: 1rem;
+    margin-top: 54px;
+    font-size: 1rem;
+    line-height: 1.4;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* The store grid (where we used to have .nutrition-store-list) */
+  .store-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1rem;
+    margin-top: 24px;
+  }
+  
+  /* Each store card (white square) */
+  .store-card {
+    width: 100%;             /* or a fixed width if you prefer */
+    height: 100px;           /* define a consistent height */
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    display: flex;           /* to center the image */
+    align-items: center;     /* vertically center */
+    justify-content: center; /* horizontally center */
+    overflow: hidden;        /* if the image overflows, hide it (shouldn’t if we use contain) */
+  }
+  
+  .store-card:hover {
+    transform: translateY(-2px);
+    background: #f0f0f0;
+  }
+  
+  /* The image inside the card */
+  .store-icon {
+    width: auto;             /* let width scale automatically */
+    height: 80%;             /* fill up most of the card’s height */
+    object-fit: contain;     /* ensures the entire image is visible without cropping */
+    object-position: center; /* center the image if there's extra space */
+  }
+  
+  
+  /* Active store style */
+  .store-card.active {
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  /* The table container for the selected store */
+  .store-food-table {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  /* Category heading (Proteins, Carbohydrates, Fats) */
+  .store-food-table h5 {
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #007bff;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 3px;
+    padding-top: 12px;
+    text-align: center;
+  }
+  
+  /* The table styling */
+  .store-food-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+  
+  .store-food-table th,
+  .store-food-table td {
+    padding: 6px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  .store-food-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #555;
+  }
+  
