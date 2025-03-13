@@ -181,7 +181,7 @@
 /* MEDIA QUERIES */
 @media (max-width: 480px) {
   .auth-container {
-    padding: 20px;
+    padding: 0px;
   }
   .auth-back-button {
     top: 16px;
