@@ -30,11 +30,11 @@
   cursor: grab;
   user-select: none;
   position: relative;
-  min-height: 620px; 
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: 90px
+  top: 90px;
+  height: 410px;
 }
 
 .intro-card-title {
@@ -176,11 +176,12 @@
     cursor: grab;
     user-select: none;
     position: relative;
-    min-height: 620px; 
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: env(safe-area-inset-bottom);
+    height: 410px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
   .task-descrip {
@@ -254,12 +255,11 @@
     cursor: grab;
     user-select: none;
     position: relative;
-    min-height: 620px; 
     display: flex;
     flex-direction: column;
     align-items: center;
     left: 20px;
-    padding-bottom: env(safe-area-inset-bottom);
+    height: 410px;
   }
   
   .placeholder-logo {
