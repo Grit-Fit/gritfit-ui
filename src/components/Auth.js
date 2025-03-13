@@ -1,18 +1,15 @@
-// src/components/Auth.js
-
 import React, { useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "../axios";
-
-// Assets
 import logo from "../assets/GritFit_Full.png";
 import logo1 from "../assets/logo_fit.jpeg";
 import backIcon from "../assets/Back.png";
 import "../css/Auth.css";
+import { ChevronLeft } from 'lucide-react';
 
 const API_URL =  "https://api.gritfit.site/api";
-const BETA_CODE = "MYBETA123";
+const BETA_CODE = "GRITFIT2025";
 
 export default function Auth() {
   const { login } = useContext(AuthContext);
@@ -134,9 +131,7 @@ export default function Auth() {
     return (
       <div className="auth-container auth-signin-bg">
         {/* Back arrow */}
-        <button className="auth-back-button" onClick={handleBack}>
-          <img src={backIcon} alt="Back" className="back-icon-img" />
-        </button>
+        <ChevronLeft className="intro-back-button" onClick={handleBack} size={40}/>
 
         {/* Logo */}
         <img src={logo} alt="GritFit Logo" className="auth-logo" />
@@ -181,9 +176,7 @@ export default function Auth() {
   // === SIGN UP SCREEN ===
   return (
     <div className="auth-container auth-signup-bg">
-      <button className="auth-back-button" onClick={handleBack}>
-        <img src={backIcon} alt="Back" className="back-icon-img" />
-      </button>
+    <ChevronLeft className="intro-back-button" onClick={handleBack} size={40}/>
 
       <img src={logo} alt="GritFit Logo" className="auth-logo" />
 

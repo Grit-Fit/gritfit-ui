@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/GritFit_Full.png";
 import backIcon from "../assets/Back.png";
 import "../css/FinalSteps.css";
+import { ChevronLeft } from 'lucide-react';
 
 // Example app link data
 const appLinks = {
@@ -64,9 +65,7 @@ export default function FinalStepsPage() {
   return (
     <div className="final-steps-container">
       {/* (Optional) Back arrow */}
-      <button className="intro-back-button" onClick={handleBack}>
-        <img src={backIcon} alt="Back" className="intro-back-icon" />
-      </button>
+      <ChevronLeft className="intro-back-button" onClick={handleBack} size={40}/>
 
       {/* Logo */}
       <img src={logo} alt="GritFit Logo" className="intro-logo" />
