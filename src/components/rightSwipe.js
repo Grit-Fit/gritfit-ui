@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import logo from "../assets/greenLogo.png";
+import logo from "../assets/logo1.png";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
+import { Undo2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import axios from "../axios";
 import "../css/rightSwipe.css";
+import "../css/CardView.css";
 
 const RightSwipe = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const RightSwipe = () => {
 
   const undoSwipe = (e) => {
     e.preventDefault();
-    navigate("/gritPhases");
+    navigate("/cardView");
   };
 
   const doneBtnClick = async (e) => {
@@ -51,7 +52,7 @@ const RightSwipe = () => {
   
       console.log("Progress updated successfully:", response.data);
   
-      navigate("/gritPhases", {
+      navigate("/cardView", {
         state: {
           phase: parseInt(phaseNumber),
           day: parseInt(dayNumber),
@@ -70,20 +71,17 @@ const RightSwipe = () => {
 
   return (
     <div className="fullpage">
-      {/* Header Section */}
-      <div className="header-rightSwipe">
-        <img src={logo} className="logo-rightSwipe" alt="logo" />
-        <div className="btn-right">
-          <ChevronLeft className="chev swipe-icon" />
-          <div className="btn-rightSwipe" onClick={undoSwipe}>
-            <span className="undo-text">Undo Swipe</span>
-          </div>
-        </div>
-      </div>
+      <header className="gritphase-header">
+            <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+
+            <div className="undo_swipe_btn" onClick={undoSwipe}>
+              Undo Swipe <Undo2 className="c" />
+            </div>
+      </header>
   
       {/* Animated Success Message */}
       <div className="body-text">
-        🎉 <span className="highlight-text">Yayy! You did it!</span> 🎊
+         <span className="highlight-text">Yayy! You did it!</span> 🎊
         <br />
         <span className="sub-text">Way to go!!</span>
       </div>

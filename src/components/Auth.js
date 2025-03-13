@@ -1,187 +1,231 @@
+// src/components/Auth.js
+
 import React, { useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "../axios";
+
+// Assets
 import logo from "../assets/GritFit_Full.png";
+import logo1 from "../assets/logo_fit.jpeg";
+import backIcon from "../assets/Back.png";
 import "../css/Auth.css";
-import back from "../assets/Back.png";
-import signInIcon from "../assets/signInIcon.png";
-import signUpIcon from "../assets/signUpIcon.png";
-import RefreshButton from "./RefreshButton.js";
 
 const API_URL =  "https://api.gritfit.site/api";
+const BETA_CODE = "MYBETA123";
 
-const Auth = () => {
+export default function Auth() {
   const { login } = useContext(AuthContext);
+
+  // States
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [betaCodeInput, setBetaCodeInput] = useState("");
+  const [betaError, setBetaError] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const isLogin = location.pathname === "/login";
   const isSignup = location.pathname === "/signup";
 
-  const [betaCode, setBetaCode] = useState(""); //authenticates beta code
-  const [betaError, setBetaError] = useState("");
-  const BETA_CODE = "MYBETA123";
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  
-
-  const handleSubmitSignUp = async (e) => {
+  // === CREATE ACCOUNT Logic ===
+  async function handleSubmitSignUp(e) {
     e.preventDefault();
-    setIsSubmitting(true); // ✅ Add loading state
-    console.log("Signup initiated...");
+    setIsSubmitting(true);
 
     try {
-        const response = await axios.post(`${API_URL}/createAccount`, {
-            email,
-            password,
-        });
-        const { token, message: responseMessage } = response.data;
-
-          // if user code mismatch, show error
-        if (betaCode.trim() !== BETA_CODE) {
-          setBetaError("Invalid Beta Code. Please check and try again."); //authenticates beta code
-          return;
-        }
-
-        if (token) {
-            const userData = { email, password };
-            login(token, userData);
-
-            // ✅ Use localStorage instead of sessionStorage
-            localStorage.setItem("justSignedUp", "true");
-            console.log("🔹 LocalStorage value after setting:", localStorage.getItem("justSignedUp"));
-
-           //  console.log("✅ Navigating to /welcome...");
-            navigate("/welcome", { replace: true });
-            setMessage(responseMessage);
-        }
-    } catch (error) {
-        console.error(error);
-        setMessage(error.response ? error.response.data.message : "Error occurred");
-    }  finally {
-      // 6) Done trying sign-up
-      setIsSubmitting(false);
-    }
-};
-
-  const handleSubmitLogin = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true); // ✅ Add loading state
-    try {
-      const res = await axios.post(`${API_URL}/signIn`, {
+      // 1) Attempt to create the account
+      const response = await axios.post(`${API_URL}/createAccount`, {
         email,
         password,
       });
-      const { token, message: responseMessage } = res.data;
-      setMessage(responseMessage);
-      if (token) {
-        const userData = { email, password };
-        login(token, userData);
+      const { token, message: responseMessage } = response.data;
 
-        // ✅ Fix: Redirect new users to /welcome, returning users to /gritPhases
-        const fromSignup = location.state?.from === "/signup";
-        navigate(fromSignup ? "/welcome" : "/gritPhases");
+      // 2) Check Beta Code
+      if (betaCodeInput.trim() !== BETA_CODE) {
+        setBetaError("Invalid Code. Please check and try again.");
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      setMessage(error.response ? error.response.data.message : "Error occurred");
+
+      // 3) If success => store token, set 'justSignedUp', go to /welcome
+      if (token) {
+        login(token, { email, password });
+        localStorage.setItem("justSignedUp", "true");
+        navigate("/welcome", { replace: true });
+        setMessage(responseMessage);
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response ? err.response.data.message : "Error occurred");
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
 
-  return (
-    <div className="auth-container">
-      {(isLogin || isSignup) && (
-        <button className="back-button" onClick={() => navigate("/")}>
-          <img src={back} alt="back"></img>
-        </button>
-      )}
-      <div className="content-wrapper">
-        <img src={logo} alt="Logo" className="logo-auth" />
-        {!isLogin && !isSignup ? (
-          <div>
-            <>
-              {/* <h5 className="welcome">Welcome!</h5> */}
-              <div className="button-container">
-                <button className="auth-button" id="signIN" onClick={() => navigate("/login")}>
-                  <img src={signInIcon} alt="Sign In Icon" className="icon-left" />
-                  Sign In
-                </button>
-                <button className="auth-button" id="signUP" onClick={() => navigate("/signup", { state: { from: "/signup" } })}>
-                  <img src={signUpIcon} alt="Sign Up Icon" className="icon-left" />
-                  Create Account
-                </button>
+  // === SIGN IN Logic ===
+  async function handleSubmitLogin(e) {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-                <div className="App">
-                  <RefreshButton />
-                </div>
+    try {
+      const res = await axios.post(`${API_URL}/signIn`, { email, password });
+      const { token, message: responseMessage } = res.data;
+      setMessage(responseMessage);
 
-              </div>
-            </>
-          </div>
-        ) : isLogin ? (
-          <>
-            <h2 className="welcome">Sign In</h2>
-            <div className="form-container">
-              <form onSubmit={handleSubmitLogin}>
-                <input type="email" value={email} placeholder="Email*" onChange={(e) => setEmail(e.target.value)} required />
-                <input type="password" value={password} placeholder="Password*" onChange={(e) => setPassword(e.target.value)} required />
-                <button className="signin-button" type="submit">Sign In</button>
-                <div className="App">
-                  <RefreshButton />
-                </div>
-              </form>
-              {message && <p className="message">{message}</p>}
-            </div>
-          </>
-        ) : (
-          <>
-            <h2 className="welcome">Create Account</h2>
-            
-            <div className="form-container create-account-form">
-            <form onSubmit={handleSubmitSignUp}> 
-                <input
-                    type="email"
-                    value={email}
-                    placeholder="Email*"
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    value={password}
-                    placeholder="Create Password*"
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <input
-                  type="text"
-                  placeholder="Beta Code*"     //authenticates beta code
-                  value={betaCode}
-                  onChange={(e) => setBetaCode(e.target.value)}
-                  required
-                />
-                {/* ✅ Fix: Ensure button acts as submit */}
-                <button type="submit" className="createAcc-button">Create Account</button>
+      if (token) {
+        // 1) If sign in success => store token, go to /cardView
+        login(token, { email, password });
+        navigate("/cardView");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response ? err.response.data.message : "Error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
-                <div className="App" style={{ marginLeft: "124px" }}>
-                  <RefreshButton />
-                </div>
-            </form>
-              {message && <p className="message">{message}</p>}
-            </div>
-          </>
-        )}
+  // === BACK arrow => go Landing ===
+  function handleBack() {
+    navigate("/");
+  }
+
+  if (!isLogin && !isSignup) {
+    return (
+      <div className="auth-container auth-launch-screen">
+
+        <img src={logo1} alt="GritFit Logo" className="auth-launch-logo" />
+        <h2 className="auth">Welcome!</h2>
+
+        <div className="auth-launch-buttons">
+          <button
+            className="auth-launch-btn"
+            onClick={() => navigate("/login")}
+          >
+            Sign In
+          </button>
+          <button
+            className="auth-launch-btn"
+            onClick={() => navigate("/signup", { state: { from: "/signup" } })}
+          >
+            Create Account
+          </button>
+        </div>
       </div>
+    );
+  }
+
+  if (isSubmitting) {
+    return (
+      <div className="auth-container">
+        <h3>
+          {isLogin ? "Signing you in..." : "Creating your account..."}
+        </h3>
+      </div>
+    );
+  }
+  
+
+  // === SIGN IN SCREEN ===
+  if (isLogin) {
+    return (
+      <div className="auth-container auth-signin-bg">
+        {/* Back arrow */}
+        <button className="auth-back-button" onClick={handleBack}>
+          <img src={backIcon} alt="Back" className="back-icon-img" />
+        </button>
+
+        {/* Logo */}
+        <img src={logo} alt="GritFit Logo" className="auth-logo" />
+
+        {/* Title */}
+        <h2 className="auth-title">Welcome back</h2>
+
+        {/* Form */}
+        <form className="auth-form" onSubmit={handleSubmitLogin}>
+          <input
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button type="submit" className="auth-submit-btn">
+            {isSubmitting ? "Signing In..." : "Sign In"}
+          </button>
+        </form>
+
+        {message && <p className="auth-message">{message}</p>}
+
+        <p className="auth-alt-text">
+          Don’t have an account?{" "}
+          <span className="auth-link" onClick={() => navigate("/signup")}>
+            Sign up
+          </span>
+        </p>
+      </div>
+    );
+  }
+
+  // === SIGN UP SCREEN ===
+  return (
+    <div className="auth-container auth-signup-bg">
+      <button className="auth-back-button" onClick={handleBack}>
+        <img src={backIcon} alt="Back" className="back-icon-img" />
+      </button>
+
+      <img src={logo} alt="GritFit Logo" className="auth-logo" />
+
+      <h2 className="auth-title">Create Account</h2>
+
+      <form className="auth-form" onSubmit={handleSubmitSignUp}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Code to access"
+          value={betaCodeInput}
+          onChange={(e) => setBetaCodeInput(e.target.value)}
+          required
+        />
+
+        <button type="submit" className="auth-submit-btn">
+          {isSubmitting ? "Creating..." : "Get Started"}
+        </button>
+      </form>
+
+      {betaError && <p className="auth-message error">{betaError}</p>}
+      {message && <p className="auth-message">{message}</p>}
+
+      <p className="auth-alt-text">
+        Already have an account?{" "}
+        <span className="auth-link" onClick={() => navigate("/login")}>
+          Sign in
+        </span>
+      </p>
     </div>
   );
-};
-
-{/* Check gitpush */}
-
-export default Auth;
+}

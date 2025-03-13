@@ -1,0 +1,174 @@
+/* src/css/FinalSteps.css */
+
+/* Container for the entire screen */
+.final-steps-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+    background: #ffffff;
+    position: relative;
+  }
+  
+  /* Back arrow at top-left */
+  .final-back-button {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .final-back-icon {
+    width: 24px;
+    height: auto;
+  }
+  
+  /* Logo top center */
+  .final-logo {
+    width: 140px;
+    margin-top: 20px;
+    margin-bottom: 24px;
+  }
+  
+  /* Steps container */
+  .steps-wrapper {
+    width: 100%;
+    max-width: 320px;
+    position: relative;
+    margin-bottom: -105px;
+    /* We will add a vertical line using pseudo-element or each item individually */
+  }
+  
+  /* Each step item (bullet + text) */
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  
+  /* The bullet circle */
+  .step-circle {
+    width: 60px !important;
+    height: 32px !important;
+    border-radius: 50%;
+    background: #c2f4ff; /* light teal */
+    color: #13d7e9;      /* teal text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-right: 1.5rem;
+  }
+  
+  /* The vertical line (light teal) behind the steps */
+  .steps-wrapper::before {
+    content: "";
+    position: absolute;
+    left: 15px;    
+    top: 16px;     
+    bottom: 40px; 
+    width: 2px;
+    height: 16rem; 
+    background: #c2f4ff;
+  }
+  
+  /* Step text area */
+  .step-text p {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 8px;
+  }
+  
+  /* Buttons for MyFitnessPal & Healthify Me */
+  .app-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .app-btn {
+    background: #c2f4ff;     /* same color as bullet */
+    color: #13d7e9;          /* teal text */
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .app-btn:hover {
+    background: #b3ebf7;
+  }
+  
+  /* Horizontal progress bar at bottom */
+  .horizontal-progress {
+    width: 100%;
+    max-width: 320px;
+    height: 8px;
+    background: #e5e5e5;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .horizontal-fill {
+    height: 100%;
+    background: #13d7e9; /* teal bar */
+    transition: width 0.3s ease;
+  }
+  .progress-text {
+    margin-bottom: 24px;
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  /* Done button */
+  .done-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 14px;
+    background: #13d7e9; /* teal background */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .done-btn:hover {
+    background: #0fb2d3;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 480px) {
+    .final-steps-container {
+      padding: 20px;
+    }
+    .final-logo {
+      width: 120px;
+    }
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      font-size: 0.85rem;
+    }
+    .step-text p {
+      font-size: 0.95rem;
+    }
+    .done-btn {
+      font-size: 0.95rem;
+      padding: 12px;
+    }
+    .app-btn {
+      font-size: 0.85rem;
+      padding: 6px 10px;
+    }
+  }
+  

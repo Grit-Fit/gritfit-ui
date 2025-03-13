@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import NavBar from "./navBar";
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/GritFit_Full.png";
+import logo from "../assets/Logo.png";
 import "../css/gFitReport.css";
 import axios from "../axios";
-import nutritionPdf from "../assets/Nutrition101PDF.pdf";
-import GeneratePdf from "./GeneratePdfButton";
-import { ChevronDown, Info, Menu } from "lucide-react";
+import "../css/CardView.css";
+import TabBar from "./TabBar";
+import trend from "../assets/trend.png";
 
 const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -138,7 +137,7 @@ const PieChartComponent = ({ userProgress }) => {
     "Too busy",
   ];
 
-  const COLORS = ["#FF8042", "#00C49F", "#FFBB28", "#D0ED57", "#0088FE"];
+  const COLORS = ["#1f32c0", "#6577fb", "#000d6b", "#3b4489", "#1991f8"];
 
   // Process the userProgress to calculate reasons
   const reasonCounts = userProgress
@@ -295,29 +294,22 @@ const GFitReport = () => {
   }, [accessToken]);
 
   return (
-    <div>
-      <NavBar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
-      <div className="main-content">
-        <header className="gfit-report-header">
-          <div className="logo-container1">
-          <Menu
-                        className="hamburger-icon"
-                        size={24} // Adjust size as needed
-                        onClick={() => setIsNavOpen(!isNavOpen)} 
-                        style={{cursor: "pointer", marginLeft: "-16px", marginTop: "10px", marginRight: "8px" }} // Adjust spacing
-            />
-            <img src={logo} alt="Logo" onClick={() => setIsNavOpen(!isNavOpen)} />
-          </div>
+    <>
+      <header className="gritphase-header">
+                <img src={logo} alt="Logo" className="logo-gritPhases-header" />
+                <div className="phase-row">
+                </div>
         </header>
+      <div className="main-content">
         <div className="fullpage-report">
           <div className="report_header">
-            <div className="report_header-text">Hello there, {username}!<br />This is your GFit Report</div>
+            <div className="report_header-text"><img src = {trend} /> GFit Report</div>
           </div>
           <div className="body_page">
             {loading ? <div className="loading-message">Loading data...</div> : (
               <>
                 <div className="calendar_section">
-                  <h3>Consistency Calendar</h3>
+                <div className="pie-heading">Consistency Calendar</div>
                   <div className="header_line">
                     Are you team Green or Red? Get a bird's eye view of your
                     consistency this month!
@@ -334,30 +326,14 @@ const GFitReport = () => {
                   </div>
                   <PieChartComponent userProgress={taskData} />
                 </div>
-                <div className="pie_section">
-                <div className="pie-heading">Fitness Guide</div>
-                  <p>
-                   Ready to dive deeper into your nutrition? Download our comprehensive "Nutrition 101" guide to learn all you need to start eating healthier today!
-                  </p>
-                  {/* <a href={nutritionPdf} download className="downloadButton">Nutrition 101 PDF ⬇️</a> */}
-
-                  <div>
-                    {maintenance && macros && (
-                      <GeneratePdf
-                        userName={username} // Or fetch username from DB as well
-                        maintenanceCalories={maintenance}
-                        macros={macros}
-                      />
-                    )}
-                  </div>
-                  
-                </div>
+               
               </>
             )}
           </div>
         </div>
       </div>
-    </div>
+    <TabBar />
+    </>
   );
 };
 

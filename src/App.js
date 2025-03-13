@@ -1,21 +1,27 @@
-// App.js
 import React, { useContext, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
-  useLocation,
 } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
-import Auth from "./components/Auth";
-import Landing from "./components/Landing";   // <-- your new Landing page component
 
-import LogoPage from "./components/Logo";
+// Public components
+import Landing from "./components/Landing";
+import Auth from "./components/Auth";
+
+// “Welcome” flow for new sign-ups
 import WelcomePage from "./components/Welcome";
+
+// Old bubble-based GritPhases (if you still want it)
 import GritPhases from "./components/GritPhases";
+
+// Left/Right swipes
 import LeftSwipe from "./components/leftSwipe";
 import RightSwipe from "./components/rightSwipe";
+
+// Other pages
 import GFitReport from "./components/gFitReport";
 import CalorieCalculator from "./components/CalorieCalculator";
 import CalorieDisplay from "./components/CalorieDisplay";
@@ -25,61 +31,96 @@ import NextStepsCarousel from "./components/NextStepsCarousel";
 import NutritionTheory from "./components/NutritionTheory";
 import GymGoal from "./components/GymGoal";
 import NutritionPage from "./components/NutritionPage";
+import UserProfile from "./components/UserProfile";
+import SupportFaq from "./components/SupportFaq";
+import Settings from "./components/Settings";
+import IntroVideoPage from "./components/IntroVideoPage";
+import FinalStepsPage from "./components/FinalStepsPage";
+import TermsAndConditions from "./components/TermsAndConditions";
+
+
+// New card-based UI
+import CardView from "./components/CardView";
 
 function AppRoutes() {
   const { accessToken } = useContext(AuthContext);
-  const location = useLocation();
   const [redirectPath, setRedirectPath] = useState(null);
 
   useEffect(() => {
+    // If user is logged in, decide where to redirect:
+    //  - If "justSignedUp" is still true => /welcome (then remove it so next time they go /cardView)
+    //  - Otherwise => /cardView
+    // If user is NOT logged in => default to "/"
     if (accessToken) {
       const storedSignup = localStorage.getItem("justSignedUp") === "true";
-      setRedirectPath(storedSignup ? "/welcome" : "/gritPhases");
+      if (storedSignup) {
+        setRedirectPath("/welcome");
+        // Remove the flag so user only sees /welcome once
+        localStorage.removeItem("justSignedUp");
+      } else {
+        setRedirectPath("/cardView");
+      }
+    } else {
+      setRedirectPath("/");
     }
   }, [accessToken]);
 
-  // 1) If NOT logged in:
+  // If we haven't decided on a path yet, show a loading indicator
+  if (redirectPath === null) {
+    return <div className="loading-screen">Loading...</div>;
+  }
+
+  // If user is NOT logged in
   if (!accessToken) {
     return (
       <Routes>
-        {/* Show Landing at root */}
+        {/* Public routes */}
         <Route path="/" element={<Landing />} />
-
-        {/* Existing Auth routes */}
+        <Route path="/auth" element={<Auth />} />
         <Route path="/login" element={<Auth />} />
         <Route path="/signup" element={<Auth />} />
-
-        {/* Catch-all: unrecognized paths go back to Landing */}
+        {/* Catch-all goes back to landing */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );
   }
 
-  // 2) If logged in but haven't decided where to redirect yet
-  if (!redirectPath) {
-    return <div className="loading-screen">Loading...</div>;
-  }
-
-  // 3) If logged in, send them to their normal in-app routes
+  // If user IS logged in
   return (
     <Routes>
+      {/* Automatically redirect root to the chosen path (cardView or welcome) */}
       <Route path="/" element={<Navigate to={redirectPath} replace />} />
 
+      {/* New Card-based UI as main screen */}
+      <Route path="/cardView" element={<CardView />} />
+
+      {/* Welcome page for newly signed up users */}
       <Route path="/welcome" element={<WelcomePage />} />
+
+      {/* Existing or old routes */}
       <Route path="/gritPhases" element={<GritPhases />} />
+      <Route path="/leftSwipe" element={<LeftSwipe />} />
+      <Route path="/rightSwipe" element={<RightSwipe />} />
+
+      {/* Other pages */}
       <Route path="/selectTheory" element={<NutritionTheory />} />
       <Route path="/selectGoal" element={<GymGoal />} />
       <Route path="/calorieCalc" element={<CalorieCalculator />} />
+      <Route path="/supportFaqs" element={<SupportFaq />} />
+      <Route path="/settings" element={<Settings />} />
       <Route path="/displayCalculation" element={<CalorieDisplay />} />
       <Route path="/displayTargetCalories" element={<CalorieTarget />} />
       <Route path="/macros" element={<CalorieMacro />} />
       <Route path="/nextSteps" element={<NextStepsCarousel />} />
-      <Route path="/leftSwipe" element={<LeftSwipe />} />
-      <Route path="/rightSwipe" element={<RightSwipe />} />
       <Route path="/gFitReport" element={<GFitReport />} />
       <Route path="/nutrition" element={<NutritionPage />} />
+      <Route path="/UserProfile" element={<UserProfile />} />
+      <Route path="/introVideo" element={<IntroVideoPage />} />
+      <Route path="/finalSteps" element={<FinalStepsPage />} />
+      <Route path="/terms" element={<TermsAndConditions />} />
+      
 
-      {/* Catch-all: if user is logged in but hits something weird, just go to redirectPath */}
+      {/* Catch-all: if logged in but path not recognized, go to redirectPath */}
       <Route path="*" element={<Navigate to={redirectPath} replace />} />
     </Routes>
   );

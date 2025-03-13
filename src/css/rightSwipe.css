@@ -11,7 +11,7 @@ html, body {
 }
 
 .fullpage {
-    background: linear-gradient(to bottom, #E8F5E9, #C8E6C9); /* Soft green fade */
+    background: linear-gradient(180deg, #1DD75BFF 0%, #D79D1DFF 100%); /* Soft green fade */
     width: 100vw;
     height: 100vh;
     max-height: 100vh;
@@ -51,7 +51,7 @@ html, body {
   }
 
 .body-text {
-    color: rgba(89, 153, 101, 1);
+    color: black;
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     text-align: center;
@@ -173,7 +173,7 @@ html, body {
     font-weight: light;
     display: block;
     margin: 0 auto;
-    background: linear-gradient(to right, #66BB6A, #43A047);
+    background: black ;
     width: 150px;
 }
 
@@ -185,3 +185,4 @@ html, body {
 .btn-right:hover {
     opacity: 0.8;
 }
+

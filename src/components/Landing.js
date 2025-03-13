@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import logo from "../assets/GritFit_Full.png";
 import axios from "../axios";
+import { useNavigate } from "react-router-dom";
 import "../css/Landing.css";
 import samay from "../assets/samay.jpg";
 import jay from "../assets/jay.jpg";
@@ -9,11 +10,13 @@ import bhargav from "../assets/bhargav.jpg";
 import Slider from 'react-slick';               
 import 'slick-carousel/slick/slick.css';        
 import 'slick-carousel/slick/slick-theme.css';
-import link from '../assets/linkedin.png'; 
+import link from '../assets/linkedin.png';  
 
 const API_URL =  "https://api.gritfit.site/api";
 
 function Landing() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -71,10 +74,10 @@ function Landing() {
 
   // Slick slider settings
   const sliderSettings = {
-    dots: true,            
-    infinite: false,       
-    speed: 500,            
-    slidesToShow: 1,      
+    dots: true,           
+    infinite: true,       
+    speed: 500,           
+    slidesToShow: 1,       
     slidesToScroll: 1, 
     centerMode: true,      
     centerPadding: "0",    
@@ -83,7 +86,7 @@ function Landing() {
 
   return (
     <>
-      <header className="landing">
+      <header className='landing'>
        <a href="#home">
         <img src={logo} alt="GritFit Logo" />
        </a> 
@@ -100,15 +103,15 @@ function Landing() {
         GritFit helps you seamlessly build nutrition habits that support your training. Start simple, build consistency, and gradually level up to tracking calories—without feeling overwhelmed.
         </p>
         <div className = "user">
-        <a href="/login"  className="btn animate-fadeInUp delay-2">Sign In</a>
-        <a href="/signup" className="btn animate-fadeInUp delay-2">Create Account</a>
+        <button className="btn" onClick={() => navigate("/auth")}>Get Started</button>
         </div>
       </section>
 
       <section id = "about" className="dark-section">
         <h2 className='landingh2'>About GritFit</h2>
+        <div className="slider-wrapper">
         <Slider {...sliderSettings}>
-          <div>
+          <div className='feature-card-wrapper'>
           <div className="feature-card">
             <h4>What is GritFit?</h4>
             <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
@@ -119,7 +122,7 @@ function Landing() {
           </div>
           </div>
 
-          <div>
+          <div className='feature-card-wrapper'>
           <div className="feature-card">
             <h4>Why GritFit?</h4>
             <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
@@ -130,7 +133,7 @@ function Landing() {
           </div>
           </div>
 
-          <div>
+          <div className='feature-card-wrapper'>
           <div className="feature-card">
             <h4>How It Works?</h4>
             <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
@@ -141,7 +144,7 @@ function Landing() {
           </div>
           </div>
 
-          <div>
+          <div className='feature-card-wrapper'>
           <div className="feature-card">
             <h4>Who is it for?</h4>
             <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
@@ -152,7 +155,7 @@ function Landing() {
           </div>
           </div>
 
-          <div>
+          <div className='feature-card-wrapper'>
           <div className="feature-card">
             <h4>Why It’s Different?</h4>
             <ul style={{ listStyleType: 'disc', paddingLeft: '0.5rem' }}>
@@ -166,13 +169,15 @@ function Landing() {
           </div>
         
         </Slider>
+        </div>
         
       </section>
 
       <section className="dark-section">
         <h2 className='landingh2'>Value Statements</h2>
+        <div className="slider-wrapper">
         <Slider {...sliderSettings}>
-        <div>
+        <div className='feature-card-wrapper'>
           <div className="feature-card">
             <h4>MISSION 🎯</h4>
             <p>
@@ -181,7 +186,7 @@ function Landing() {
           </div>
         </div>  
 
-        <div>
+        <div className='feature-card-wrapper'>
           <div className="feature-card">
           <h4>VISION 🔭</h4>
             <p>
@@ -190,7 +195,7 @@ function Landing() {
           </div>
         </div>  
 
-        <div>
+        <div className='feature-card-wrapper'>
           <div className="feature-card">
           <h4>PURPOSE 💡</h4>
             <p>
@@ -200,15 +205,17 @@ function Landing() {
         </div>  
         
         </Slider>
+        </div>
       </section>
 
       <section id="founders" className="dark-section">
         <h2 className="landingh2 animate-fadeInUp">Meet The Team</h2>
         <p className="animate-fadeInUp delay-1">
-          Our founders are dedicated individuals striving to make health and fitness exciting for everyone.
+        Our team is made up of dedicated individuals striving to make health and fitness exciting for everyone.
         </p>
+        <div className="slider-wrapper">
         <Slider {...sliderSettings}>
-          <div>
+        <div className='feature-card-wrapper'>
           <div className="feature-card animate-fadeInUp delay-2">
             <img
               src={jay}
@@ -240,6 +247,7 @@ function Landing() {
           </div>
           </div>
 
+          <div className='feature-card-wrapper'>
           <div className="feature-card animate-fadeInUp delay-3">
             <img
               src={samay}
@@ -261,12 +269,13 @@ function Landing() {
                 />
               </a>
             </p>
-            <h5>Technical Dumbbell</h5>
+            <h5>Technical Lead</h5>
             <p>Samay, a key contributor and technical wizard at GritFit, ensures the platform is robust, user-friendly, and always evolving. Driven by a passion for tech innovation and fitness, he helps deliver a seamless experience that supports everyone’s goals.
             </p>
           </div>
+          </div>
 
-          {/* Founder 2 */}
+          <div className='feature-card-wrapper'>
           <div className="feature-card animate-fadeInUp delay-3">
             <img
               src={shayan}
@@ -293,7 +302,9 @@ function Landing() {
             Fitness is not just a goal, it's a lifestyle. Shayan wants to help people realize that eating healthy doesn't have to be tedious. With GritFit, we aim to revolutionize the way people approach their diet, making it both exciting and effortless
             </p>
           </div>
+          </div>
           
+          <div className='feature-card-wrapper'>
           <div className="feature-card animate-fadeInUp delay-3">
             <img
               src={bhargav}
@@ -321,7 +332,9 @@ function Landing() {
             Bhargav is passionate about using technology to enhance fitness and health. Drawing from his own experiences, he has played a key role in developing an app that makes habit-building and wellness accessible, helping users stay consistent and achieve their fitness goals.
             </p>
           </div>
+          </div>
           </Slider>
+          </div>
       </section>
 
 
@@ -364,7 +377,7 @@ function Landing() {
       </section>
 
       <footer>
-  <p>2025 GritFit<br></br> Swipe. Commit. Transform</p>
+  <p>2025 GritFit<br></br> Swipe. Commit. Transform.</p>
 
   
   <p>
@@ -387,7 +400,7 @@ function Landing() {
       <img
         src={link}
         alt="LinkedIn"
-        style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
+        style={{ width: "24px", height: "24px", verticalAlign: "middle" , borderRadius:"4px"}}
       />
     </a>
   </p>

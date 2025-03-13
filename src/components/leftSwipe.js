@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import logo from "../assets/red_logo.png";
-import sick from "../assets/sick2.png";
-import cheatDay from "../assets/cheat_day.png";
-import lm from "../assets/less_motivation.png";
-import busy from "../assets/busy.png";
-import other from "../assets/other.png";
-import { ChevronRight } from "lucide-react";
+import logo from "../assets/logo1.png";
+import sick from "../assets/sickk.png";
+import cheatDay from "../assets/cheatt.png";
+import lm from "../assets/loww.png";
+import busy from "../assets/busyy.png";
+import other from "../assets/otherr.png";
+import { Redo2 } from "lucide-react";
 import "../css/leftSwipe.css";
+import "../css/CardView.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
+import axios from "../axios";
 
 const LeftSwipe = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const LeftSwipe = () => {
 
   const undoSwipe = (e) => {
     e.preventDefault();
-    navigate("/gritPhases");
+    navigate("/cardView");
   };
 
   const handleButtonClick = (buttonName, image) => {
@@ -133,7 +134,7 @@ const LeftSwipe = () => {
       //   }
       // );
       // console.log("Start Progress: ", startProgressResponse.data);
-      navigate("/gritPhases", {
+      navigate("/cardView", {
         state: {
           phase: parseInt(phaseNumber),
           day: parseInt(dayNumber),
@@ -152,12 +153,14 @@ const LeftSwipe = () => {
 
   return (
     <div className="fullpage-left">
-      <header className="header-left">
-        <img src={logo} alt="logo" className="logo-left" />
-        <div className="undo_swipe_btn" onClick={undoSwipe}>
-          Undo Swipe <ChevronRight className="c" />
-        </div>
+            <header className="gritphase-header">
+            <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+
+            <div className="undo_swipe_btn" onClick={undoSwipe}>
+              Undo Swipe <Redo2 className="c" />
+            </div>
       </header>
+      
       <div className="body-leftSwipe">
         {!selectedGoal && phaseId === 3 ? (
           <div className="goal-selection">
@@ -190,33 +193,32 @@ const LeftSwipe = () => {
 
             {!selectedButton ? (
               <div className="body_images">
-                <img
-                  src={sick}
-                  alt="sick"
-                  onClick={() => handleButtonClick("sick", sick)}
-                />
-                <img
-                  src={lm}
-                  alt="less_motivation"
-                  onClick={() => handleButtonClick("less_motivation", lm)}
-                />
-                <img
-                  src={cheatDay}
-                  alt="cheatDay"
-                  onClick={() => handleButtonClick("cheatDay", cheatDay)}
-                />
-                <img
-                  src={busy}
-                  alt="busy"
-                  onClick={() => handleButtonClick("busy", busy)}
-                />
-                <img
-                  src={other}
-                  alt="other"
-                  onClick={() => handleButtonClick("other", other)}
-                />
-    
+              <div className="reason-card" onClick={() => handleButtonClick("sick", sick)}>
+                <img src={sick} alt="Sick" className="reason-icon" />
+                <span className="reason-label">Sick</span>
               </div>
+            
+              <div className="reason-card" onClick={() => handleButtonClick("less_motivation", lm)}>
+                <img src={lm} alt="Low Motivation" className="reason-icon" />
+                <span className="reason-label">Low Motivation</span>
+              </div>
+            
+              <div className="reason-card" onClick={() => handleButtonClick("cheatDay", cheatDay)}>
+                <img src={cheatDay} alt="Cheat Day" className="reason-icon" />
+                <span className="reason-label">Cheat Day</span>
+              </div>
+            
+              <div className="reason-card" onClick={() => handleButtonClick("busy", busy)}>
+                <img src={busy} alt="Busy" className="reason-icon" />
+                <span className="reason-label">Busy</span>
+              </div>
+            
+              <div className="reason-card" onClick={() => handleButtonClick("other", other)}>
+                <img src={other} alt="Other" className="reason-icon" />
+                <span className="reason-label">Other</span>
+              </div>
+            </div>
+            
             ) : (
               <div className="selected-button-container">
                 {selectedButton.name !== "other" && (

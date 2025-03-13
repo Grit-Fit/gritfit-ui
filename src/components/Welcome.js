@@ -1,119 +1,127 @@
-// src/components/WelcomePage.js
+
 import React, { useState, useEffect } from "react";
-import StatusCard from "./StatusCard";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/GritFit_Full.png";
-import "../css/Welcome.css";
 import axios from "../axios";
 
-const WelcomePage = () => {
-  const { logout, accessToken, refreshAuthToken } = useAuth();
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
+import "../css/Welcome.css";
+
+// Assets
+import logo from "../assets/GritFit_Full.png";
+import backIcon from "../assets/Back.png";
+
+export default function WelcomePage() {
+  const { accessToken, refreshAuthToken } = useAuth();
   const navigate = useNavigate();
 
-  const [clickedIndex, setClickedIndex] = useState(null);
+  // State
+  const [name, setName] = useState("");
+  const [goal, setGoal] = useState("");
+  const [message, setMessage] = useState("");
+  const [isLocked, setIsLocked] = useState(false);
 
-  const cardData = [
-    { text: "Progress in the gym", locked: false },
-    { text: "Overall health and longevity", locked: true },
-  ];
-  const handleCardClick = (index) => {
-    if(!name){
-      setMessage("Please enter your name first");
-    } else {
-      setClickedIndex(index);
-      navigate("/selectTheory", {})
-      // navigate("/calorieCalc", {});
-      // Optionally, you can clear the input field after successful update
-      setName("");
-    }
-  };
 
-  // if (!authToken) {
-  //   // Redirect to login page if not authenticated
-  //   navigate("/");
-  //   return null;
-  // }
   useEffect(() => {
-    // If there is no accessToken, try to refresh it by calling the backend refresh route
     if (!accessToken) {
-      refreshAuthToken(); // Refresh token by making API call to the backend
+      refreshAuthToken();
     }
   }, [accessToken, refreshAuthToken]);
 
-  const handleUpdateUsername = async (e) => {
-    e.preventDefault();
+
+  async function handleNext() {
+    // If name is empty => error
+    if (!name.trim()) {
+      setMessage("Please enter your name first.");
+      return;
+    }
+
+    if (!goal) {
+      setMessage("Please select a goal.");
+      return;
+    }
+
+    if (goal === "longevity") {
+      setIsLocked(true);
+      setMessage("That goal is locked for now. Please pick 'Progress in the gym'.");
+      return;
+    }
+
+
     try {
       const response = await axios.post(
         "/api/updateUsername",
-        {
-          newUsername: name,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        { newUsername: name },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      setMessage(response.data.message);
+      setMessage(response.data.message || "");
+
+  
+      navigate("/introVideo");
     } catch (error) {
       console.error("Error updating username:", error);
-      setMessage(error.response ? error.response.data.message : "Error occurred");
+      setMessage(
+        error.response
+          ? error.response.data.message
+          : "Error occurred"
+      );
     }
-  };
+  }
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+
 
   return (
-    <div className="container">
-              <div className="theory-header1">
-          <div>
-          </div>
-          <div className="logo-container-welcome">
-            <img src={logo} alt="Logo" className="logo-gritPhases1" />
-          </div>
-        </div>
-      {/* <h1 className="welcome">Welcome!</h1> */}
-      {/* <p className="text">We are as excited as you are!</p>
-      <p className="text">Let's start by knowing a bit about you</p> */}
-      <h3 className="nameprompt">What is your name?</h3>
-      <form onSubmit={handleUpdateUsername}>
-        <input
-          type="text"
-          value={name}
-          className="inputbx"
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <button type="submit" className="btn">
-          That's Me!
-        </button>
-      </form>
-      {message && <p className="message">{message} !</p>}
-      <br />
-      <br />
-      <h3 className="nameprompt">Tell us what brings you here?</h3>
-      <div style={{ padding: "20px", marginTop: "20px" }}>
-        {cardData.map((card, index) => (
-          <StatusCard
-            key={index}
-            text={card.text}
-            locked={card.locked}
-            onClick={() => handleCardClick(index)}
-            className={clickedIndex === index && !card.locked ? "clicked" : ""}
-          />
-        ))}
+    <div className="welcome-container">
+
+      {/* Logo */}
+      <img src={logo} alt="GritFit Logo" className="welcome-logo" />
+
+      {/* Prompt: "What can I call you?" */}
+      <h3 className="welcome-prompt">What can I call you?</h3>
+      <input
+        className="welcome-input"
+        type="text"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => {
+          setName(e.target.value);
+          setMessage("");
+        }}
+      />
+
+      {/* Goal dropdown */}
+      <div className="goal-dropdown-container">
+        <select
+          className="goal-dropdown"
+          value={goal}
+          onChange={(e) => {
+            setGoal(e.target.value);
+            setMessage("");
+          }}
+        >
+          <option value="" disabled>
+            Select a goal
+          </option>
+          <option value="gym">Progress in the gym</option>
+          <option value="longevity" disabled>
+            Overall longevity (locked)
+          </option>
+        </select>
       </div>
-      {/* <button onClick={handleLogout} className="btn">
-        Logout
-      </button> */}
+
+      {/* Progress bar at 0% */}
+      <div className="welcome-progress-bar">
+        <div className="welcome-progress-fill" style={{ width: "0%" }}></div>
+      </div>
+      <p className="progress-label">0%</p>
+
+      {/* Next button */}
+      <button className="welcome-next-btn" onClick={handleNext}>
+        Next
+      </button>
+
+      {/* Show any messages or locked error */}
+      {message && <p className="welcome-message">{message}</p>}
+      {isLocked && <p className="locked-message">This goal is locked!</p>}
     </div>
   );
-};
-
-export default WelcomePage;
+}

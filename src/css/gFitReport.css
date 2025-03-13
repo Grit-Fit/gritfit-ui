@@ -4,7 +4,9 @@
 .fullpage-report {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.5rem;
+  margin-top: 4rem;
+  background: #ffffff;
+  padding-bottom: 8rem;
 }
 
 .gfit-report-header {
@@ -74,11 +76,23 @@
 /* Header section */
 .report_header {
   margin-bottom: 2rem;
+  background: #13D7E92E;
+  display: flex;
+  flex-direction: column;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .report_header-text {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0D909CFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Main sections */
@@ -91,16 +105,19 @@
 .calendar_section {
   background: white;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 6px 6px 6px 6px rgb(221 221 221);
   padding: 1.5rem;
+  width: 90%;
+  margin-left: 1.2rem;
 }
 
 .pie_section {
   background: white;
-  height: auto;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 6px 6px 6px 6px rgb(221 221 221);
   padding: 1.5rem;
+  width: 90%;
+  margin-left: 1.2rem;
 }
 
 .heading-calendar, .pie-heading {
@@ -439,3 +456,4 @@
   background-color: #ff4040;
   color: white;
 }
+
