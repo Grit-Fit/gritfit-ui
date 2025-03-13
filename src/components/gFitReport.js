@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/Logo.png";
+import logo from "../assets/GritFit_Full.png";
 import "../css/gFitReport.css";
 import axios from "../axios";
 import "../css/CardView.css";

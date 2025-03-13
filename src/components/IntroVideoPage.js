@@ -4,6 +4,7 @@ import logo from "../assets/GritFit_Full.png";
 import backIcon from "../assets/Back.png";
 import introVideo from "../assets/GritFit.mp4";
 import "../css/IntroVideo.css";
+import { ChevronLeft } from 'lucide-react';
 
 export default function IntroVideoPage() {
   const navigate = useNavigate();
@@ -19,10 +20,7 @@ export default function IntroVideoPage() {
   return (
     <div className="intro-container">
 
-      <button className="intro-back-button" onClick={handleBack}>
-        <img src={backIcon} alt="Back" className="intro-back-icon" />
-      </button>
-
+      <ChevronLeft className="intro-back-button" onClick={handleBack} size={40}/> 
 
       <img src={logo} alt="GritFit Logo" className="intro-logo" />
 
@@ -31,7 +29,7 @@ export default function IntroVideoPage() {
 
       {/* Video section */}
       <div className="intro-video-wrapper">
-        <video className="intro-video-element" controls>
+        <video className="intro-video-element" controls poster={logo}>
           <source src={introVideo} type="video/mp4" />
           {/* Fallback text */}
           Your browser does not support the video tag.

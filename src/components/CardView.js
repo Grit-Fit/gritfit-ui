@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "../axios"; 
+import axios from "../axios";
 import { useAuth } from "../context/AuthContext";
 import SwipeImageWithSpring from "./SwipeImageWithSpring";
 import "../css/CardView.css";
 import rightIcon from "../assets/rightf.png";
 import leftIcon from "../assets/leftf.png";
 import TabBar from "./TabBar";
-import gritfitLogo from "../assets/logo1.png"; 
+import gritfitLogo from "../assets/logo1.png";
 import logo from "../assets/logo1.png";
 import { LayoutGrid, Undo2, Redo2 } from "lucide-react";
 
 /* 
-----------------------------------------------------------
- Left Swipe "Card" Content 
- (the old leftSwipe screen, but we ONLY show the card body)
-----------------------------------------------------------
+----------------------------------
+ Left Swipe Sub-Component
+----------------------------------
 */
-function InternalLeftSwipeCard({
-  phaseNumber,
-  dayNumber,
-  onClose,
-  onUpdateStatus, 
-}) {
+function InternalLeftSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus }) {
   const { accessToken, refreshAuthToken } = useAuth();
   const [selectedButton, setSelectedButton] = useState(null);
   const [selectedGoal, setSelectedGoal] = useState(null);
@@ -32,7 +26,6 @@ function InternalLeftSwipeCard({
 
   const phaseId = parseInt(phaseNumber, 10);
 
-  // Ensure token
   useEffect(() => {
     if (!accessToken) {
       refreshAuthToken();
@@ -52,7 +45,6 @@ function InternalLeftSwipeCard({
 
   async function doneBtnClick(e) {
     e.preventDefault();
-
     if (!phaseNumber || !dayNumber) {
       setError("Missing required information");
       return;
@@ -61,27 +53,25 @@ function InternalLeftSwipeCard({
       setError("Please select a goal you were unable to achieve.");
       return;
     }
-
     setIsLoading(true);
     setError(null);
 
     try {
       const reason = getReasonText(selectedButton?.name || "");
-      const requestData = {
-        phaseId: phaseId,
-        taskId: parseInt(dayNumber, 10),
-        reasonForNonCompletion: reason,
-        failedGoal: phaseId === 3 ? selectedGoal : null,
-      };
-
-      await axios.post("/api/userprogressNC", requestData, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      await axios.post(
+        "/api/userprogressNC",
+        {
+          phaseId: phaseId,
+          taskId: parseInt(dayNumber, 10),
+          reasonForNonCompletion: reason,
+          failedGoal: phaseId === 3 ? selectedGoal : null,
+        },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
 
       // Refresh tasks, close card
       if (onUpdateStatus) onUpdateStatus();
       if (onClose) onClose();
-
     } catch (err) {
       console.error("LeftSwipe error:", err);
       setError("Failed to update. Please try again!");
@@ -100,23 +90,26 @@ function InternalLeftSwipeCard({
   return (
     <div
       className="big-card fade-in"
-      style={{
-        background: "linear-gradient(180deg, #EFB034FF 0%, #EF5634FF 47%)", left: "20px"
-      }}
+      style={{ background: "linear-gradient(180deg, #EFB034FF 0%, #EF5634FF 47%)", left: "20px" }}
     >
-      {/* "Undo" in the top-right corner of the card */}
       <div className="undo" onClick={onClose}>
-        Undo Swipe<Redo2 style={{ width: "24px", height: "24px" }} />
+        Undo Swipe <Redo2 style={{ width: "24px", height: "24px" }} />
       </div>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {phaseId === 3 && !selectedGoal ? (
         <>
-          <h2 style={{ marginBottom: "4.5rem", marginTop: "4rem" }}>Which goal were you unable to achieve?</h2>
-          <button className="goalBtn" onClick={() => handleGoalSelection("Protein Goal")}>Protein Goal</button>
+          <h2 style={{ marginBottom: "4.5rem", marginTop: "4rem" }}>
+            Which goal were you unable to achieve?
+          </h2>
+          <button className="goalBtn" onClick={() => handleGoalSelection("Protein Goal")}>
+            Protein Goal
+          </button>
           <h3> OR </h3>
-          <button className="goalBtn" onClick={() => handleGoalSelection("Fat Goal")}>Water Goal</button>
+          <button className="goalBtn" onClick={() => handleGoalSelection("Fat Goal")}>
+            Water Goal
+          </button>
         </>
       ) : (
         <>
@@ -125,7 +118,7 @@ function InternalLeftSwipeCard({
           </h2>
 
           {!selectedButton ? (
-            <div className="body_images" style={{ marginTop: "1rem", gap:"15px" }}>
+            <div className="body_images" style={{ marginTop: "1rem", gap: "15px" }}>
               <div className="reason-card" onClick={() => handleButtonClick("sick", require("../assets/sickk.png"))}>
                 <img src={require("../assets/sickk.png")} alt="Sick" className="reason-icon" />
                 <span className="reason-label">Sick</span>
@@ -189,17 +182,11 @@ function InternalLeftSwipeCard({
 }
 
 /* 
-----------------------------------------------------------
- Right Swipe "Card" Content
- (the old rightSwipe, but only the big card content)
-----------------------------------------------------------
+----------------------------------
+ Right Swipe Sub-Component
+----------------------------------
 */
-function InternalRightSwipeCard({
-  phaseNumber,
-  dayNumber,
-  onClose,
-  onUpdateStatus,
-}) {
+function InternalRightSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus }) {
   const { accessToken, refreshAuthToken } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -239,18 +226,15 @@ function InternalRightSwipeCard({
   return (
     <div
       className="big-card fade-in"
-      style={{
-        background: "linear-gradient(180deg, #1DD75BFF 0%, #D79D1DFF 100%)", left: "20px"
-      }}
+      style={{ background: "linear-gradient(180deg, #1DD75BFF 0%, #D79D1DFF 100%)", left: "20px" }}
     >
-      {/* Undo icon top-right */}
       <div className="undo" onClick={onClose}>
-        Undo Swipe<Undo2 style={{ width: "24px", height: "24px" }} />
+        Undo Swipe <Undo2 style={{ width: "24px", height: "24px" }} />
       </div>
 
       <div className="body-text" style={{ marginTop: "80px", textAlign: "center" }}>
         <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
-          Yayy! You did it! 
+          Yayy! You did it!
         </h2>
       </div>
 
@@ -272,34 +256,75 @@ function InternalRightSwipeCard({
   );
 }
 
+function IntroCard({ onClose }) {
+  function handleSwipe(direction) {
+    onClose();
+  }
+
+  return (
+    <div className="intro-card-container">
+      {/* The background dimming, optional */}
+      <div className="intro-dim-background" />
+
+      <SwipeImageWithSpring onSwipe={handleSwipe}>
+      <div className="intro-card">
+      <h2 className="intro-card-title">Swipe right if you did the task</h2>
+        <p className="intro-card-text">
+          See your GritPhase task everyday - your goal for the day. Swipe right if you did it!
+          <img src={rightIcon} alt="Swipe Right" className="swipe-right" />
+        </p>
+        <hr style={{width: "18rem", position: "relative", top: "28px"}} />
+        <h2 className="intro-card-title">Swipe left if you didn't</h2>
+        <p className="intro-card-text">
+        <img src={leftIcon} alt="Swipe Left" className="swipe-left" />
+        Weren't able to do the task, no problem! Swipe left to make a very personalized habit roadmap. It's that easy!
+        </p>
+      </div>
+      </SwipeImageWithSpring>
+    </div>
+  );
+}
+
 /* 
-----------------------------------------------------------
+----------------------------------
  Main CardView 
- (header + footer remain; only the middle card changes)
-----------------------------------------------------------
+----------------------------------
 */
 export default function CardView() {
   const navigate = useNavigate();
   const location = useLocation();
   const { accessToken, refreshAuthToken } = useAuth();
+
   const [tasks, setTasks] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [phaseProgress, setPhaseProgress] = useState(0);
+
   const [showLeftCard, setShowLeftCard] = useState(false);
   const [showRightCard, setShowRightCard] = useState(false);
   const [phaseNumber, setPhaseNumber] = useState(null);
   const [dayNumber, setDayNumber] = useState(null);
 
-  
+  // [NEW] Show Intro as a "card" the first time
+  const [showIntro, setShowIntro] = useState(true);
+
+  // Ensure user is logged in
   useEffect(() => {
     if (!accessToken) {
       refreshAuthToken().catch(() => navigate("/login"));
     }
   }, [accessToken, refreshAuthToken, navigate]);
 
- 
+  // Check if user previously dismissed the intro
+  useEffect(() => {
+    const dismissed = localStorage.getItem("introDismissed");
+    if (dismissed === "true") {
+      setShowIntro(false);
+    }
+  }, []);
+
+  // Possibly parse leftover navigation state for left/right swipes
   useEffect(() => {
     const s = location.state || {};
     if (s.rightSwipe && s.phase !== undefined && s.day !== undefined) {
@@ -315,32 +340,38 @@ export default function CardView() {
     }
   }, [location.state]);
 
-  // Fetch tasks
+  // Fetch tasks on mount + interval
   useEffect(() => {
     fetchTasks();
-    const interval = setInterval(fetchTasks, 600000); 
+    const interval = setInterval(fetchTasks, 600000);
     return () => clearInterval(interval);
   }, [accessToken]);
-
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   async function fetchTasks() {
     if (!accessToken) return;
     setLoading(true);
-    if (isFirstLoad) {
-      setLoading(true);
-    }
     setError(null);
 
     try {
       const resp = await axios.post("/api/getTaskData", {}, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      const allTasks = resp.data.data || [];
-      const now = new Date();
+      const mergedData = resp.data.data || [];
 
-      // auto-activate
-      const updated = allTasks.map(t => {
+      // Auto-start logic if all tasks "Not Started"
+      const allTasksNotStarted = mergedData.every((t) => t.taskstatus === "Not Started");
+      if (allTasksNotStarted && mergedData.length > 0) {
+        console.log("[CardView] Auto-starting Phase1, Day1...");
+        await axios.post("/api/userprogressStart",
+          { phaseId: 1, taskId: 1 },
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+        return fetchTasks();
+      }
+
+      // Auto-activate if time passed
+      const now = new Date();
+      const updated = mergedData.map((t) => {
         if (t.taskstatus === "Not Started" && t.task_activation_date) {
           const act = new Date(t.task_activation_date);
           if (now >= act) {
@@ -351,44 +382,38 @@ export default function CardView() {
       });
       setTasks(updated);
 
-      // Find next in-progress or not-started
-      let nextTask = updated.find(t => t.taskstatus === "In Progress");
+      // Find next in-progress or earliest not-started
+      let nextTask = updated.find((t) => t.taskstatus === "In Progress");
       if (!nextTask) {
         const notStarted = updated
-          .filter(t => t.taskstatus === "Not Started")
+          .filter((t) => t.taskstatus === "Not Started")
           .sort((a, b) => new Date(a.task_activation_date) - new Date(b.task_activation_date));
-        if (notStarted.length > 0) nextTask = notStarted[0];
+        if (notStarted.length > 0) {
+          nextTask = notStarted[0];
+        }
       }
       setCurrentTask(nextTask || null);
 
+      // Phase progress
+      if (nextTask) {
+        const ph = nextTask.phaseid;
+        const tasksInPhase = updated.filter((x) => x.phaseid === ph);
+        const completed = tasksInPhase.filter((x) => x.taskstatus === "Completed").length;
+        const total = tasksInPhase.length;
+        const p = total === 0 ? 0 : Math.round((completed / total) * 100);
+        setPhaseProgress(p);
+      } else {
+        setPhaseProgress(0);
+      }
     } catch (err) {
       console.error("Failed to fetch tasks:", err);
       setError("Failed to load tasks. Please try again later.");
     } finally {
       setLoading(false);
-      setIsFirstLoad(false);
     }
   }
 
-  // Phase progress
-  useEffect(() => {
-    if (!currentTask || tasks.length === 0) {
-      setPhaseProgress(0);
-      return;
-    }
-    const ph = currentTask.phaseid;
-    const tasksInPhase = tasks.filter(t => t.phaseid === ph);
-    const completed = tasksInPhase.filter(t => t.taskstatus === "Completed").length;
-    const total = tasksInPhase.length;
-
-    if (total === 0) {
-      setPhaseProgress(0);
-      return;
-    }
-    setPhaseProgress(Math.round((completed / total) * 100));
-  }, [currentTask, tasks]);
-
-  // Called from the main "blue card" swipe
+  // Handle swipe from main card
   function handleSwipe(direction, ph, d) {
     if (!ph || !d) return;
     if (direction === "right") {
@@ -404,7 +429,7 @@ export default function CardView() {
     }
   }
 
-
+  // Close sub-cards
   function closeSubCard() {
     setShowLeftCard(false);
     setShowRightCard(false);
@@ -415,14 +440,33 @@ export default function CardView() {
     navigate("/gritPhases");
   }
 
+  /* 
+    If user hasn't dismissed intro => show the IntroCard 
+    layered on top of everything 
+  */
+  function renderIntroCard() {
+    if (!showIntro) return null;
 
+    return (
+      <IntroCard
+        onClose={() => {
+          setShowIntro(false);
+          localStorage.setItem("introDismissed", "true");
+        }}
+      />
+    );
+  }
+
+  // If left swipe sub-card
   if (showLeftCard) {
     return (
       <div className="cardview-container">
         <header className="gritphase-header">
           <img src={logo} alt="Logo" className="logo-gritPhases-task" />
           <div className="phase-row">
-            <span className="phase-title">GritPhase {currentTask ? currentTask.phaseid : "?"}</span>
+            <span className="phase-title">
+              GritPhase {currentTask ? currentTask.phaseid : "?"}
+            </span>
             <div className="progress-bar-container">
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
@@ -438,20 +482,24 @@ export default function CardView() {
             onUpdateStatus={fetchTasks}
           />
         </div>
-
         <TabBar />
+
+        {/* Render the intro card if still showing */}
+        {renderIntroCard()}
       </div>
     );
   }
 
-
+  // If right swipe sub-card
   if (showRightCard) {
     return (
       <div className="cardview-container">
         <header className="gritphase-header">
           <img src={logo} alt="Logo" className="logo-gritPhases-task" />
           <div className="phase-row">
-            <span className="phase-title">GritPhase {currentTask ? currentTask.phaseid : "?"}</span>
+            <span className="phase-title">
+              GritPhase {currentTask ? currentTask.phaseid : "?"}
+            </span>
             <div className="progress-bar-container">
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
@@ -467,13 +515,14 @@ export default function CardView() {
             onUpdateStatus={fetchTasks}
           />
         </div>
-
         <TabBar />
+
+        {renderIntroCard()}
       </div>
     );
   }
 
-  // Otherwise, show the main "blue" card with normal logic
+  // Normal main card
   function renderMainCard(task) {
     if (!task) {
       return (
@@ -484,15 +533,15 @@ export default function CardView() {
         </div>
       );
     }
+
     const now = new Date();
     const actDate = task.task_activation_date ? new Date(task.task_activation_date) : null;
     const locked = (task.taskstatus === "Not Started" && actDate && actDate > now);
 
-
     if (locked) {
       const actTime = actDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
       const actDay = actDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-    
+
       return (
         <div className="placeholder-card" style={{ background: "linear-gradient(180deg, #a2d3f2, #769fd1)" }}>
           <img src={gritfitLogo} alt="Logo" className="placeholder-logo" />
@@ -502,11 +551,14 @@ export default function CardView() {
         </div>
       );
     }
+
     if (task.taskstatus === "In Progress") {
       return (
         <SwipeImageWithSpring onSwipe={handleSwipe} phaseNumber={task.phaseid} dayNumber={task.taskid}>
-          <div className="big-card" style={{ background: "linear-gradient(180deg, #00bfff, #5ec8f2)" }}>
-            <h2 className="task-date">{now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</h2>
+          <div className="big-card">
+            <h2 className="task-date">
+              {now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+            </h2>
             <p className="task-descrip">{task.taskdesc}</p>
             <div className="swipe-hints">
               <div className="left-hint">
@@ -522,22 +574,28 @@ export default function CardView() {
         </SwipeImageWithSpring>
       );
     }
-    // Completed or Not Completed
-    const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
 
-      // Format tomorrow’s date as a string
-      const tomorrowStr = tomorrow.toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-      });
+    // Completed or Not Completed fallback
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    });
 
     return (
       <div className="big-card" style={{ background: "linear-gradient(180deg, #a2d3f2, #769fd1)", left: "20px" }}>
         <h2 className="task-date">{tomorrowStr}</h2>
-        <img src={gritfitLogo} alt="Logo" className="placeholder-logo" style={{marginTop: "4rem", marginBottom: "6rem"}} />
-        <h2 className="task-date" style={{fontWeight:"normal"}}>Gear up for tomorrow's task! 🚀</h2>
+        <img
+          src={gritfitLogo}
+          alt="Logo"
+          className="placeholder-logo"
+          style={{ marginTop: "4rem", marginBottom: "6rem" }}
+        />
+        <h2 className="task-date" style={{ fontWeight: "normal" }}>
+          Gear up for tomorrow's task!
+        </h2>
       </div>
     );
   }
@@ -554,17 +612,21 @@ export default function CardView() {
             <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
           </div>
         </div>
-        <LayoutGrid size={24} onClick={goToGritPhase} className="grid-icon" />
+        <LayoutGrid size={24} onClick={() => navigate("/gritPhases")} className="grid-icon" />
       </header>
 
       {loading && <p className="loading-text">Loading tasks...</p>}
       {error && <p className="error-text">{error}</p>}
 
-      <div className="card-wrapper">
-        {renderMainCard(currentTask)}
-      </div>
+      <div className="card-wrapper">{renderMainCard(currentTask)}</div>
 
       <TabBar />
+
+      {/* Render the intro card if user hasn't dismissed yet */}
+      {showIntro && <IntroCard onClose={() => {
+        setShowIntro(false);
+        localStorage.setItem("introDismissed", "true");
+      }} />}
     </div>
   );
 }

@@ -3,7 +3,7 @@ import nutritionData from "./nutritionData";
 import "../css/nutritionPage.css"; 
 import "../css/gFitReport.css";
 import "../css/CardView.css";
-import logo from "../assets/Logo.png";
+import logo from "../assets/GritFit_Full.png";
 import NavBar from "./navBar";
 import TabBar from "./TabBar";
 import safeway from "../assets/safeway.png";
@@ -82,8 +82,8 @@ const NutritionPage = () => {
 
         {selectedStore && (
           <div className="store-food-table" ref={tableRef}>
-            <h4 style={{ textAlign: 'center', fontWeight: '700' }}>
-              Available Foods at {selectedStore}
+            <h4 style={{ textAlign: 'center', fontWeight: '700', fontSize: '0.9rem' }}>
+              Best Macro friendly items at {selectedStore}
             </h4>
 
             {['Proteins', 'Carbohydrates', 'Fats'].map((category) => (

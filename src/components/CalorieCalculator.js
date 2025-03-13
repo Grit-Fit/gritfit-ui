@@ -239,7 +239,7 @@ export default function CalorieCalculator() {
               <input
                 type="text"
                 className="infoInput"
-                placeholder="5' 7"
+                placeholder="5ft 7in"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
               />

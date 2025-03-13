@@ -7,6 +7,7 @@ import referIcon from "../assets/refer.png";
 import rewardsIcon from "../assets/reward.png";
 import supportIcon from "../assets/support.png";
 import logo from "../assets/logo1.png";
+import user from "../assets/user.png";
 import "../css/CardView.css";
 import TabBar from "./TabBar";
 import { useAuth } from "../context/AuthContext";
@@ -115,7 +116,7 @@ export default function UserProfile() {
 
       <div className="userprofile-container">
         <div className="profile-header">
-          <div className="profile-avatar">U</div>
+          <div className="profile-avatar"><img src={user} /></div>
           <h2 className="profile-username">{userName}</h2>
           <p className="profile-email">{email}</p>
         </div>

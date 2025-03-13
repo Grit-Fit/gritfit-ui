@@ -18,27 +18,31 @@ export default function SupportFaq() {
   const faqs = [
     {
       question: "What is GritFit?",
-      answer: "GritFit is a structured program for building healthy habits one step at a time."
+      answer: "GritFit is a habit-building fitness app designed to help you stay consistent with your nutrition and training through small daily tasks."
     },
     {
       question: "How does GritFit work?",
-      answer: "Each day you get a small, doable fitness or nutrition task. Complete them consistently to progress through phases."
+      answer: "Every day, you get a simple task related to nutrition or fitness. Complete it and swipe right; if you miss it, swipe left. Over time, this builds discipline and long-term habits."
     },
     {
       question: "Do I need to track calories?",
-      answer: "Not necessarily—GritFit focuses on simple tasks. However, you can optionally track using the Calorie Calculator."
+      answer: "We recommend tracking calories, but not from day one. GritFit eases you into it without overwhelming you."
     },
     {
       question: "What happens if I miss a day?",
-      answer: "No worries! Just pick up where you left off. GritFit is flexible and encourages steady progress."
+      answer: "No worries! GritFit is designed to help you bounce back. You’ll still get daily tasks, and missing one won’t ruin your progress."
     },
     {
       question: "Do I need to follow a specific diet?",
-      answer: "Nope! GritFit is diet-agnostic. We just help you build consistent eating habits that fit your lifestyle."
+      answer: "Nope! GritFit works with flexible dieting (IIFYM), meaning you can eat foods that fit your macros while still making progress."
     },
     {
       question: "Is GritFit free to use?",
-      answer: "Yes. Our basic features are free. Some advanced features may require a subscription later."
+      answer: "Our beta version is free! Future premium features may be introduced, but core habit-building features will remain accessible."
+    },
+    {
+      question: "How do I contact support?",
+      answer: "Reach us through mail: support@gritfit.site."
     },
   ];
 
