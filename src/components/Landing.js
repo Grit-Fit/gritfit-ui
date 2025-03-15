@@ -11,6 +11,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';        
 import 'slick-carousel/slick/slick-theme.css';
 import link from '../assets/linkedin.png';  
+import ConfirmationModal from "./ConfirmationModal";
 
 const API_URL =  "https://api.gritfit.site/api";
 
@@ -50,6 +51,10 @@ function Landing() {
     message: ''
   });
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+
   
   const handleChange = (e) => {
     setFormData({
@@ -60,17 +65,28 @@ function Landing() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
     try {
-        const response = await axios.post(`${API_URL}/betaSignup`, formData);  
-        alert(response.data.message);
-        setFormData({ name: '', email: '', message: '' });
-        window.open("https://forms.gle/tdjn5EedwoZRNWGg9", "_blank");
+      const response = await axios.post(`${API_URL}/betaSignup`, formData);
+
+      setFormData({ name: "", email: "", message: "" });
+
+      window.open("https://forms.gle/tdjn5EedwoZRNWGg9", "_blank");
+
+      setModalTitle("Success"); 
+      setModalMessage(response.data.message || "Thanks for signing up! We'll be in touch soon. 💪");
+      setModalVisible(true);
+
     } catch (error) {
-        console.error("Error submitting beta signup form:", error);
-        alert(error.response?.data?.message || "Failed to submit form.");
+      console.error("Error submitting beta signup form:", error);
+      alert(error.response?.data?.message || "Failed to submit form.");
     }
-};
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setModalTitle("");
+    setModalMessage("");
+  };
 
   // Slick slider settings
   const sliderSettings = {
@@ -405,6 +421,14 @@ function Landing() {
     </a>
   </p>
 </footer>
+
+      <ConfirmationModal
+        visible={modalVisible}
+        title={modalTitle}
+        message={modalMessage}
+        onConfirm={closeModal}   
+        onCancel={closeModal}    
+      />
     
     </>
   );
