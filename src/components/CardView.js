@@ -346,73 +346,100 @@ export default function CardView() {
     const interval = setInterval(fetchTasks, 600000);
     return () => clearInterval(interval);
   }, [accessToken]);
-
+  
   async function fetchTasks() {
     if (!accessToken) return;
     setLoading(true);
     setError(null);
+  
+// Inside fetchTasks():
+try {
+  const resp = await axios.post("/api/getTaskData", {}, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  const mergedData = resp.data.data || [];
 
-    try {
-      const resp = await axios.post("/api/getTaskData", {}, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      const mergedData = resp.data.data || [];
-
-      // Auto-start logic if all tasks "Not Started"
-      const allTasksNotStarted = mergedData.every((t) => t.taskstatus === "Not Started");
-      if (allTasksNotStarted && mergedData.length > 0) {
-        console.log("[CardView] Auto-starting Phase1, Day1...");
-        await axios.post("/api/userprogressStart",
-          { phaseId: 1, taskId: 1 },
-          { headers: { Authorization: `Bearer ${accessToken}` } }
-        );
-        return fetchTasks();
-      }
-
-      // Auto-activate if time passed
-      const now = new Date();
-      const updated = mergedData.map((t) => {
-        if (t.taskstatus === "Not Started" && t.task_activation_date) {
-          const act = new Date(t.task_activation_date);
-          if (now >= act) {
-            return { ...t, taskstatus: "In Progress" };
-          }
-        }
-        return t;
-      });
-      setTasks(updated);
-
-      // Find next in-progress or earliest not-started
-      let nextTask = updated.find((t) => t.taskstatus === "In Progress");
-      if (!nextTask) {
-        const notStarted = updated
-          .filter((t) => t.taskstatus === "Not Started")
-          .sort((a, b) => new Date(a.task_activation_date) - new Date(b.task_activation_date));
-        if (notStarted.length > 0) {
-          nextTask = notStarted[0];
-        }
-      }
-      setCurrentTask(nextTask || null);
-
-      // Phase progress
-      if (nextTask) {
-        const ph = nextTask.phaseid;
-        const tasksInPhase = updated.filter((x) => x.phaseid === ph);
-        const completed = tasksInPhase.filter((x) => x.taskstatus === "Completed").length;
-        const total = tasksInPhase.length;
-        const p = total === 0 ? 0 : Math.round((completed / total) * 100);
-        setPhaseProgress(p);
-      } else {
-        setPhaseProgress(0);
-      }
-    } catch (err) {
-      console.error("Failed to fetch tasks:", err);
-      setError("Failed to load tasks. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
+  // [A] If all tasks "Not Started," auto-start day1
+  const allTasksNotStarted = mergedData.every((t) => t.taskstatus === "Not Started");
+  if (allTasksNotStarted && mergedData.length > 0) {
+    console.log("[CardView] Auto-starting Phase1, Day1...");
+    await axios.post("/api/userprogressStart",
+      { phaseId: 1, taskId: 1 },
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    return fetchTasks(); // re-fetch
   }
 
+  // [B] In-memory auto-activate if now >= activation_date
+  const now = new Date();
+  let updated = mergedData.map((t) => {
+    if (t.taskstatus === "Not Started" && t.task_activation_date) {
+      const act = new Date(t.task_activation_date);
+      if (now >= act) {
+        // Switch to "In Progress" in memory
+        return { ...t, taskstatus: "In Progress" };
+      }
+    }
+    return t;
+  });
+
+  // [C] (OPTIONAL) Persist "In Progress" changes to DB
+  /*
+  const tasksToActivate = updated.filter((task) =>
+    task.taskstatus === "In Progress" &&
+    mergedData.some((orig) => orig.taskid === task.taskid && orig.taskstatus === "Not Started")
+  );
+
+  if (tasksToActivate.length > 0) {
+    await Promise.all(
+      tasksToActivate.map(async (task) => {
+        await axios.post("/api/updateTaskStatus", {
+          phaseId: task.phaseid,
+          taskId: task.taskid,
+          status: "In Progress"
+        }, {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+      })
+    );
+    // No need to re-fetch, local state is already updated
+  }
+  */
+
+  setTasks(updated);
+
+  // [D] Find next in-progress or earliest not-started
+  let nextTask = updated.find((t) => t.taskstatus === "In Progress");
+  if (!nextTask) {
+    const notStarted = updated
+      .filter((t) => t.taskstatus === "Not Started")
+      .sort((a, b) => new Date(a.task_activation_date) - new Date(b.task_activation_date));
+    if (notStarted.length > 0) {
+      nextTask = notStarted[0];
+    }
+  }
+  setCurrentTask(nextTask || null);
+
+  // [E] Phase progress
+  if (nextTask) {
+    const ph = nextTask.phaseid;
+    const tasksInPhase = updated.filter((x) => x.phaseid === ph);
+    const completed = tasksInPhase.filter((x) => x.taskstatus === "Completed").length;
+    const total = tasksInPhase.length;
+    const p = total === 0 ? 0 : Math.round((completed / total) * 100);
+    setPhaseProgress(p);
+  } else {
+    setPhaseProgress(0);
+  }
+} catch (err) {
+  console.error("Failed to fetch tasks:", err);
+  setError("Failed to load tasks. Please try again later.");
+} finally {
+  setLoading(false);
+}
+
+  }
+   
   // Handle swipe from main card
   function handleSwipe(direction, ph, d) {
     if (!ph || !d) return;
