@@ -33,11 +33,14 @@ export default function Auth() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     try {
       // 1) Attempt to create the account
       const response = await axios.post(`${API_URL}/createAccount`, {
         email,
         password,
+        timezone: userTimeZone,
       });
       const { token, message: responseMessage } = response.data;
 
