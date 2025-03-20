@@ -37,35 +37,42 @@ const Calendar = ({ userProgress }) => {
     setCalendarDays([...blanksArray, ...daysArray]);
   };
 
-  // 🔴 **Fix: Ensure Proper Date Matching**
+
   function getDayClass(day) {
     if (!day || !currentDate) return "";
   
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const dayStr = String(day).padStart(2, "0");
-    const dateString = `${year}-${month}-${dayStr}`;
-  
-    console.log("Checking date:", dateString);
-    console.log("userProgress:", userProgress);
+    const dateString = `${year}-${month}-${dayStr}`; // "YYYY-MM-DD" for the calendar cell
   
     if (userProgress && Array.isArray(userProgress)) {
       const matchingTasks = userProgress.filter((task) => {
         if (!task.completion_date) return false;
-        const taskDate = task.completion_date.split("T")[0];
-        return taskDate === dateString;
+        
+        // 1) Parse the UTC datetime
+        const dateObj = new Date(task.completion_date);
+  
+        // 2) Build a local date string (YYYY-MM-DD)
+        const localYear = dateObj.getFullYear();
+        const localMonth = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const localDay = String(dateObj.getDate()).padStart(2, "0");
+        const localDateString = `${localYear}-${localMonth}-${localDay}`;
+  
+        // 3) Compare local date to the calendar's date
+        return localDateString === dateString;
       });
   
+      // 4) If matchingTasks found, prioritize statuses
       if (matchingTasks.length > 0) {
-        // Prioritize "Completed" > "Not Completed" > "In Progress"
         if (matchingTasks.some((t) => t.taskstatus === "Completed")) return "green";
         if (matchingTasks.some((t) => t.taskstatus === "Not Completed")) return "red";
         if (matchingTasks.some((t) => t.taskstatus === "In Progress")) return "blue";
       }
     }
-  
-    return ""; // Default if no task matches
+    return "";
   }
+  
 
   return (
     <div className="calendar-container">
