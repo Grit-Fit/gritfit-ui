@@ -238,7 +238,7 @@ export default function Settings() {
           src={logo}
           alt="Logo"
           className="logo-gritPhases-header"
-          style={{ marginLeft: "-12rem" }}
+          style={{ marginRight: "0rem"}}
           onClick={handleBackProfile}
         />
       </header>

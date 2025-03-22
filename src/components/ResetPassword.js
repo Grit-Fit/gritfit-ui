@@ -21,7 +21,7 @@ export default function ResetPassword() {
     setMessage("");
 
     try {
-      const resp = await axios.post("http://localhost:5050/api/resetPassword", {
+      const resp = await axios.post("https://api.gritfit.site/api/resetPassword", {
         email,
         resetCode,
         newPassword,
