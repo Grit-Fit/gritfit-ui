@@ -3,7 +3,7 @@ import nutritionData from "./nutritionData";
 import "../css/nutritionPage.css"; 
 import "../css/gFitReport.css";
 import "../css/CardView.css";
-import logo from "../assets/GritFit_Full.png";
+import logo from "../assets/logo1.png";
 import NavBar from "./navBar";
 import TabBar from "./TabBar";
 import safeway from "../assets/safeway.png";
@@ -14,7 +14,7 @@ import target from "../assets/target.png";
 import kroger from "../assets/kroger.png";
 import trader from "../assets/trader.png";
 import toppick from "../assets/toppick.png";
-
+import "../css/CardView.css";
 
 const NutritionPage = () => {
   const [selectedStore, setSelectedStore] = useState(null);
@@ -49,7 +49,7 @@ const NutritionPage = () => {
   return (
     <>
       <header className="gritphase-header">
-        <img src={logo} alt="Logo" className="logo-gritPhases-header" />
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" />
       </header>
 
       <div className="report_header_nut">

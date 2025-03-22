@@ -1,20 +1,151 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/Settings.css";
-import ConfirmationModal from "./ConfirmationModal"; // The new modal
+import ConfirmationModal from "./ConfirmationModal";
 import { useAuth } from "../context/AuthContext";
 import axios from "../axios";
-import { ChevronLeft, LogOut, UserX, RotateCw, Mail } from "lucide-react"; 
+import {
+  ChevronLeft,
+  LogOut,
+  UserX,
+  RotateCw,
+  Mail,
+  Bell,
+  BellRing,
+} from "lucide-react";
 import logo from "../assets/GritFit_Full.png";
 import set from "../assets/set.png";
 import TabBar from "./TabBar";
 import { useNavigate } from "react-router-dom";
 
+// 1) Import Pusher Beams
+import * as PusherPushNotifications from "@pusher/push-notifications-web";
+const API_URL =  "https://api.gritfit.site/api";
+
 export default function Settings() {
-  const { logout, accessToken } = useAuth();
+  const { logout, accessToken , user} = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRestartModal, setShowRestartModal] = useState(false);
+
   const navigate = useNavigate();
+
+  // NEW: Track the beams_device_id from DB. If null => user unsubscribed, else subscribed
+  const [beamsDeviceId, setBeamsDeviceId] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  // On mount, fetch user profile to see if beams_device_id is present
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        if (!accessToken) return;
+        // 1) Fetch user profile
+        const res = await axios.get("/api/getUserProfile", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        if (res.data) {
+          // 2) If the user has beams_device_id, store it
+          if (res.data.beams_device_id) {
+            setBeamsDeviceId(res.data.beams_device_id);
+          }
+          // 3) Also store userId if it exists in the response
+          if (res.data.userid) {
+            setUserId(res.data.userid);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+      }
+    }
+    fetchProfile();
+  }, [accessToken]);
+
+  // Toggle notifications logic (only enabling them here)
+  async function handleNotificationsClick() {
+    if (!accessToken) {
+      alert("Please log in first.");
+      return;
+    }
+
+    if (beamsDeviceId) {
+      // Turn OFF notifications
+      try {
+        // 1) remove deviceId in DB
+        await axios.post(
+          `${API_URL}/storeBeamsDevice`,
+          { deviceId: null },
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+
+        // 2) remove local device interest if registered
+        const beamsClient = new PusherPushNotifications.Client({
+          instanceId: "ab36b7bc-d7f7-4be6-a812-afe25361ea37",
+        });
+        const regState = await beamsClient.getRegistrationState();
+        console.log("[Beams] regState on unsub:", regState);
+        if (regState === "REGISTERED" && user && user.id) {
+          await beamsClient.removeDeviceInterest(`user-${user.id}`);
+          console.log(`[Beams] Removed interest user-${user.id}`);
+        }
+
+        setBeamsDeviceId(null);
+         alert("Notifications turned OFF.");
+      } catch (err) {
+        console.error("Error unsubscribing from push:", err);
+      }
+    } else {
+      // Turn ON notifications
+      try {
+        const beamsClient = new PusherPushNotifications.Client({
+          instanceId: "ab36b7bc-d7f7-4be6-a812-afe25361ea37",
+        });
+        const regState = await beamsClient.getRegistrationState();
+        console.log("[Beams] regState before subscribing:", regState);
+
+        if (regState === "PERMISSION_DENIED") {
+          alert("Notifications blocked in your browser settings.");
+          return;
+        }
+
+        if (
+          regState === "UNREGISTERED" ||
+          regState === "PERMISSION_GRANTED_NOT_REGISTERED_WITH_BEAMS"
+        ) {
+          await beamsClient.start();
+          console.log("[Beams] start() done for subscription.");
+        }
+
+        // add interest if user has an ID
+        if (user && user.id) {
+          await beamsClient.addDeviceInterest(`user-${user.id}`);
+          console.log(`[Beams] Subscribed to interest user-${user.id}`);
+        }
+
+        // store device ID in DB
+        const newDeviceId = await beamsClient.getDeviceId();
+        if (!newDeviceId) {
+          alert("Could not retrieve device ID. Something went wrong.");
+          return;
+        }
+
+        await axios.post(
+          `${API_URL}/storeBeamsDevice`,
+          { deviceId: newDeviceId },
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+        setBeamsDeviceId(newDeviceId);
+         alert("Notifications turned ON!");
+      } catch (err) {
+        console.error("Error subscribing to push:", err);
+      }
+    }
+  }
+  
 
   // 1) Log Out
   const handleSignOutClick = () => {
@@ -27,7 +158,7 @@ export default function Settings() {
       if (logout) {
         await logout();
       }
-      navigate("/");
+      navigate("/auth");
     } catch (err) {
       console.error("Error logging out:", err);
       alert("Failed to log out. Please try again later.");
@@ -52,7 +183,7 @@ export default function Settings() {
       if (logout) {
         await logout();
       }
-      navigate("/");
+      navigate("/auth");
     } catch (error) {
       console.error("Error deleting account:", error);
       alert("Failed to delete account. Please try again later.");
@@ -63,7 +194,7 @@ export default function Settings() {
     setShowDeleteModal(false);
   };
 
-
+  // 3) Restart Journey
   const handleRestartJourneyClick = () => {
     setShowRestartModal(true);
   };
@@ -71,9 +202,13 @@ export default function Settings() {
   const confirmRestartJourney = async () => {
     setShowRestartModal(false);
     try {
-      await axios.post("/api/restartJourney", {}, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      await axios.post(
+        "/api/restartJourney",
+        {},
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
       alert("Journey restarted! Your progress data has been cleared.");
     } catch (error) {
       console.error("Error restarting journey:", error);
@@ -85,12 +220,12 @@ export default function Settings() {
     setShowRestartModal(false);
   };
 
-
+  // 4) Contact Us => mailto link
   const handleContactUs = () => {
     window.location.href = "mailto:support@gritfit.site";
   };
 
-
+  // Go back one page
   const handleBackProfile = () => {
     navigate("/UserProfile");
   };
@@ -140,12 +275,25 @@ export default function Settings() {
             <Mail className="card-icon" size={32} />
             <div className="card-label">Contact Us</div>
           </div>
+
+          {/* NEW: Notifications Card */}
+        {/* Notifications card that only enables notifications */}
+        <div className="settings-card" onClick={handleNotificationsClick}>
+          {beamsDeviceId ? (
+            <BellRing className="card-icon" size={32} />
+          ) : (
+            <Bell className="card-icon" size={32} />
+          )}
+          <div className="card-label">
+            {beamsDeviceId ? "Notifications ON" : "Enable Notifications"}
+          </div>
+        </div>
         </div>
       </div>
 
       <TabBar />
 
-      {/* Our 3 confirmation modals */}
+      {/* Confirmation Modals */}
       <ConfirmationModal
         visible={showLogoutModal}
         title="Log Out"

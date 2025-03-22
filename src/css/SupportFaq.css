@@ -1,6 +1,4 @@
-/* src/css/SupportFaq.css */
 
-/* Container */
 .supportFaq-container {
     width: 100%;
     min-height: 100vh;
@@ -8,6 +6,7 @@
     font-family: 'Montserrat', sans-serif;
     display: flex;
     flex-direction: column;
+    padding-bottom: 16rem;
   }
 
   .report_header {

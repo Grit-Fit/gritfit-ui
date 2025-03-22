@@ -1,18 +1,32 @@
-
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/GritFit_Full.png";
 import "../css/TermsAndConditions.css";
+import { AuthContext } from "../context/AuthContext";
+
+// 1) Import the Pusher Beams client
+import * as PusherPushNotifications from "@pusher/push-notifications-web";
+import axios from "axios";
+
+const API_URL =  "https://api.gritfit.site/api";
 
 export default function TermsAndConditions() {
   const navigate = useNavigate();
+
+  // Original state for “Decline” popup
   const [showDeclinePopup, setShowDeclinePopup] = useState(false);
 
+  // NEW state for showing a push-notifications popup
+  const [showBeamsPopup, setShowBeamsPopup] = useState(false);
+  const { accessToken, user } = useContext(AuthContext); 
 
+  // Called when user clicks "Agree and continue"
   async function handleAgree() {
-    navigate("/cardView");
+    // Instead of navigating immediately, show a second popup for push
+    setShowBeamsPopup(true);
   }
 
+  // If user clicks "Decline" for T&C
   function handleDecline() {
     setShowDeclinePopup(true);
   }
@@ -20,6 +34,62 @@ export default function TermsAndConditions() {
   function closePopup() {
     setShowDeclinePopup(false);
   }
+
+  // If user says "Yes" to push notifications
+  async function confirmEnableNotifications() {
+    setShowBeamsPopup(false);
+    try {
+      console.log("[Beams] Creating client...");
+      const beamsClient = new PusherPushNotifications.Client({
+        instanceId: "ab36b7bc-d7f7-4be6-a812-afe25361ea37",
+      });
+
+      console.log("[Beams] Checking registration state...");
+      const regState = await beamsClient.getRegistrationState();
+      console.log("[Beams] Registration state:", regState);
+
+      // if user previously unregistered
+      if (regState === "UNREGISTERED") {
+        console.log("[Beams] calling beamsClient.start()...");
+        await beamsClient.start();
+
+        console.log("[Beams] start() done. If user allowed, subscription success");
+
+        // add interest if we have user ID
+        if (user && user.id) {
+          await beamsClient.addDeviceInterest(`user-${user.id}`);
+          console.log(`[Beams] Subscribed to interest user-${user.id}`);
+        }
+
+        const deviceId = await beamsClient.getDeviceId();
+        console.log("[Beams] device ID:", deviceId);
+
+        // store device ID in DB
+        await axios.post(
+          `${API_URL}/storeBeamsDevice`,
+          { deviceId },
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+        console.log("[Beams] Device ID stored in DB!");
+      } else {
+        console.log("[Beams] Already registered or permission denied, skipping start()");
+      }
+    } catch (err) {
+      console.error("[Beams] Subscription error:", err);
+    } finally {
+      navigate("/cardView");
+    }
+  }
+
+  // If user says "No" to push
+  function denyEnableNotifications() {
+    setShowBeamsPopup(false);
+    // Just navigate without subscribing
+    navigate("/cardView");
+  }
+
 
   return (
     <div className="terms-container">
@@ -102,6 +172,25 @@ export default function TermsAndConditions() {
           <div className="decline-popup">
             <p>You must accept the Terms & Conditions to proceed.</p>
             <button onClick={closePopup}>OK</button>
+          </div>
+        </div>
+      )}
+
+      {/* Our new push popup */}
+      {showBeamsPopup && (
+        <div className="decline-popup-overlay">
+          <div className="decline-popup">
+            <h3>Enable Push Notifications?</h3>
+            <p>Would you like to receive push notifications from GritFit?</p>
+            <div style={{ marginTop: "1rem" }}>
+              <button
+                onClick={confirmEnableNotifications}
+                style={{ marginRight: "0.5rem" }}
+              >
+                Yes
+              </button>
+              <button onClick={denyEnableNotifications}>No</button>
+            </div>
           </div>
         </div>
       )}
