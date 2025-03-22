@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/GritFit_Full.png";
+import logo from "../assets/logo1.png";
 import "../css/gFitReport.css";
 import axios from "../axios";
 import "../css/CardView.css";
 import TabBar from "./TabBar";
 import trend from "../assets/trend.png";
+import { useNavigate } from "react-router-dom";
+import "../css/CardView.css";
 
 const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState([]);
+  const navigate = useNavigate();
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -37,7 +40,7 @@ const Calendar = ({ userProgress }) => {
     setCalendarDays([...blanksArray, ...daysArray]);
   };
 
-
+  // 🔴 **Fix: Ensure Proper Date Matching**
   function getDayClass(day) {
     if (!day || !currentDate) return "";
   
@@ -146,23 +149,33 @@ const PieChartComponent = ({ userProgress }) => {
 
   const COLORS = ["#1f32c0", "#6577fb", "#000d6b", "#3b4489", "#1991f8"];
 
-  // Process the userProgress to calculate reasons
+  // 1) Tally reasons
   const reasonCounts = userProgress
-    ?.filter((task) => task.notcompletionreason) // Only consider tasks with a notcompletionreason
+    ?.filter((task) => task.notcompletionreason)
     .reduce((acc, task) => {
       const reason = predefinedCategories.includes(task.notcompletionreason)
         ? task.notcompletionreason
-        : "Other"; // Categorize as "Other" if not in predefined categories
-      acc[reason] = (acc[reason] || 0) + 1; // Increment count for the reason
+        : "Other";
+      acc[reason] = (acc[reason] || 0) + 1;
       return acc;
     }, {});
 
-  // Prepare data for the PieChart
+  // 2) Convert object to array for Recharts
   const chartData = Object.entries(reasonCounts || {}).map(([name, value]) => ({
     name,
     value,
   }));
 
+  // 3) If no data, show a placeholder message
+  if (!chartData.length) {
+    return (
+      <div className="pie-chart-empty">
+        <p>No incomplete tasks yet!<br /> Keep up the great work!</p>
+      </div>
+    );
+  }
+
+  // 4) Otherwise, render the PieChart
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
@@ -200,8 +213,6 @@ const PieChartComponent = ({ userProgress }) => {
           </PieChart>
         </ResponsiveContainer>
       </div>
-
-      {/* Pie Legend */}
       <div className="pie-legend">
         {chartData.map((entry, index) => (
           <div key={`legend-${index}`} className="legend-item">
@@ -218,6 +229,7 @@ const PieChartComponent = ({ userProgress }) => {
     </div>
   );
 };
+
 
 
 const GFitReport = () => {
@@ -299,6 +311,8 @@ const GFitReport = () => {
     };
     if (accessToken) fetchTaskData();
   }, [accessToken]);
+
+
 
   return (
     <>

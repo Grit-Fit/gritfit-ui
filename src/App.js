@@ -1,3 +1,4 @@
+// App.js
 import React, { useContext, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -7,14 +8,15 @@ import {
 } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 
+
 // Public components
 import Landing from "./components/Landing";
 import Auth from "./components/Auth";
 
-// “Welcome” flow for new sign-ups
+// “Welcome” flow
 import WelcomePage from "./components/Welcome";
 
-// Old bubble-based GritPhases (if you still want it)
+// Old bubble-based GritPhases
 import GritPhases from "./components/GritPhases";
 
 // Left/Right swipes
@@ -37,7 +39,11 @@ import Settings from "./components/Settings";
 import IntroVideoPage from "./components/IntroVideoPage";
 import FinalStepsPage from "./components/FinalStepsPage";
 import TermsAndConditions from "./components/TermsAndConditions";
+import BeamsSetup from "./BeamsSetup";
 
+import OTPVerify from "./components/OTPVerify";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 
 // New card-based UI
 import CardView from "./components/CardView";
@@ -46,16 +52,12 @@ function AppRoutes() {
   const { accessToken } = useContext(AuthContext);
   const [redirectPath, setRedirectPath] = useState(null);
 
+  // Decide redirect path based on login status
   useEffect(() => {
-    // If user is logged in, decide where to redirect:
-    //  - If "justSignedUp" is still true => /welcome (then remove it so next time they go /cardView)
-    //  - Otherwise => /cardView
-    // If user is NOT logged in => default to "/"
     if (accessToken) {
       const storedSignup = localStorage.getItem("justSignedUp") === "true";
       if (storedSignup) {
         setRedirectPath("/welcome");
-        // Remove the flag so user only sees /welcome once
         localStorage.removeItem("justSignedUp");
       } else {
         setRedirectPath("/cardView");
@@ -64,6 +66,7 @@ function AppRoutes() {
       setRedirectPath("/");
     }
   }, [accessToken]);
+
 
   // If we haven't decided on a path yet, show a loading indicator
   if (redirectPath === null) {
@@ -79,6 +82,9 @@ function AppRoutes() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/login" element={<Auth />} />
         <Route path="/signup" element={<Auth />} />
+        <Route path="/otpVerify" element={<OTPVerify />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/resetPassword" element={<ResetPassword />} />
         {/* Catch-all goes back to landing */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -118,11 +124,18 @@ function AppRoutes() {
       <Route path="/introVideo" element={<IntroVideoPage />} />
       <Route path="/finalSteps" element={<FinalStepsPage />} />
       <Route path="/terms" element={<TermsAndConditions />} />
+
+              {/* OTP verification after sign-up */}
+        
+
+{/* Forgot password flow */}
+
       
 
       {/* Catch-all: if logged in but path not recognized, go to redirectPath */}
       <Route path="*" element={<Navigate to={redirectPath} replace />} />
     </Routes>
+    
   );
 }
 
@@ -130,6 +143,7 @@ export default function App() {
   return (
     <Router>
       <AppRoutes />
+      <BeamsSetup />
     </Router>
   );
 }
