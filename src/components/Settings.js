@@ -12,7 +12,7 @@ import {
   Bell,
   BellRing,
 } from "lucide-react";
-import logo from "../assets/GritFit_Full.png";
+import logo from "../assets/logo1.png";
 import set from "../assets/set.png";
 import TabBar from "./TabBar";
 import { useNavigate } from "react-router-dom";
@@ -238,7 +238,7 @@ export default function Settings() {
           src={logo}
           alt="Logo"
           className="logo-gritPhases-header"
-          style={{ marginRight: "0rem"}}
+          style={{ marginRight: "18rem"}}
           onClick={handleBackProfile}
         />
       </header>
