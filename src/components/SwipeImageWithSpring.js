@@ -4,59 +4,71 @@ import { useDrag } from '@use-gesture/react';
 import '../css/SwipeImageWithSpring.css';
 
 const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => {
-  const [gone, setGone] = useState(null); // Tracks swipe direction: 'left', 'right', or 'up'
+  const [gone, setGone] = useState(null); 
 
-  const [props, set] = useSpring(() => ({
+
+  const [styles, api] = useSpring(() => ({
     x: 0,
     y: 0,
     scale: 1,
     rotate: 0,
     opacity: 1,
+    config: { tension: 300, friction: 35 }, 
   }));
 
-  // Gesture handling
-  const bind = useDrag((state) => {
-    const {
-      offset: [ox, oy],
-      movement: [mx, my],
-      velocity: [vx, vy],
-    } = state;
+  // useDrag handler
+  const bind = useDrag(({ down, movement: [mx, my], velocity: [vx, vy] }) => {
+    if (gone) return; // If already off-screen, do nothing
 
-    // Horizontal movement visual effect
-    set({
-      x: mx,
-      y: my,
-      scale: 1 - Math.abs(mx) / 1000,
-      rotate: mx / 20,
-      opacity: 1 - Math.abs(mx) / 200,
-    });
+    
+    if (down) {
+      api.start({
+        x: mx,
+        y: my,
+        scale: 1 - Math.abs(mx) / 1000,
+        rotate: mx / 20,
+        opacity: 1 - Math.abs(mx) / 200,
+      });
+    } else {
+      // User released; check if it should fling off screen
+      const threshold = 50;
+      const velocityThreshold = 0.2;
 
-    // Detect swipe left or right
-    if (Math.abs(ox) > 50 && vx > 0.2) {
-      const direction = mx > 0 ? 'right' : 'left';
-      setGone(direction);
-    }
+      // Decide if it is a swipe or a reset
+      const swipeHorizontally = Math.abs(mx) > threshold && vx > velocityThreshold;
+      const swipeUp = my < -threshold && vy > velocityThreshold;
 
-    // Detect swipe up (oy is negative when swiping up)
-    if (oy < -50 && vy > 0.2) {
-      setGone('up');
+      if (swipeHorizontally) {
+        setGone(mx > 0 ? 'right' : 'left');
+      } else if (swipeUp) {
+        setGone('up');
+      } else {
+      
+        api.start({
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotate: 0,
+          opacity: 1,
+        });
+      }
     }
   });
 
-  // Animate card off screen based on swipe direction
+ 
   useEffect(() => {
     if (!gone) return;
 
     if (gone === 'right') {
-      set({ x: 1000, y: 0, opacity: 0 });
+      api.start({ x: 1000, y: 0, opacity: 0 });
     } else if (gone === 'left') {
-      set({ x: -1000, y: 0, opacity: 0 });
+      api.start({ x: -1000, y: 0, opacity: 0 });
     } else if (gone === 'up') {
-      set({ x: 0, y: -1000, opacity: 0 });
+      api.start({ x: 0, y: -1000, opacity: 0 });
     }
-  }, [gone, set]);
+  }, [gone, api]);
 
-  // Callback after animation
+  
   useEffect(() => {
     if (!gone) return;
 
@@ -71,8 +83,20 @@ const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => 
     <animated.div
       className="swipe-task"
       style={{
-        ...props,
-        touchAction: 'none',
+
+        x: styles.x,
+        y: styles.y,
+        scale: styles.scale,
+        rotate: styles.rotate.to((r) => `${r}deg`),
+        opacity: styles.opacity,
+
+
+        transform: styles.x
+          .to((xVal) => `translate3d(${xVal}px, 0, 0)`)
+          .to((translate) => translate),
+
+        willChange: 'transform',
+        touchAction: 'none', // important for mobile to prevent default scroll
       }}
       {...bind()}
     >

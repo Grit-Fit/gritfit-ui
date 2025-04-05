@@ -107,7 +107,7 @@ export default function AssistantChat() {
               return (
                 <div key={m.id} className={rowClass}>
                   {!isMyMessage && (
-                    <div className="avatar-bubble" style={{ backgroundColor: "white" }}>
+                    <div className="avatar-bubble" style={{ backgroundColor: "#eaf6fa" }}>
                       <img src={logo} alt="Logo"/>
                     </div>
                   )}
