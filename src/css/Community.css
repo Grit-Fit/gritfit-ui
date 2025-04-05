@@ -1,0 +1,75 @@
+
+.community-container {
+    min-height: 100vh; 
+    background-color: #ffffff; 
+  }
+
+  .communityhead {
+    margin-bottom: 2rem;
+    background: #13D7E92E;
+    display: flex;
+    flex-direction: column;
+    height: 120px;
+    margin-top: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  
+  .community-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0D909CFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .community-toggle-container {
+    display: flex;
+    justify-content: center;  /* center the toggle */
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background-color: #bdefff; 
+    max-width: 500px; 
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+
+  .community-toggle-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;        
+    padding: 0.75rem;
+    border: none;
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 10rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+
+  .community-toggle-btn:hover:not(:disabled) {
+    background-color: #e2e2e2;
+  }
+  
+
+  .community-toggle-btn:disabled {
+    background-color: #fafafa;
+    cursor: default;
+    opacity: 0.6;
+  }
+  
+  /* Active (selected) button styling */
+  .community-toggle-btn.active {
+    background-color: #00bcd4; /* bright teal or any color you prefer */
+    color: #ffffff;
+  }
+  

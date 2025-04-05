@@ -1,7 +1,7 @@
 // src/components/TabBar.js
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Home, BarChart2, Utensils, User } from "lucide-react";
+import { Home, BarChart2, Utensils, UsersRound, User } from "lucide-react";
 import "../css/TabBar.css";
 
 function TabBar() {
@@ -19,7 +19,7 @@ function TabBar() {
       </NavLink>
 
       {/* GFit Trends */}
-      <NavLink
+      {/* <NavLink
         to="/gFitReport"
         className={({ isActive }) =>
           `tabbar-menu-item ${isActive ? "selected" : ""}`
@@ -27,7 +27,7 @@ function TabBar() {
       >
         <BarChart2 className="icon" />
         <span>GFit Trends</span>
-      </NavLink>
+      </NavLink> */}
 
       {/* Top Picks */}
       <NavLink
@@ -38,6 +38,17 @@ function TabBar() {
       >
         <Utensils className="icon" />
         <span>Top Picks</span>
+      </NavLink>
+
+            {/* NEW: Community */}
+            <NavLink
+        to="/community"
+        className={({ isActive }) =>
+          `tabbar-menu-item ${isActive ? "selected" : ""}`
+        }
+      >
+        <UsersRound className="icon" />
+        <span>Community</span>
       </NavLink>
 
       {/* Profile */}

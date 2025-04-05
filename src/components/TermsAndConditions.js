@@ -10,6 +10,8 @@ import axios from "axios";
 
 const API_URL =  "https://api.gritfit.site/api";
 
+const BEAMS_INSTANCE_ID = process.env.REACT_APP_BEAMS_INSTANCE_ID;
+
 export default function TermsAndConditions() {
   const navigate = useNavigate();
 
@@ -41,7 +43,7 @@ export default function TermsAndConditions() {
     try {
       console.log("[Beams] Creating client...");
       const beamsClient = new PusherPushNotifications.Client({
-        instanceId: "ab36b7bc-d7f7-4be6-a812-afe25361ea37",
+        instanceId: BEAMS_INSTANCE_ID,
       });
 
       console.log("[Beams] Checking registration state...");

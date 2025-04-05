@@ -1,0 +1,137 @@
+.chats-container {
+  max-width: 600px; /* center on large screens */
+  margin: 0 auto;
+  padding: 1rem;
+  background-color: #fefefe;
+  min-height: calc(100vh - 60px);
+}
+
+/* Main header */
+.chat-head {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  text-align: center;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Error text for any load issues */
+.error-text {
+  color: #d00;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+/* Friend Group Card */
+.friend-group-card {
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.friend-group-card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+/* Header row with avatar + name on the same line */
+.friend-group-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* space between avatar & name */
+  cursor: pointer;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: #0D909CFF;
+}
+
+/* Collapsible sessions container */
+.friend-group-sessions {
+  margin-top: 0.5rem;
+}
+
+/* Avatar bubble by default */
+.friend-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #d8d8d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #fff;
+  transition: background 0.2s ease;
+}
+
+/* Additional color classes for friend avatars */
+.friend-avatar.color-1 {
+  background-color: #3498db; /* Blue */
+}
+
+.friend-avatar.color-2 {
+  background-color: #e74c3c; /* Red */
+}
+
+.friend-avatar.color-3 {
+  background-color: #2ecc71; /* Green */
+}
+
+.friend-avatar.color-4 {
+  background-color: #9b59b6; /* Purple */
+}
+
+.friend-avatar.color-5 {
+  background-color: #f39c12; /* Orange */
+}
+
+/* Session card styling */
+.session-card {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.session-card:hover {
+  background-color: #fafafa;
+}
+
+.session-label {
+  font-style: italic;
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.session-taskdesc {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 375px) {
+  .chat-head {
+    font-size: 1.1rem;
+  }
+  .friend-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .chats-container {
+    padding: 0.5rem;
+  }
+  .chat-head {
+    font-size: 1.2rem;
+  }
+}

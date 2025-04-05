@@ -15,6 +15,8 @@ import ConfirmationModal from "./ConfirmationModal";
 
 const API_URL =  "https://api.gritfit.site/api";
 
+const formUrl = process.env.REACT_APP_GOOGLE_FORM_URL;
+
 function Landing() {
   const navigate = useNavigate();
 
@@ -70,7 +72,7 @@ function Landing() {
 
       setFormData({ name: "", email: "", message: "" });
 
-      window.open("https://forms.gle/tdjn5EedwoZRNWGg9", "_blank");
+      window.open(formUrl, "_blank");
 
       setModalTitle("Success"); 
       setModalMessage(response.data.message || "Thanks for signing up! We'll be in touch soon. 💪");
@@ -249,7 +251,7 @@ function Landing() {
                 <img
                   src={link}
                   alt="LinkedIn"
-                  style={{ width: "24px", height: "24px", verticalAlign: "middle" , borderRadius: "3px"}}
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
                 />
               </a>
             </p>
@@ -281,7 +283,7 @@ function Landing() {
                 <img
                   src={link}
                   alt="LinkedIn"
-                  style={{ width: "24px", height: "24px", verticalAlign: "middle", borderRadius: "3px" }}
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
                 />
               </a>
             </p>
@@ -309,7 +311,7 @@ function Landing() {
                 <img
                   src={link}
                   alt="LinkedIn"
-                  style={{ width: "24px", height: "24px", verticalAlign: "middle", borderRadius: "3px" }}
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
                 />
               </a>
             </p>
@@ -330,7 +332,7 @@ function Landing() {
             <p style={{ display: "flex", justifyContent: "center", alignItems: "baseline" }}>
             <h3>Bhargav Patel</h3>
             <a
-                href="https://www.linkedin.com/in/bhargav2024/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+                href="https://www.linkedin.com/company/gritfitv1/about/"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ marginLeft: "8px" }}
@@ -338,7 +340,7 @@ function Landing() {
                 <img
                   src={link}
                   alt="LinkedIn"
-                  style={{ width: "24px", height: "24px", verticalAlign: "middle", borderRadius: "3px" }}
+                  style={{ width: "24px", height: "24px", verticalAlign: "middle" }}
                 />
               </a>
             </p>
@@ -398,8 +400,8 @@ function Landing() {
   
   <p>
     Need help? Email us at{" "}
-    <a href="mailto:support@gritfit.site" style={{ color: "#fff", textDecoration: "underline" }}>
-      support@gritfit.site
+    <a href="mailto:support@gritfit.com" style={{ color: "#fff", textDecoration: "underline" }}>
+      support@gritfit.com
     </a>
   </p>
 

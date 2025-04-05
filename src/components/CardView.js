@@ -6,10 +6,11 @@ import SwipeImageWithSpring from "./SwipeImageWithSpring";
 import "../css/CardView.css";
 import rightIcon from "../assets/rightf.png";
 import leftIcon from "../assets/leftf.png";
+import upIcon from "../assets/upflick.png";
 import TabBar from "./TabBar";
 import gritfitLogo from "../assets/logo1.png";
 import logo from "../assets/logo1.png";
-import { LayoutGrid, Undo2, Redo2 } from "lucide-react";
+import { LayoutGrid, Undo2, ChartNoAxesColumn, Redo2,MoveDown } from "lucide-react";
 
 /* 
 ----------------------------------
@@ -273,6 +274,14 @@ function IntroCard({ onClose }) {
           See your GritPhase task everyday - your goal for the day. Swipe right if you did it!
           <img src={rightIcon} alt="Swipe Right" className="swipe-right" />
         </p>
+
+        <hr style={{width: "18rem", position: "relative", top: "28px"}} />
+        <h2 className="intro-card-title">Swipe up if you want Help!</h2>
+        <p className="intro-card-text">
+        <img src={upIcon} alt="Swipe Left" className="swipe-left" />
+        Aren't able to do the task? Swipe up to get help! 
+        </p>
+
         <hr style={{width: "18rem", position: "relative", top: "28px"}} />
         <h2 className="intro-card-title">Swipe left if you didn't</h2>
         <p className="intro-card-text">
@@ -284,6 +293,95 @@ function IntroCard({ onClose }) {
     </div>
   );
 }
+
+
+/* 
+----------------------------------
+ Up Swipe Sub-Component
+----------------------------------
+*/
+function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
+  const { accessToken } = useAuth();
+  const [helpMessage, setHelpMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  async function sendHelpRequest() {
+    if (!helpMessage.trim()) {
+      setError("Please enter your issue or question.");
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    try {
+      await axios.post(
+        "/api/sendHelpRequest",
+        {
+          phaseNumber: Number(phaseNumber),
+          dayNumber: Number(dayNumber),
+          message: helpMessage.trim(),
+        },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      alert("Your help request was sent to friends!");
+      setHelpMessage("");
+      if (onClose) onClose();
+    } catch (err) {
+      console.error("HelpSwipe error:", err);
+      setError("Either your friends list is empty, or you have already requested help for this task.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  
+
+  return (
+    <div
+      className="big-card fade-in"
+      style={{ background: "linear-gradient(180deg, #a2d3f2, #769fd1)", left: "20px" }}
+    >
+      <div
+        className="undo"
+        onClick={onClose}
+        style={{ position: "absolute", top: "10px", right: "10px" }}
+      >
+       <MoveDown style={{ width: "24px", height: "24px" }} />Undo Swipe
+      </div>
+
+      <h2 style={{ marginTop: "4rem" }}>Need a Hand?</h2>
+      <p style={{ marginBottom: "1rem" }}>
+        Describe your challenge or ask your friends for tips:
+      </p>
+
+      {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
+
+      <textarea
+        value={helpMessage}
+        onChange={(e) => setHelpMessage(e.target.value)}
+        placeholder="What are you struggling with today?"
+        style={{
+          width: "80%",
+          minHeight: "80px",
+          borderRadius: "6px",
+          padding: "0.5rem",
+          marginBottom: "1rem",
+          color: "black"
+        }}
+      />
+
+      <button
+        className="doneBtn pulse-button"
+        onClick={sendHelpRequest}
+        disabled={isLoading}
+        style={{ marginTop: "1rem" }}
+      >
+        {isLoading ? "Sending..." : "Send Help Request"}
+      </button>
+    </div>
+  );
+}
+
+
 
 /* 
 ----------------------------------
@@ -303,6 +401,7 @@ export default function CardView() {
 
   const [showLeftCard, setShowLeftCard] = useState(false);
   const [showRightCard, setShowRightCard] = useState(false);
+  const [showHelpCard, setShowHelpCard] = useState(false);
   const [phaseNumber, setPhaseNumber] = useState(null);
   const [dayNumber, setDayNumber] = useState(null);
 
@@ -446,10 +545,19 @@ try {
     if (direction === "right") {
       setShowRightCard(true);
       setShowLeftCard(false);
+      setShowHelpCard(false);
       setPhaseNumber(ph);
       setDayNumber(d);
-    } else {
+    } else if (direction === "left") {
       setShowLeftCard(true);
+      setShowRightCard(false);
+      setShowHelpCard(false);
+      setPhaseNumber(ph);
+      setDayNumber(d);
+    } else if (direction === "up") {
+      // NEW: Show the help request card
+      setShowHelpCard(true);
+      setShowLeftCard(false);
       setShowRightCard(false);
       setPhaseNumber(ph);
       setDayNumber(d);
@@ -463,8 +571,12 @@ try {
     fetchTasks();
   }
 
-  function goToGritPhase() {
-    navigate("/gritPhases");
+  function goToGFitReport() {
+    navigate("/gFitReport");
+  }
+
+  function goToBirdView() {
+    navigate("/gritphases");
   }
 
   /* 
@@ -498,7 +610,7 @@ try {
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
           </div>
-          <LayoutGrid size={24} onClick={goToGritPhase} className="grid-icon" />
+          <ChartNoAxesColumn size={24} onClick={goToGFitReport}  />
         </header>
 
         <div className="card-wrapper">
@@ -531,7 +643,7 @@ try {
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
           </div>
-          <LayoutGrid size={24} onClick={goToGritPhase} className="grid-icon" />
+          <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
         </header>
 
         <div className="card-wrapper">
@@ -549,6 +661,41 @@ try {
     );
   }
 
+  // If showHelpCard is true, render the up-swipe card
+if (showHelpCard) {
+  return (
+    <div className="cardview-container">
+      <header className="gritphase-header">
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+        <div className="phase-row">
+          <span className="phase-title">
+            GritPhase {currentTask ? currentTask.phaseid : "?"}
+          </span>
+          <div className="progress-bar-container">
+            <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
+          </div>
+        </div>
+        <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
+      </header>
+
+      <div className="card-wrapper">
+        <InternalHelpSwipeCard
+          phaseNumber={phaseNumber}
+          dayNumber={dayNumber}
+          onClose={() => {
+            setShowHelpCard(false);
+            fetchTasks();
+          }}
+        />
+      </div>
+
+      <TabBar />
+      {renderIntroCard()}
+    </div>
+  );
+}
+
+
   // Normal main card
   function renderMainCard(task) {
     if (!task) {
@@ -560,6 +707,7 @@ try {
         </div>
       );
     }
+
 
     const now = new Date();
     const actDate = task.task_activation_date ? new Date(task.task_activation_date) : null;
@@ -630,7 +778,7 @@ try {
   return (
     <div className="cardview-container">
       <header className="gritphase-header">
-        <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToBirdView} />
         <div className="phase-row">
           <span className="phase-title">
             GritPhase {currentTask ? currentTask.phaseid : "?"}
@@ -639,7 +787,7 @@ try {
             <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
           </div>
         </div>
-        <LayoutGrid size={24} onClick={() => navigate("/gritPhases")} className="grid-icon" />
+        <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
       {loading && <p className="loading-text">Loading tasks...</p>}

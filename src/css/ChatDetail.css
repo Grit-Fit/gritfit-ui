@@ -1,0 +1,248 @@
+/***************************************************
+  Overall Container
+***************************************************/
+.chat-detail-container {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh; /* let the container fill the screen */
+  display: flex;
+  flex-direction: column;
+  background-color: #fefefe; /* main background for container */
+}
+
+/***************************************************
+  Header with Back Button & Logo
+***************************************************/
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  background-color: #fff;
+  padding: 0 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.chathead {
+  margin-bottom: 2rem;
+  background: #13D7E92E;
+  display: flex;
+  flex-direction: column;
+  height: 120px;
+  margin-top: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+/* Back button icon styling */
+.back-button {
+  background: none;
+  border: none;
+  color: #333;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.back-button:hover {
+  opacity: 0.8;
+}
+
+/* Logo inside header (adjust size as needed) */
+.logo-gritPhases-task {
+  height: 36px;
+  width: auto;
+}
+
+/***************************************************
+  "Community" Title Section
+***************************************************/
+.communityhead {
+  margin-bottom: 2rem;
+  background: #13D7E92E;
+  display: flex;
+  flex-direction: column;
+  height: 120px;
+  margin-top: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.community-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0D909CFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/***************************************************
+  Error Text
+***************************************************/
+.chat-error {
+  color: #d00;
+  margin: 0.5rem auto;
+  font-weight: 500;
+  text-align: center;
+}
+
+/***************************************************
+  Messages Container
+***************************************************/
+.messages-container {
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  background-color: #eaf6fa;
+  margin: 0 1rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  overflow: hidden; /* to hide any corner scrolling */
+}
+
+/* The scrollable area for messages */
+.messages-list {
+  flex: 1; /* fill available vertical space */
+  overflow-y: auto;
+  padding: 0.75rem;
+}
+
+/* Each message row */
+.chat-message-row {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+/* My messages aligned right */
+.chat-message-row.mine {
+  justify-content: flex-end;
+}
+
+/* Friend’s messages aligned left */
+.chat-message-row.their {
+  justify-content: flex-start;
+}
+
+/* The bubble with message text */
+.message-bubble {
+  max-width: 70%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background-color: #fefefe;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin: 0 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* My bubble tinted green */
+.chat-message-row.mine .message-bubble {
+  background-color: #daf7dc;
+}
+
+/* Avatars for friend or me */
+.avatar-bubble {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #00bcd4; 
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  margin: 0 0.3rem;
+}
+
+.chat-message-row.mine .avatar-bubble {
+  background-color: #0c9;
+}
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;         
+  color: rgba(0, 0, 0, 0.1); 
+  pointer-events: none;    
+  user-select: none;      
+  white-space: nowrap;
+  opacity: 5%;          
+}
+
+
+/***************************************************
+  Input Row (Pinned at bottom inside container)
+***************************************************/
+.chat-input-row {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-top: 1px solid #ccc;
+  background-color: #fefefe;
+}
+
+.chat-text-input {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.chat-send-btn {
+  background-color: #00bcd4;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  font-size: 1rem;
+}
+
+.chat-send-btn:hover {
+  background-color: #00acc1;
+}
+
+/***************************************************
+  Media Queries
+***************************************************/
+
+/* For smaller phones: */
+@media (max-width: 375px) {
+  .logo-gritPhases-task {
+    height: 28px;
+  }
+  .community-title {
+    font-size: 1.2rem;
+  }
+  .message-bubble {
+    max-width: 80%;
+  }
+}
+
+/* For tablets up to 768px */
+@media (max-width: 768px) {
+  .chat-detail-container {
+    /* reduce side padding if you prefer a more compact layout */
+  }
+  .community-title {
+    font-size: 1.3rem;
+  }
+}

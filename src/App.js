@@ -44,6 +44,13 @@ import BeamsSetup from "./BeamsSetup";
 import OTPVerify from "./components/OTPVerify";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
+import FriendsPage from "./components/FriendsPage";
+import ChatsPage from "./components/ChatsPage"; 
+import ChatList from "./components/ChatList";
+import ChatDetail from "./components/ChatDetail";
+import Community from "./components/Community";
+import FriendSessionsPage from "./components/FriendSessionsPage";
+import AssistantChat from "./components/AssistantChat";
 
 // New card-based UI
 import CardView from "./components/CardView";
@@ -124,11 +131,14 @@ function AppRoutes() {
       <Route path="/introVideo" element={<IntroVideoPage />} />
       <Route path="/finalSteps" element={<FinalStepsPage />} />
       <Route path="/terms" element={<TermsAndConditions />} />
-
-              {/* OTP verification after sign-up */}
-        
-
-{/* Forgot password flow */}
+      <Route path="/friends" element={<FriendsPage />} />
+      <Route path="/chats" element={<ChatsPage />} />
+      <Route path="/chats" element={<ChatList />} />
+      <Route path="/chat/:sessionId" element={<ChatDetail />} />
+      <Route path="/community" element={<Community />} />
+      <Route path="/friendSessions" element={<FriendSessionsPage />} />
+      <Route path="/chat/:sessionId" element={<ChatDetail />} />
+      <Route path="/assistant" element={<AssistantChat />} />
 
       
 

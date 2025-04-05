@@ -9,7 +9,7 @@ import logo1 from "../assets/logo_fit.jpeg";
 import "../css/Auth.css";
 
 const API_URL =  "https://api.gritfit.site/api";
-const BETA_CODE = "GRITFIT2025";
+const BETA_CODE = process.env.REACT_APP_BETA_CODE;
 
 export default function Auth() {
   // Local state

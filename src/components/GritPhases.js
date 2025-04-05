@@ -12,7 +12,7 @@ import axios from "../axios";
 import "../css/NutritionTheory.css";
 import "../css/contactUs.css";
 import "../css/CardView.css";
-import { SquareMenu } from "lucide-react";
+import { ChartNoAxesColumn } from "lucide-react";
 import TabBar from "./TabBar";
 
 const GritPhase = () => {
@@ -271,20 +271,24 @@ const GritPhase = () => {
     navigate("/cardView");
   }
 
+  function goToGFitReport() {
+    navigate("/gFitReport");
+  }
+
   return (
     <>
       
 
       <div className="grit-phase-container">
       <header className="gritphase-header-bubble">
-          <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+          <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToCard} />
           <div className="phase-row">
             <span className="phase-title">GritPhase {currentTask ? currentTask.phaseid : "?"}</span>
             <div className="progress-bar-container">
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
           </div>
-          <SquareMenu size={24} onClick={goToCard} className="grid-icon" />
+          <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
         </header>
 
         <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>

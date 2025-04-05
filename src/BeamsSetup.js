@@ -6,6 +6,8 @@ import axios from "axios";
 
 const API_URL =  "https://api.gritfit.site/api";
 
+const BEAMS_INSTANCE_ID = process.env.REACT_APP_BEAMS_INSTANCE_ID;
+
 function BeamsSetup() {
   const { accessToken, user } = useContext(AuthContext);
 
@@ -15,7 +17,7 @@ function BeamsSetup() {
 
     // 1) Create Beams client
     const beamsClient = new PusherPushNotifications.Client({
-      instanceId: "ab36b7bc-d7f7-4be6-a812-afe25361ea37", // e.g. "123456-abc-..."
+      instanceId: BEAMS_INSTANCE_ID, 
     });
 
     // 2) Start to request permission

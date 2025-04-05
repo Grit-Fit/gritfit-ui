@@ -21,6 +21,8 @@ import { useNavigate } from "react-router-dom";
 import * as PusherPushNotifications from "@pusher/push-notifications-web";
 const API_URL =  "https://api.gritfit.site/api";
 
+const BEAMS_INSTANCE_ID = process.env.REACT_APP_BEAMS_INSTANCE_ID;
+
 export default function Settings() {
   const { logout, accessToken , user} = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -82,7 +84,7 @@ export default function Settings() {
 
         // 2) remove local device interest if registered
         const beamsClient = new PusherPushNotifications.Client({
-          instanceId: "ab36b7bc-d7f7-4be6-a812-afe25361ea37",
+          instanceId: BEAMS_INSTANCE_ID,
         });
         const regState = await beamsClient.getRegistrationState();
         console.log("[Beams] regState on unsub:", regState);
@@ -100,7 +102,7 @@ export default function Settings() {
       // Turn ON notifications
       try {
         const beamsClient = new PusherPushNotifications.Client({
-          instanceId: "ab36b7bc-d7f7-4be6-a812-afe25361ea37",
+          instanceId: BEAMS_INSTANCE_ID,
         });
         const regState = await beamsClient.getRegistrationState();
         console.log("[Beams] regState before subscribing:", regState);
