@@ -259,6 +259,7 @@ const GFitReport = () => {
 
   const [maintenance, setMaintenance] = useState(null);
   const [macros, setMacros] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserNutrition = async () => {
@@ -312,12 +313,15 @@ const GFitReport = () => {
     if (accessToken) fetchTaskData();
   }, [accessToken]);
 
+  function goToCard() {
+    navigate("/cardView");
+  }
 
 
   return (
     <>
       <header className="gritphase-header">
-                <img src={logo} alt="Logo" className="logo-gritPhases-header" />
+      <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToCard}/>
                 <div className="phase-row">
                 </div>
         </header>

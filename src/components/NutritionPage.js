@@ -15,10 +15,13 @@ import kroger from "../assets/kroger.png";
 import trader from "../assets/trader.png";
 import toppick from "../assets/toppick.png";
 import "../css/CardView.css";
+import { useNavigate} from "react-router-dom";
+
 
 const NutritionPage = () => {
   const [selectedStore, setSelectedStore] = useState(null);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const navigate = useNavigate();
 
 
   const tableRef = useRef(null);
@@ -46,10 +49,14 @@ const NutritionPage = () => {
     "Trader Joe's": trader,
   };
 
+  function goToCard() {
+    navigate("/cardView");
+  }
+
   return (
     <>
       <header className="gritphase-header">
-        <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToCard}/>
       </header>
 
       <div className="report_header_nut">

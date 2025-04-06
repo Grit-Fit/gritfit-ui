@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import logo from "../assets/GritFit_Full.png";
+import logo from "../assets/logo1.png";
 import female_icon from "../assets/female.png";
 import male_icon from "../assets/male.png";
 import { PieChart } from "react-minimal-pie-chart";
@@ -170,12 +170,17 @@ export default function CalorieCalculator() {
 
   return (
     <>
-    <header className="gritphase-header">
+      <header className="gritphase-header">
         <ChevronLeft className="backIcon" onClick={handleBackProfile} />
-                <img src={logo} alt="Logo" className="logo-gritPhases-header" style={{marginLeft: "-12rem"}}  onClick={handleBackProfile}/>
-                <div className="phase-row">
-                </div>
-        </header>
+        <img
+          src={logo}
+          alt="Logo"
+          className="logo-gritPhases-header"
+          style={{ marginRight: "18rem"}}
+          onClick={handleBackProfile}
+        />
+      </header>
+      
     <div className="calcContainer">
     <div className="report_header_cal">
             <div className="report_header-text"><img src = {calc} />Calorie Calculator</div>

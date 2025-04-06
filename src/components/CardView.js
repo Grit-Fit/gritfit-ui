@@ -338,19 +338,18 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
   return (
     <div
       className="big-card fade-in"
-      style={{ background: "linear-gradient(180deg, #a2d3f2, #769fd1)", left: "20px" }}
+      style={{ background: "linear-gradient(180deg, #13D7E9FF 34%, #98EB24FF 100%)", left: "20px" }}
     >
       <div
         className="undo"
         onClick={onClose}
-        style={{ position: "absolute", top: "10px", right: "10px" }}
+        style={{ position: "absolute", top: "20px", right: "10px" }}
       >
        <MoveDown style={{ width: "24px", height: "24px" }} />Undo Swipe
       </div>
 
-      <h2 style={{ marginTop: "4rem" }}>Need a Hand?</h2>
+      <h2 style={{ marginTop: "4rem" , fontWeight: "700", fontSize: "1.2rem", }}>Help is one text away!</h2>
       <p style={{ marginBottom: "1rem" }}>
-        Describe your challenge or ask your friends for tips:
       </p>
 
       {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
@@ -358,10 +357,10 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
       <textarea
         value={helpMessage}
         onChange={(e) => setHelpMessage(e.target.value)}
-        placeholder="What are you struggling with today?"
+        placeholder="Write here how do you exactly need help in this task, and that's it!"
         style={{
-          width: "80%",
-          minHeight: "80px",
+          width: "85%",
+          minHeight: "90px",
           borderRadius: "6px",
           padding: "0.5rem",
           marginBottom: "1rem",
@@ -380,7 +379,6 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
     </div>
   );
 }
-
 
 
 /* 

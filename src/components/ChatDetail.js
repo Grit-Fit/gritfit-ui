@@ -57,9 +57,16 @@ export default function ChatDetail() {
 <>
   <div className="chat-detail-container">
 
-    <header className="chat-header">
-      <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goBack} />
-    </header>
+  <header className="gritphase-header">
+        <ChevronLeft className="backIcon" onClick={goBack} />
+        <img
+          src={logo}
+          alt="Logo"
+          className="logo-gritPhases-header"
+          style={{ marginRight: "18rem"}}
+          onClick={goBack}
+        />
+      </header>
 
 
     <div className="chathead">

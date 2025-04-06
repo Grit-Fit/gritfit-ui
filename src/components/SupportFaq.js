@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react"; 
 import "../css/SupportFaq.css";
-import logo from "../assets/GritFit_Full.png";
+import logo from "../assets/logo1.png";
 import faq  from "../assets/headphone.png";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import TabBar from "./TabBar";
@@ -18,31 +18,27 @@ export default function SupportFaq() {
   const faqs = [
     {
       question: "What is GritFit?",
-      answer: "GritFit is a habit-building fitness app designed to help you stay consistent with your nutrition and training through small daily tasks."
+      answer: "GritFit is a structured program for building healthy habits one step at a time."
     },
     {
       question: "How does GritFit work?",
-      answer: "Every day, you get a simple task related to nutrition or fitness. Complete it and swipe right; if you miss it, swipe left. Over time, this builds discipline and long-term habits."
+      answer: "Each day you get a small, doable fitness or nutrition task. Complete them consistently to progress through phases."
     },
     {
       question: "Do I need to track calories?",
-      answer: "We recommend tracking calories, but not from day one. GritFit eases you into it without overwhelming you."
+      answer: "Not necessarily—GritFit focuses on simple tasks. However, you can optionally track using the Calorie Calculator."
     },
     {
       question: "What happens if I miss a day?",
-      answer: "No worries! GritFit is designed to help you bounce back. You’ll still get daily tasks, and missing one won’t ruin your progress."
+      answer: "No worries! Just pick up where you left off. GritFit is flexible and encourages steady progress."
     },
     {
       question: "Do I need to follow a specific diet?",
-      answer: "Nope! GritFit works with flexible dieting (IIFYM), meaning you can eat foods that fit your macros while still making progress."
+      answer: "Nope! GritFit is diet-agnostic. We just help you build consistent eating habits that fit your lifestyle."
     },
     {
       question: "Is GritFit free to use?",
-      answer: "Our beta version is free! Future premium features may be introduced, but core habit-building features will remain accessible."
-    },
-    {
-      question: "How do I contact support?",
-      answer: "Reach us through mail: support@gritfit.site."
+      answer: "Yes. Our basic features are free. Some advanced features may require a subscription later."
     },
   ];
 
@@ -60,12 +56,16 @@ export default function SupportFaq() {
 
   return (
     <>
-    <header className="gritphase-header">
-            <ChevronLeft className="backIcon" onClick={handleBackProfile} />
-                    <img src={logo} alt="Logo" className="logo-gritPhases-header" style={{marginLeft: "-12rem"}} onClick={handleBackProfile} />
-                    <div className="phase-row">
-                    </div>
-            </header>
+      <header className="gritphase-header">
+        <ChevronLeft className="backIcon" onClick={handleBackProfile} />
+        <img
+          src={logo}
+          alt="Logo"
+          className="logo-gritPhases-header"
+          style={{ marginRight: "18rem"}}
+          onClick={handleBackProfile}
+        />
+      </header>
     <div className="supportFaq-container">
         <div className="report_header">
             <div className="report_header-text"><img src={faq} />FAQs</div>

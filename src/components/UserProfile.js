@@ -14,6 +14,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "../axios";
 import { Lock, ChevronRight } from "lucide-react";
 
+
 export default function UserProfile() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
@@ -59,6 +60,8 @@ export default function UserProfile() {
     const classNames = ["profile-option"];
     if (locked) classNames.push("locked");
     if (isClicked) classNames.push("clicked");
+
+
 
     return (
       <div className={classNames.join(" ")} onClick={onClick}>
@@ -107,10 +110,15 @@ export default function UserProfile() {
     }
   };
 
+  function goToCard() {
+    navigate("/cardView");
+  }
+
+
   return (
     <>
       <header className="gritphase-header">
-        <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToCard}/>
         <div className="phase-row" />
       </header>
 

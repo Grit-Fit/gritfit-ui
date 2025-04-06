@@ -6,14 +6,21 @@ import ChatsPage from "./ChatsPage";
 import { MessageSquareText, ContactRound, UsersRound } from "lucide-react";       
 import "../css/Community.css"; 
 import logo from "../assets/logo1.png";
+import { useNavigate} from "react-router-dom";
 
 export default function Community() {
   const [activeTab, setActiveTab] = useState("friends");
+  const navigate = useNavigate();
+
+  function goToCard() {
+    navigate("/cardView");
+  }
+
 
   return (
     <div className="community-container">
             <header className="gritphase-header">
-              <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+              <img src={logo} alt="Logo" className="logo-gritPhases-task"  onClick={goToCard}/>
             </header>
 
      <div class = "communityhead">       
