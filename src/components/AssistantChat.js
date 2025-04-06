@@ -42,7 +42,6 @@ export default function AssistantChat() {
   }
 
   function toggleTopic(topic) {
-    // If user clicks the same topic again, close it
     if (selectedTopic === topic) {
       removeTipsBubble();
       setSelectedTopic(null);
