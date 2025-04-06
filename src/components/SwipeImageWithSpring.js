@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 import '../css/SwipeImageWithSpring.css';
+// testing swipe
 
 const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => {
   const [gone, setGone] = useState(null); 
@@ -16,9 +17,8 @@ const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => 
     config: { tension: 300, friction: 35 }, 
   }));
 
-  // useDrag handler
   const bind = useDrag(({ down, movement: [mx, my], velocity: [vx, vy] }) => {
-    if (gone) return; // If already off-screen, do nothing
+    if (gone) return; 
 
     
     if (down) {
