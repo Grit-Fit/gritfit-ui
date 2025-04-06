@@ -364,6 +364,7 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
           borderRadius: "6px",
           padding: "0.5rem",
           marginBottom: "1rem",
+          marginTop: "3rem",
           color: "black"
         }}
       />
@@ -372,7 +373,7 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
         className="doneBtn pulse-button"
         onClick={sendHelpRequest}
         disabled={isLoading}
-        style={{ marginTop: "1rem" }}
+        style={{ marginTop: "1rem", marginBottom: "6rem" }}
       >
         {isLoading ? "Sending..." : "Send Help Request"}
       </button>
