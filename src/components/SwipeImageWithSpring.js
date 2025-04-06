@@ -14,7 +14,7 @@ const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => 
     scale: 1,
     rotate: 0,
     opacity: 1,
-    config: { tension: 300, friction: 35 }, 
+    config: { tension: 200, friction: 20 }, 
   }));
 
   const bind = useDrag(({ down, movement: [mx, my], velocity: [vx, vy] }) => {
@@ -32,11 +32,11 @@ const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => 
     } else {
       // User released; check if it should fling off screen
       const threshold = 50;
-      const velocityThreshold = 0.2;
+      const velocityThreshold = 0.05;
 
       // Decide if it is a swipe or a reset
-      const swipeHorizontally = Math.abs(mx) > threshold && vx > velocityThreshold;
-      const swipeUp = my < -threshold && vy > velocityThreshold;
+      const swipeHorizontally = Math.abs(mx) > threshold || vx > velocityThreshold;
+      const swipeUp = my < -threshold || vy > velocityThreshold;
 
       if (swipeHorizontally) {
         setGone(mx > 0 ? 'right' : 'left');
