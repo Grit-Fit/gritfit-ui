@@ -14,7 +14,7 @@ const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => 
     scale: 1,
     rotate: 0,
     opacity: 1,
-    config: { tension: 250, friction: 25 }, 
+    config: { tension: 250, friction: 35 }, 
   }));
 
   const bind = useDrag(({ down, movement: [mx, my], velocity: [vx, vy] }) => {

@@ -373,7 +373,7 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
         className="doneBtn pulse-button"
         onClick={sendHelpRequest}
         disabled={isLoading}
-        style={{ marginTop: "1rem", marginBottom: "6rem" }}
+        style={{ marginTop: "5rem" }}
       >
         {isLoading ? "Sending..." : "Send Help Request"}
       </button>
