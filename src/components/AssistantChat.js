@@ -79,9 +79,16 @@ export default function AssistantChat() {
     <>
       <div className="chat-detail-container">
         {/* Header row */}
-        <header className="chat-header">
-          <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goBack}/>
-        </header>
+      <header className="gritphase-header">
+        <ChevronLeft className="backIcon" onClick={goBack} />
+        <img
+          src={logo}
+          alt="Logo"
+          className="logo-gritPhases-header"
+          style={{ marginRight: "18rem"}}
+          onClick={goBack}
+        />
+      </header>
 
         {/* Title Section */}
         <div className="chathead">
