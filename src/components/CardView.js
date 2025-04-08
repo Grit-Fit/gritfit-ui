@@ -609,7 +609,7 @@ try {
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
           </div>
-          <ChartNoAxesColumn size={24} onClick={goToGFitReport}  />
+          <ChartNoAxesColumn size={36} onClick={goToGFitReport}  />
         </header>
 
         <div className="card-wrapper">
@@ -642,7 +642,7 @@ try {
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
           </div>
-          <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
+          <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
         </header>
 
         <div className="card-wrapper">
@@ -674,7 +674,7 @@ if (showHelpCard) {
             <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
           </div>
         </div>
-        <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
+        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
       <div className="card-wrapper">
@@ -786,7 +786,7 @@ if (showHelpCard) {
             <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
           </div>
         </div>
-        <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
+        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
       {loading && <p className="loading-text">Loading tasks...</p>}

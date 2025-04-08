@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 import '../css/SwipeImageWithSpring.css';
-// testing swipe
 
 const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => {
   const [gone, setGone] = useState(null); 
@@ -64,7 +63,7 @@ const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => 
     } else if (gone === 'left') {
       api.start({ x: -1000, y: 0, opacity: 0 });
     } else if (gone === 'up') {
-      api.start({ x: 0, y: -1000, opacity: 0 , config: { duration: 200 } });
+      api.start({ x: 0, y: -1000, opacity: 0 , config: { duration: 700 } });
     }
   }, [gone, api]);
 
