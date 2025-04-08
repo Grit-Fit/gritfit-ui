@@ -34,14 +34,14 @@
   flex-direction: column;
   align-items: center;
   top: 90px;
-  height: 520px;
+  height: 410px;
 }
 
 .intro-card-title {
   margin: 0;
   font-size: 1.2rem;
   margin-bottom: 1rem;
-  margin-top: 2rem;
+  margin-top: 0.5rem;
 }
 
 .intro-card-text {

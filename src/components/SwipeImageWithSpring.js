@@ -36,7 +36,7 @@ const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => 
 
       // Decide if it is a swipe or a reset
       const swipeHorizontally = Math.abs(mx) > threshold || vx > velocityThreshold;
-      const swipeUp = my < -threshold && vy > velocityThreshold;
+      const swipeUp = my < -threshold || vy > velocityThreshold;
 
       if (swipeHorizontally) {
         setGone(mx > 0 ? 'right' : 'left');
@@ -64,7 +64,7 @@ const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => 
     } else if (gone === 'left') {
       api.start({ x: -1000, y: 0, opacity: 0 });
     } else if (gone === 'up') {
-      api.start({ x: 0, y: -1000, opacity: 0 });
+      api.start({ x: 0, y: -1000, opacity: 0 , config: { duration: 200 } });
     }
   }, [gone, api]);
 

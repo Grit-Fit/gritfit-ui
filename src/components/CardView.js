@@ -275,14 +275,14 @@ function IntroCard({ onClose }) {
           <img src={rightIcon} alt="Swipe Right" className="swipe-right" />
         </p>
 
-        <hr style={{width: "18rem", position: "relative", top: "4px"}} />
+        <hr style={{width: "18rem", position: "relative", top: "-8px"}} />
         <h2 className="intro-card-title">Swipe up if you want Help!</h2>
         <p className="intro-card-text">
         <img src={upIcon} alt="Swipe Left" className="swipe-left" />
         Aren't able to do the task? Swipe up to get help! 
         </p>
 
-        <hr style={{width: "18rem", position: "relative", top: "4px"}} />
+        <hr style={{width: "18rem", position: "relative", top: "-8px"}} />
         <h2 className="intro-card-title">Swipe left if you didn't</h2>
         <p className="intro-card-text">
         <img src={leftIcon} alt="Swipe Left" className="swipe-left" />
