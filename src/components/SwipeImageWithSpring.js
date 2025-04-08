@@ -59,11 +59,11 @@ const SwipeImageWithSpring = ({ children, onSwipe, phaseNumber, dayNumber }) => 
     if (!gone) return;
 
     if (gone === 'right') {
-      api.start({ x: 1000, y: 0, opacity: 0 });
+      api.start({ x: 1000, y: 0, opacity: 0 , config: { duration: 300 }});
     } else if (gone === 'left') {
-      api.start({ x: -1000, y: 0, opacity: 0 });
+      api.start({ x: -1000, y: 0, opacity: 0, config: { duration: 300 } });
     } else if (gone === 'up') {
-      api.start({ x: 0, y: -1000, opacity: 0 , config: { duration: 700 } });
+      api.start({ x: 0, y: -1000, opacity: 0 , config: { duration: 500 } });
     }
   }, [gone, api]);
 

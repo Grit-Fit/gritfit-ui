@@ -288,7 +288,7 @@ const GritPhase = () => {
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
           </div>
-          <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
+          <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
         </header>
 
         <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
