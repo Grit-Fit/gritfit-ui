@@ -54,6 +54,7 @@ import AssistantChat from "./components/AssistantChat";
 
 // New card-based UI
 import CardView from "./components/CardView";
+import GemsPage from "./components/GemsPage";
 
 function AppRoutes() {
   const { accessToken } = useContext(AuthContext);
@@ -139,6 +140,7 @@ function AppRoutes() {
       <Route path="/friendSessions" element={<FriendSessionsPage />} />
       <Route path="/chat/:sessionId" element={<ChatDetail />} />
       <Route path="/assistant" element={<AssistantChat />} />
+      <Route path="/gems" element={<GemsPage />} />
 
       
 

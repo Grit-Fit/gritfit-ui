@@ -1,0 +1,64 @@
+.gems-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background-color: white;
+    height: 100vh;
+  }
+  
+  .gems-page-header {
+    background-color: #bde0fe; /* just an example color */
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .current-gems-display {
+    margin: 1rem 0;
+    font-size: 1.2rem;
+  }
+  
+  .rewards-list {
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .reward-tier-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ddd;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    background-color: #fff;
+  }
+  
+  .reward-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .reward-icon img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .reward-name {
+    font-weight: 500;
+  }
+  
+  .lock-label {
+    color: #999;
+  }
+  
+  .unlock-label {
+    color: #28a745;
+    font-weight: bold;
+  }
+
+  
+  

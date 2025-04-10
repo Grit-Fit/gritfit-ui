@@ -4,10 +4,10 @@
 .chat-detail-container {
   max-width: 600px;
   margin: 0 auto;
-  min-height: 100vh; /* let the container fill the screen */
+  min-height: 100vh; 
   display: flex;
   flex-direction: column;
-  background-color: #fefefe; /* main background for container */
+  background-color: #fefefe; 
 }
 
 /***************************************************
@@ -34,7 +34,6 @@
   flex-direction: column;
   height: 120px;
   margin-top: 4rem;
-  display: flex;
   justify-content: center;
   align-items: center;
   gap: 1.2rem;
@@ -72,7 +71,6 @@
   flex-direction: column;
   height: 120px;
   margin-top: 5rem;
-  display: flex;
   justify-content: center;
   align-items: center;
   gap: 1.2rem;
@@ -109,36 +107,44 @@
   border-radius: 8px;
   border: 1px solid #ccc;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  overflow: hidden; /* to hide any corner scrolling */
+  overflow: hidden; 
 }
 
-/* The scrollable area for messages */
+
 .messages-list {
-  flex: 1; /* fill available vertical space */
+  flex: 1; 
   overflow-y: auto;
   padding: 0.75rem;
 }
 
-/* Each message row */
+
 .chat-message-row {
   display: flex;
   align-items: flex-end;
   margin-bottom: 0.75rem;
 }
 
-/* My messages aligned right */
+
 .chat-message-row.mine {
   justify-content: flex-end;
 }
 
-/* Friend’s messages aligned left */
+
 .chat-message-row.their {
-  justify-content: flex-start;
+  align-items: baseline;
 }
 
-/* The bubble with message text */
-.message-bubble {
+
+.message-content {
+  display: flex;
+  flex-direction: column;
   max-width: 70%;
+  margin-top: 1rem;
+  gap: 0.7rem;
+}
+
+
+.message-bubble {
   padding: 0.75rem;
   border-radius: 8px;
   background-color: #fefefe;
@@ -148,17 +154,17 @@
   line-height: 1.4;
 }
 
-/* My bubble tinted green */
+
 .chat-message-row.mine .message-bubble {
   background-color: #daf7dc;
 }
 
-/* Avatars for friend or me */
+
 .avatar-bubble {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: #00bcd4; 
+  background-color: #00bcd4;
   color: #fff;
   display: flex;
   align-items: center;
@@ -171,19 +177,19 @@
   background-color: #0c9;
 }
 
+
 .watermark {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2rem;         
-  color: rgba(0, 0, 0, 0.1); 
-  pointer-events: none;    
-  user-select: none;      
+  font-size: 2rem;
+  color: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  user-select: none;
   white-space: nowrap;
-  opacity: 5%;          
+  opacity: 5%;
 }
-
 
 /***************************************************
   Input Row (Pinned at bottom inside container)
@@ -221,9 +227,88 @@
 }
 
 /***************************************************
+  Rating Buttons
+***************************************************/
+.rating-buttons-container {
+  margin-top: 4px;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.rating-btn {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.helpful-btn {
+  background-color: green;
+}
+
+.somewhat-btn {
+  background-color: #2196f3; 
+}
+
+.nothelpful-btn {
+  background-color: red;
+}
+
+
+.marked-helpful-label {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #666;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; 
+}
+
+/* The content box in the center */
+.modal-content {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* "OK" or close button */
+.close-modal-btn {
+  margin-top: 1rem;
+  background-color: #00bcd4;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.close-modal-btn:hover {
+  background-color: #00acc1;
+}
+
+
+/***************************************************
   Media Queries
 ***************************************************/
-
 /* For smaller phones: */
 @media (max-width: 375px) {
   .logo-gritPhases-task {
@@ -239,9 +324,7 @@
 
 /* For tablets up to 768px */
 @media (max-width: 768px) {
-  .chat-detail-container {
-    /* reduce side padding if you prefer a more compact layout */
-  }
+
   .community-title {
     font-size: 1.3rem;
   }
