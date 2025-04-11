@@ -91,7 +91,7 @@ export default function GemsPage() {
               <div key={index} className="profile-option" style={{height: "4rem"}}>
                 <div className="option-left">
                   {isUnlocked ? (
-                    <Unlock size={20} color="#28a745" />
+                    <Gem size={20} color="#28a745" />
                   ) : (
                     <Gem size={20} color="#00bcd4" />
                   )}
@@ -101,7 +101,7 @@ export default function GemsPage() {
                 </div>
                 <div className="option-right">
                   {isUnlocked ? (
-                    <span className="unlock-label">Unlocked</span>
+                    <span className="unlock-label"><Unlock /></span>
                   ) : (
                     <span className="lock-label"><Lock /></span>
                   )}

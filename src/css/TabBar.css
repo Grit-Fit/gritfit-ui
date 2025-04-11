@@ -20,8 +20,8 @@
   
  
   .tabbar-footer svg.icon {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   .tabbar-footer svg.icon.selected {
@@ -48,7 +48,7 @@
   
  
   .tabbar-footer .tabbar-menu-item:hover {
-    background: #222222; 
+    background: #13d7e9; 
   }
   
   

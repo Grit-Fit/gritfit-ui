@@ -625,18 +625,35 @@ try {
   if (showLeftCard) {
     return (
       <div className="cardview-container">
-        <header className="gritphase-header">
-          <img src={logo} alt="Logo" className="logo-gritPhases-task" />
-          <div className="phase-row">
-            <span className="phase-title">
-              GritPhase {currentTask ? currentTask.phaseid : "?"}
-            </span>
-            <div className="progress-bar-container">
-              <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
-            </div>
+      <header className="gritphase-header">
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToBirdView} />
+        <div className="phase-row">
+          <span className="phase-title">
+            GritPhase {currentTask ? currentTask.phaseid : "?"}
+          </span>
+          <div className="progress-bar-container">
+            <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
           </div>
-          <ChartNoAxesColumn size={24} onClick={goToGFitReport}  />
-        </header>
+        </div>
+        <div
+          className="gems-display"
+          onClick={goToGems}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            position: "absolute",
+            right: "60px",
+            // marginLeft: "auto",
+          }}
+        >
+          <Gem size={30} color="#00bcd4" />
+          <span style={{ marginLeft: "0.5rem", fontWeight: "bold", fontSize: "1.2rem" }}>
+            {gems}
+          </span>
+        </div>
+        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+      </header>
 
         <div className="card-wrapper">
           <InternalLeftSwipeCard
@@ -658,18 +675,35 @@ try {
   if (showRightCard) {
     return (
       <div className="cardview-container">
-        <header className="gritphase-header">
-          <img src={logo} alt="Logo" className="logo-gritPhases-task" />
-          <div className="phase-row">
-            <span className="phase-title">
-              GritPhase {currentTask ? currentTask.phaseid : "?"}
-            </span>
-            <div className="progress-bar-container">
-              <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
-            </div>
+      <header className="gritphase-header">
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToBirdView} />
+        <div className="phase-row">
+          <span className="phase-title">
+            GritPhase {currentTask ? currentTask.phaseid : "?"}
+          </span>
+          <div className="progress-bar-container">
+            <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
           </div>
-          <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
-        </header>
+        </div>
+        <div
+          className="gems-display"
+          onClick={goToGems}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            position: "absolute",
+            right: "60px",
+            // marginLeft: "auto",
+          }}
+        >
+          <Gem size={30} color="#00bcd4" />
+          <span style={{ marginLeft: "0.5rem", fontWeight: "bold", fontSize: "1.2rem" }}>
+            {gems}
+          </span>
+        </div>
+        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+      </header>
 
         <div className="card-wrapper">
           <InternalRightSwipeCard
@@ -691,7 +725,7 @@ if (showHelpCard) {
   return (
     <div className="cardview-container">
       <header className="gritphase-header">
-        <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToBirdView} />
         <div className="phase-row">
           <span className="phase-title">
             GritPhase {currentTask ? currentTask.phaseid : "?"}
@@ -700,7 +734,24 @@ if (showHelpCard) {
             <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
           </div>
         </div>
-        <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
+        <div
+          className="gems-display"
+          onClick={goToGems}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            position: "absolute",
+            right: "60px",
+            // marginLeft: "auto",
+          }}
+        >
+          <Gem size={30} color="#00bcd4" />
+          <span style={{ marginLeft: "0.5rem", fontWeight: "bold", fontSize: "1.2rem" }}>
+            {gems}
+          </span>
+        </div>
+        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
       <div className="card-wrapper">
