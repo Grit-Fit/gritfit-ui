@@ -15,7 +15,7 @@ function TabBar() {
         }
       >
         <Home className="icon" />
-        <span>Home</span>
+        <span className="option-text" style={{fontSize: "0.65rem"}}>Home</span>
       </NavLink>
 
       {/* GFit Trends */}
@@ -37,7 +37,7 @@ function TabBar() {
         }
       >
         <Utensils className="icon" />
-        <span>Top Picks</span>
+        <span className="option-text" style={{fontSize: "0.65rem"}}>Top Picks</span>
       </NavLink>
 
             {/* NEW: Community */}
@@ -48,7 +48,7 @@ function TabBar() {
         }
       >
         <UsersRound className="icon" />
-        <span>Community</span>
+        <span className="option-text" style={{fontSize: "0.65rem"}}>Community</span>
       </NavLink>
 
       {/* Profile */}
@@ -59,7 +59,7 @@ function TabBar() {
         }
       >
         <User className="icon" />
-        <span>Profile</span>
+        <span className="option-text" style={{fontSize: "0.65rem"}}>Profile</span>
       </NavLink>
     </nav>
   );

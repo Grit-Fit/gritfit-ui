@@ -5,7 +5,7 @@ import axios from "../axios";
 import { useAuth } from "../context/AuthContext";
 import TabBar from "./TabBar";
 import "../css/ChatDetail.css";
-import { User, ChevronLeft, MessagesSquare } from "lucide-react";
+import { User, ChevronLeft, MessageSquareText } from "lucide-react";
 import logo from "../assets/logo1.png";
 
 export default function ChatDetail() {
@@ -113,7 +113,7 @@ export default function ChatDetail() {
 
         <div className="chathead">
           <h2 className="community-title">
-            <MessagesSquare /> Chats
+            <MessageSquareText /> Chats
           </h2>
         </div>
 

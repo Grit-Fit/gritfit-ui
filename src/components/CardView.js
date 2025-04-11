@@ -10,7 +10,7 @@ import upIcon from "../assets/upflick.png";
 import TabBar from "./TabBar";
 import gritfitLogo from "../assets/logo1.png";
 import logo from "../assets/logo1.png";
-import { LayoutGrid, Undo2, ChartNoAxesColumn, Redo2,MoveDown } from "lucide-react";
+import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown } from "lucide-react";
 
 /* 
 ----------------------------------
@@ -275,14 +275,14 @@ function IntroCard({ onClose }) {
           <img src={rightIcon} alt="Swipe Right" className="swipe-right" />
         </p>
 
-        <hr style={{width: "18rem", position: "relative", top: "-8px"}} />
+        <hr style={{width: "18rem", position: "relative", top: "4px"}} />
         <h2 className="intro-card-title">Swipe up if you want Help!</h2>
         <p className="intro-card-text">
         <img src={upIcon} alt="Swipe Left" className="swipe-left" />
         Aren't able to do the task? Swipe up to get help! 
         </p>
 
-        <hr style={{width: "18rem", position: "relative", top: "-8px"}} />
+        <hr style={{width: "18rem", position: "relative", top: "4px"}} />
         <h2 className="intro-card-title">Swipe left if you didn't</h2>
         <p className="intro-card-text">
         <img src={leftIcon} alt="Swipe Left" className="swipe-left" />
@@ -364,7 +364,6 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
           borderRadius: "6px",
           padding: "0.5rem",
           marginBottom: "1rem",
-          marginTop: "3rem",
           color: "black"
         }}
       />
@@ -373,13 +372,14 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
         className="doneBtn pulse-button"
         onClick={sendHelpRequest}
         disabled={isLoading}
-        style={{ marginTop: "5rem" }}
+        style={{ marginTop: "1rem" }}
       >
         {isLoading ? "Sending..." : "Send Help Request"}
       </button>
     </div>
   );
 }
+
 
 
 /* 
@@ -403,8 +403,9 @@ export default function CardView() {
   const [showHelpCard, setShowHelpCard] = useState(false);
   const [phaseNumber, setPhaseNumber] = useState(null);
   const [dayNumber, setDayNumber] = useState(null);
+  const [gems, setGems] = useState(0);
 
-  // [NEW] Show Intro as a "card" the first time
+
   const [showIntro, setShowIntro] = useState(true);
 
   // Ensure user is logged in
@@ -578,6 +579,31 @@ try {
     navigate("/gritphases");
   }
 
+  function goToGems() {
+    navigate("/gems");
+  }
+
+ 
+  useEffect(() => {
+    async function fetchGems() {
+      try {
+        const response = await axios.get("/api/getUserGems", {
+           headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (response.data && typeof response.data.gems === "number") {
+          setGems(response.data.gems);
+        } else {
+          setGems(0);
+        }
+      } catch (error) {
+        console.error("Error fetching gems:", error);
+        setGems(0);
+      }
+    }
+
+    fetchGems();
+  }, []);
+
   /* 
     If user hasn't dismissed intro => show the IntroCard 
     layered on top of everything 
@@ -609,7 +635,7 @@ try {
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
           </div>
-          <ChartNoAxesColumn size={36} onClick={goToGFitReport}  />
+          <ChartNoAxesColumn size={24} onClick={goToGFitReport}  />
         </header>
 
         <div className="card-wrapper">
@@ -642,7 +668,7 @@ try {
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
           </div>
-          <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+          <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
         </header>
 
         <div className="card-wrapper">
@@ -674,7 +700,7 @@ if (showHelpCard) {
             <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
           </div>
         </div>
-        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+        <ChartNoAxesColumn size={24} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
       <div className="card-wrapper">
@@ -707,7 +733,7 @@ if (showHelpCard) {
       );
     }
 
-
+    
     const now = new Date();
     const actDate = task.task_activation_date ? new Date(task.task_activation_date) : null;
     const locked = (task.taskstatus === "Not Started" && actDate && actDate > now);
@@ -758,6 +784,7 @@ if (showHelpCard) {
       day: "numeric",
     });
 
+
     return (
       <div className="big-card" style={{ background: "linear-gradient(180deg, #a2d3f2, #769fd1)", left: "20px" }}>
         <h2 className="task-date">{tomorrowStr}</h2>
@@ -786,13 +813,32 @@ if (showHelpCard) {
             <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
           </div>
         </div>
+        <div
+          className="gems-display"
+          onClick={goToGems}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            position: "absolute",
+            right: "60px",
+            // marginLeft: "auto",
+          }}
+        >
+          <Gem size={30} color="#00bcd4" />
+          <span style={{ marginLeft: "0.5rem", fontWeight: "bold", fontSize: "1.2rem" }}>
+            {gems}
+          </span>
+        </div>
         <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
       {loading && <p className="loading-text">Loading tasks...</p>}
       {error && <p className="error-text">{error}</p>}
 
-      <div className="card-wrapper">{renderMainCard(currentTask)}</div>
+      <div className="card-wrapper">{renderMainCard(currentTask)}
+
+      </div>
 
       <TabBar />
 
