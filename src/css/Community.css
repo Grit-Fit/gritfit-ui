@@ -73,3 +73,55 @@
     color: #ffffff;
   }
   
+
+  
+  .unread-badge {
+    position: absolute;
+    top: -3px; 
+    right: -6px; 
+    background-color: red;
+    color: #fff;
+    border-radius: 50%;
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    line-height: 1;
+  }
+
+ 
+.chats-unread-badge {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  z-index: 999;
+}
+
+
+.friend-unread-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px; 
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+
+.session-unread-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+}
