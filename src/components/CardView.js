@@ -811,7 +811,7 @@ if (showHelpCard) {
               {now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
             </h2>
             <p className="task-descrip">{task.taskdesc}</p>
-            <div className="swipe-hints">
+            {/* <div className="swipe-hints">
               <div className="left-hint">
                 <img src={leftIcon} alt="Swipe Left" className="swipe-left" />
                 Couldn't do it
@@ -820,6 +820,9 @@ if (showHelpCard) {
                 Crushed it!
                 <img src={rightIcon} alt="Swipe Right" className="swipe-right" />
               </div>
+            </div> */}
+            <div style={{position: "relative", top: "1.5rem"}}>
+              Swipe Up for Help!
             </div>
           </div>
         </SwipeImageWithSpring>

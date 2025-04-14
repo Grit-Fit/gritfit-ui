@@ -1,126 +1,298 @@
-
 .userprofile-container {
-    background-color: #ffffff; 
-    min-height: 100vh;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 4.3rem;
-  }
-  
-  /* Header card at the top */
+  background-color: #ffffff; 
+  min-height: 100vh;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4.3rem;
+}
+
+.profile-header {
+  width: 100%;
+  max-width: 400px;
+  background-color: rgb(239 253 255);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-header {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background-color: #eafaff; 
+  border-radius: 12px;
+}
+
+
+.edit-icon-container {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.2s ease;
+}
+
+.edit-icon-container:hover {
+  color: #00bcd4;
+}
+
+
+.username-edit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.5rem;
+  gap: 1rem;
+}
+
+.username-edit-input {
+  background: #f0fcff;
+  border: 1px solid #c4eaf6;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 1rem;
+  color: #333;
+  outline: none;
+  width: 14rem;
+  margin-top: 1rem;
+}
+
+
+.edit-buttons-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.save-username-btn,
+.cancel-username-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.save-username-btn {
+  background-color: #00bcd4;
+  color: #fff;
+}
+
+.cancel-username-btn {
+  background-color: #bbb;
+  color: #fff;
+}
+
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #d8d8d8; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+
+.profile-username {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  color: #333;
+}
+
+.profile-email {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* List of profile options (cards) */
+.profile-options {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Each card row */
+.profile-option {
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  background: #FFFFFFFF;
+  border-radius: 16px;
+  box-shadow: 0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F;
+}
+
+/* Hover highlight */
+.profile-option:hover {
+  background-color: #f0f0f0;
+}
+
+/* If locked => dim & not-allowed cursor */
+.profile-option.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* If user has clicked it (and it's unlocked) => highlight */
+.profile-option.clicked {
+  outline: 2px solid #007bff;
+}
+
+/* Left side: text (and optional icon) */
+.option-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* The text label */
+.option-text {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Lock icon if locked */
+.lock-icon {
+  font-size: 1.2rem;
+  color: #999;
+}
+
+/* Profile header styling */
+.profile-header {
+position: relative;
+width: 100%;
+max-width: 400px;
+background-color: rgb(239, 253, 255);
+border-radius: 12px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 2rem 1rem;
+margin-bottom: 1.5rem;
+}
+
+/* Edit pen icon styling */
+.edit-icon-container {
+position: absolute;
+top: 12px;
+right: 12px;
+cursor: pointer;
+color: #333;
+transition: color 0.2s ease;
+}
+
+.edit-icon-container:hover {
+color: #00bcd4;
+}
+
+/* Profile Avatar styling */
+.profile-avatar {
+width: 90px;
+height: 90px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+margin-bottom: 1rem;
+}
+
+/* Username editing & color palette container */
+.username-edit-container {
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-top: 0.5rem;
+}
+
+.username-edit-input {
+width: 60%;
+padding: 0.4rem;
+margin-bottom: 0.5rem;
+font-size: 1rem;
+text-align: center;
+border: 1px solid #ccc;
+border-radius: 6px;
+}
+
+.color-palette {
+display: flex;
+gap: 0.5rem;
+justify-content: center;
+margin-bottom: 0.5rem;
+}
+
+.color-swatch {
+width: 30px;
+height: 30px;
+border-radius: 50%;
+cursor: pointer;
+border: 2px solid transparent;
+transition: border 0.2s ease;
+}
+
+.color-swatch:hover {
+border: 2px solid #333;
+}
+
+/* Edit buttons styling */
+.edit-buttons-container {
+display: flex;
+gap: 0.5rem;
+}
+
+.save-username-btn,
+.cancel-username-btn {
+padding: 0.4rem 0.8rem;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+font-size: 0.9rem;
+}
+
+.save-username-btn {
+background-color: #00bcd4;
+color: #fff;
+}
+
+.cancel-username-btn {
+background-color: #bbb;
+color: #fff;
+}
+
+
+/* Responsive for bigger screens */
+@media (min-width: 768px) {
   .profile-header {
-    width: 100%;
-    max-width: 400px;
-    background-color: rgb(239 253 255);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 1rem;
-    margin-bottom: 1.5rem;
+    padding: 2.5rem 2rem;
   }
-  
-  /* Circular avatar (placeholder) */
-  .profile-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: #d8d8d8; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    color: #fff;
-    margin-bottom: 1rem;
-  }
-  
-  /* Username & email */
   .profile-username {
-    font-size: 1.3rem;
-    font-weight: bold;
-    margin-bottom: 0.3rem;
-    color: #333;
+    font-size: 1.5rem;
   }
-  
-  .profile-email {
-    font-size: 0.9rem;
-    color: #666;
-  }
-  
-  /* List of profile options (cards) */
-  .profile-options {
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-  
-  /* Each card row */
   .profile-option {
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    cursor: pointer;
-    transition: background 0.2s ease;
-    background: #FFFFFFFF;
-    border-radius: 16px;
-    box-shadow: 0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F;
+    padding: 1rem 1.5rem;
   }
-  
-  /* Hover highlight */
-  .profile-option:hover {
-    background-color: #f0f0f0;
-  }
-  
-  /* If locked => dim & not-allowed cursor */
-  .profile-option.locked {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
-  /* If user has clicked it (and it's unlocked) => highlight */
-  .profile-option.clicked {
-    outline: 2px solid #007bff;
-  }
-  
-  /* Left side: text (and optional icon) */
-  .option-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  
-  /* The text label */
-  .option-text {
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  /* Lock icon if locked */
-  .lock-icon {
-    font-size: 1.2rem;
-    color: #999;
-  }
-  
-  /* Responsive for bigger screens */
-  @media (min-width: 768px) {
-    .profile-header {
-      padding: 2.5rem 2rem;
-    }
-    .profile-username {
-      font-size: 1.5rem;
-    }
-    .profile-option {
-      padding: 1rem 1.5rem;
-    }
-  }
-  
+}
+
 
