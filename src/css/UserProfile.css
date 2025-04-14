@@ -1,7 +1,7 @@
 .userprofile-container {
   background-color: #ffffff; 
   min-height: 100vh;
-  padding: 1rem;
+  padding: 1rem 1rem 2rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -117,7 +117,7 @@
   color: #666;
 }
 
-/* List of profile options (cards) */
+
 .profile-options {
   width: 100%;
   max-width: 400px;
@@ -127,7 +127,7 @@
   margin-top: 1.5rem;
 }
 
-/* Each card row */
+
 .profile-option {
   border-radius: 12px;
   padding: 0.75rem 1rem;
@@ -142,42 +142,41 @@
   box-shadow: 0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F;
 }
 
-/* Hover highlight */
+
 .profile-option:hover {
   background-color: #f0f0f0;
 }
 
-/* If locked => dim & not-allowed cursor */
+
 .profile-option.locked {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* If user has clicked it (and it's unlocked) => highlight */
+
 .profile-option.clicked {
   outline: 2px solid #007bff;
 }
 
-/* Left side: text (and optional icon) */
+
 .option-left {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-/* The text label */
 .option-text {
   font-size: 1rem;
   color: #333;
 }
 
-/* Lock icon if locked */
+
 .lock-icon {
   font-size: 1.2rem;
   color: #999;
 }
 
-/* Profile header styling */
+
 .profile-header {
 position: relative;
 width: 100%;
@@ -192,7 +191,7 @@ padding: 2rem 1rem;
 margin-bottom: 1.5rem;
 }
 
-/* Edit pen icon styling */
+
 .edit-icon-container {
 position: absolute;
 top: 12px;
@@ -218,7 +217,7 @@ overflow: hidden;
 margin-bottom: 1rem;
 }
 
-/* Username editing & color palette container */
+
 .username-edit-container {
 display: flex;
 flex-direction: column;
