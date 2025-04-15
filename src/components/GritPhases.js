@@ -282,7 +282,7 @@ const GritPhase = () => {
       <div className="grit-phase-container">
       <header className="gritphase-header-bubble">
           <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToCard} />
-          <div className="phase-row">
+          <div className="phase-row" style={{top: "-14px"}}>
             <span className="phase-title">GritPhase {currentTask ? currentTask.phaseid : "?"}</span>
             <div className="progress-bar-container">
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
