@@ -111,7 +111,9 @@
     flex-direction: column;
     gap: 0.1rem;
     margin-left: -22px;
-    margin-top: 80px;
+    margin-top: 60px;
+    position: relative;
+    top: 30px;
   }
   
   /* Progress bar container */

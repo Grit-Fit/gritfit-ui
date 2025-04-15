@@ -643,7 +643,7 @@ try {
             alignItems: "center",
             cursor: "pointer",
             position: "absolute",
-            right: "60px",
+            right: "64px",
             // marginLeft: "auto",
           }}
         >
@@ -693,7 +693,7 @@ try {
             alignItems: "center",
             cursor: "pointer",
             position: "absolute",
-            right: "60px",
+            right: "64px",
             // marginLeft: "auto",
           }}
         >
@@ -742,7 +742,7 @@ if (showHelpCard) {
             alignItems: "center",
             cursor: "pointer",
             position: "absolute",
-            right: "60px",
+            right: "64px",
             // marginLeft: "auto",
           }}
         >
@@ -875,7 +875,7 @@ if (showHelpCard) {
             alignItems: "center",
             cursor: "pointer",
             position: "absolute",
-            right: "60px",
+            right: "64px",
             // marginLeft: "auto",
           }}
         >
