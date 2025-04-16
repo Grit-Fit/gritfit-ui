@@ -51,6 +51,8 @@ import ChatDetail from "./components/ChatDetail";
 import Community from "./components/Community";
 import FriendSessionsPage from "./components/FriendSessionsPage";
 import AssistantChat from "./components/AssistantChat";
+import BonusCardView from "./components/BonusCardView";
+
 
 // New card-based UI
 import CardView from "./components/CardView";
@@ -141,6 +143,7 @@ function AppRoutes() {
       <Route path="/chat/:sessionId" element={<ChatDetail />} />
       <Route path="/assistant" element={<AssistantChat />} />
       <Route path="/gems" element={<GemsPage />} />
+      <Route path="/bonus" element={<BonusCardView />} />
 
       
 
