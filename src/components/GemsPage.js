@@ -19,10 +19,10 @@ export default function GemsPage() {
 
   const rewardTiers = [
     { cost: 50, name: "Get a Bonus Mission" },
-    { cost: 500, name: "Streak Freeze" },
-    { cost: 1500, name: "Streak Freeze" },
-    { cost: 2500, name: "Streak Freeze" },
-    { cost: 5000, name: "Streak Freeze" },
+    { cost: 500, name: "Custom Habit Tracker Slot" },
+    { cost: 1500, name: "Swipe Multiplier (Double XP for a Day)" },
+    { cost: 2500, name: "Mini Challenge Unlock" },
+    { cost: 5000, name: "GritFit Pro Sneak Peek" },
   ];
 
   const loadData = useCallback(async () => {

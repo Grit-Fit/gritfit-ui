@@ -7,6 +7,8 @@ import SwipeImageWithSpring from "./SwipeImageWithSpring";
 import logo from "../assets/logo1.png";
 import { Gem, Undo2, Redo2, ChartNoAxesColumn, RectangleVertical } from "lucide-react";
 import TabBar from "./TabBar";
+import rightIcon from "../assets/rightf.png";
+import leftIcon from "../assets/leftf.png";
 
 // Database task list will be fetched based on phase (dynamic)
 export default function BonusCardView() {
@@ -92,7 +94,7 @@ export default function BonusCardView() {
         className="logo-gritPhases-task"
         onClick={() => navigate("/cardView")}
       />
-      <div className="phase-row">
+      <div className="phase-row" style={{marginTop: "84px"}}>
         <span className="phase-title">Bonus Card</span>
       </div>
       <div
@@ -160,10 +162,17 @@ export default function BonusCardView() {
                 background: "linear-gradient(180deg, #7F7FD5 0%, #86A8E7 50%, #91EAE4 100%)"
               }}
             >
-              <RectangleVertical className="gift-icon" size={32} color="#769fd1" fill="#769fd1" onClick={() => navigate("/cardView")} style={{position: "relative", top: "0rem", left: "8rem"}}/>
-              <p style={{ padding: "0 1rem", fontSize: "1.6rem", marginTop: "2rem" }}>{bonusTask.description}</p>
-              <div style={{ marginTop: "1rem", marginLeft: "7rem" }}>Swipe right if you did it!</div>
-              <div style={{ marginTop: "1rem", marginRight: "7rem" }}>Swipe left if you didn’t</div>
+              <p className="task-descrip">{bonusTask.description}</p>
+              <div className="swipe-hints">
+              <div className="left-hint">
+                <img src={leftIcon} alt="Swipe Left" className="swipe-left" />
+                Couldn't do it
+              </div>
+              <div className="right-hint">
+                Crushed it!
+                <img src={rightIcon} alt="Swipe Right" className="swipe-right" />
+              </div>
+            </div>
             </div>
           </SwipeImageWithSpring>
         ) : (
@@ -175,6 +184,7 @@ export default function BonusCardView() {
           </div>
         )}
       </div>
+      <RectangleVertical className="gift-icon" size={32}  fill="#00bcd4" onClick={() => navigate("/cardView")} />
       <TabBar />
     </div>
   );
