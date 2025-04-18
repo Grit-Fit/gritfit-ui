@@ -10,7 +10,7 @@ import upIcon from "../assets/upflick.png";
 import TabBar from "./TabBar";
 import gritfitLogo from "../assets/logo1.png";
 import logo from "../assets/logo1.png";
-import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown } from "lucide-react";
+import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown, Gift } from "lucide-react";
 
 /* 
 ----------------------------------
@@ -93,7 +93,7 @@ function InternalLeftSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus
       className="big-card fade-in"
       style={{ background: "linear-gradient(180deg, #EFB034FF 0%, #EF5634FF 47%)", left: "20px" }}
     >
-      <div className="undo" onClick={onClose}>
+      <div className="undo-left" onClick={onClose}>
         Undo Swipe <Redo2 style={{ width: "24px", height: "24px" }} />
       </div>
 
@@ -405,6 +405,7 @@ export default function CardView() {
   const [dayNumber, setDayNumber] = useState(null);
   const [gems, setGems] = useState(0);
 
+  const [bonusAvailable, setBonusAvailable] = useState(false); //gem
 
   const [showIntro, setShowIntro] = useState(true);
 
@@ -604,6 +605,37 @@ try {
     fetchGems();
   }, []);
 
+  //gem
+  useEffect(() => {
+    if (!accessToken) {
+      return void refreshAuthToken();
+    }
+  
+    (async () => {
+      try {
+        const { data } = await axios.get("/api/bonusStatus", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const validUntil = data.bonus_valid_until   ?? data.validUntil   ?? data.unlockedAt;
+        const used       = data.bonus_used          ?? data.bonusUsed     ?? data.used;
+  
+        if (!validUntil || used) {
+          setBonusAvailable(false);
+          return;
+        }
+  
+        // still inside the 24‑hour window?
+        const expiresAt = new Date(validUntil).getTime();
+        setBonusAvailable(Date.now() < expiresAt);
+  
+      } catch (err) {
+        console.error("bonusStatus failed:", err);
+        setBonusAvailable(false);
+      }
+    })();
+  }, [accessToken, refreshAuthToken]);
+
+
   /* 
     If user hasn't dismissed intro => show the IntroCard 
     layered on top of everything 
@@ -643,7 +675,7 @@ try {
             alignItems: "center",
             cursor: "pointer",
             position: "absolute",
-            right: "64px",
+            right: "60px",
             // marginLeft: "auto",
           }}
         >
@@ -693,7 +725,7 @@ try {
             alignItems: "center",
             cursor: "pointer",
             position: "absolute",
-            right: "64px",
+            right: "60px",
             // marginLeft: "auto",
           }}
         >
@@ -742,7 +774,7 @@ if (showHelpCard) {
             alignItems: "center",
             cursor: "pointer",
             position: "absolute",
-            right: "64px",
+            right: "60px",
             // marginLeft: "auto",
           }}
         >
@@ -855,6 +887,8 @@ if (showHelpCard) {
     );
   }
 
+  
+
   return (
     <div className="cardview-container">
       <header className="gritphase-header">
@@ -875,7 +909,7 @@ if (showHelpCard) {
             alignItems: "center",
             cursor: "pointer",
             position: "absolute",
-            right: "64px",
+            right: "60px",
             // marginLeft: "auto",
           }}
         >
@@ -887,12 +921,21 @@ if (showHelpCard) {
         <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
+
       {loading && <p className="loading-text">Loading tasks...</p>}
       {error && <p className="error-text">{error}</p>}
 
       <div className="card-wrapper">{renderMainCard(currentTask)}
 
       </div>
+      {bonusAvailable && (
+          <Gift
+            size={32}
+            className="gift-icon"
+            onClick={() => navigate("/bonus")}
+            title="Bonus Mission"
+          />
+        )}
 
       <TabBar />
 

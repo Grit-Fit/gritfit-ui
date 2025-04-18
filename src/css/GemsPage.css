@@ -108,3 +108,18 @@ background-color: #ccc;
 color: #333;
 }
 
+
+.bonus-access-container {
+padding: 1rem;
+}
+.bonus-access-btn {
+width: 100%;
+background-color: #00bcd4;
+color: white;
+border: none;
+border-radius: 8px;
+padding: 0.75rem;
+font-size: 1rem;
+cursor: pointer;
+}
+

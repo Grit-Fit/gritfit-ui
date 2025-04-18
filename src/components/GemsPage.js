@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";  
+import React, { useState, useEffect, useCallback } from "react";
+import { useAuth } from "../context/AuthContext";
 import { Lock, Unlock, Gem } from "lucide-react";
 import "../css/GemsPage.css";
 import { useNavigate } from "react-router-dom";
@@ -8,40 +8,14 @@ import logo from "../assets/logo1.png";
 import TabBar from "./TabBar";
 
 export default function GemsPage() {
-  const [gems, setGems] = useState(0);
-  const [modalVisible, setModalVisible] = useState(false);
   const { accessToken } = useAuth();
   const navigate = useNavigate();
 
-  function goToCard() {
-    navigate("/cardView");
-  }
-
-  function goToGems() {
-    navigate("/gems");
-  }
-
-  // Fetch gem count
-  useEffect(() => {
-    async function fetchGems() {
-      try {
-        const response = await axios.get("/api/getUserGems", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        if (response.data && typeof response.data.gems === "number") {
-          setGems(response.data.gems);
-        } else {
-          setGems(0);
-        }
-      } catch (error) {
-        console.error("Error fetching gems:", error);
-        setGems(0);
-      }
-    }
-    if (accessToken) {
-      fetchGems();
-    }
-  }, [accessToken]);
+  const [gems, setGems] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [bonusUnlockedAt, setBonusUnlockedAt] = useState(null);
+  const [bonusUsed, setBonusUsed] = useState(false);
+  const [currentPhase, setCurrentPhase] = useState(1); // Default phase 1
 
   const rewardTiers = [
     { cost: 50, name: "Get a Bonus Mission" },
@@ -51,25 +25,58 @@ export default function GemsPage() {
     { cost: 5000, name: "Streak Freeze" },
   ];
 
-  // When a reward is clicked:
-  // For the first reward (index 0) and if unlocked (gems >= 50), show modal.
-  const handleRewardClick = (tier, index) => {
-    if (index === 0 && gems >= tier.cost) {
+  const loadData = useCallback(async () => {
+    if (!accessToken) return;
+    try {
+      const { data: g } = await axios.get("/api/getUserGems", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setGems(typeof g.gems === "number" ? g.gems : 0);
+
+      const { data: prof } = await axios.get("/api/getUserProfile", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setBonusUnlockedAt(prof.bonus_unlocked_at || null);
+      setBonusUsed(!!prof.bonus_used);
+      setCurrentPhase(prof.current_phase || 1); // Set phase
+    } catch (err) {
+      console.error("Error loading gems/profile:", err);
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const bonusActive = (() => {
+    if (!bonusUnlockedAt || bonusUsed) return false;
+    return Date.now() - new Date(bonusUnlockedAt).getTime() < 24 * 3600 * 1000;
+  })();
+
+  const handleRewardClick = (tier, idx) => {
+    if (idx === 0 && gems >= tier.cost && !bonusActive) {
       setModalVisible(true);
     }
-    // For other rewards, you can optionally add other behavior.
   };
 
-  // Modal handlers
-  const handleModalYes = () => {
+  const handleModalYes = async () => {
     setModalVisible(false);
-    navigate("/bonus"); // Navigate to BonusCardPage (assumed route is "/bonus")
+    try {
+      const resp = await axios.post(
+        "/api/unlockBonus",
+        { phaseId: currentPhase },  // Pass current phase
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      setGems(resp.data.newGems);
+      setBonusUnlockedAt(resp.data.bonus_unlocked_at || new Date().toISOString());
+      setBonusUsed(false);
+    } catch (err) {
+      console.error("Unlock bonus error:", err);
+      alert(err.response?.data?.error || "Could not unlock bonus");
+    }
   };
 
-  const handleModalNo = () => {
-    setModalVisible(false);
-    // Stay on GemsPage
-  };
+  const handleModalNo = () => setModalVisible(false);
 
   return (
     <>
@@ -79,20 +86,26 @@ export default function GemsPage() {
             src={logo}
             alt="Logo"
             className="logo-gritPhases-task"
-            onClick={goToCard}
+            onClick={() => navigate("/cardView")}
           />
           <div
             className="gems-display"
-            onClick={goToGems}
+            onClick={() => navigate("/gems")}
             style={{
+              marginLeft: "auto",
               display: "flex",
               alignItems: "center",
               cursor: "pointer",
-              marginLeft: "auto",
             }}
           >
             <Gem size={30} color="#00bcd4" />
-            <span style={{ marginLeft: "0.5rem", fontWeight: "bold", fontSize: "1.2rem" }}>
+            <span
+              style={{
+                marginLeft: 8,
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+              }}
+            >
               {gems}
             </span>
           </div>
@@ -100,40 +113,38 @@ export default function GemsPage() {
 
         <div className="communityhead" style={{ width: "100%" }}>
           <h2 className="community-title" style={{ gap: "0.5rem" }}>
-            <Gem />Gems
+            <Gem /> Gems
           </h2>
         </div>
 
-        <div className="profile-options" style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
-          {rewardTiers.map((tier, index) => {
-            const isUnlocked = gems >= tier.cost;
+        <div className="profile-options" style={{ padding: "0 1rem" }}>
+          {rewardTiers.map((tier, i) => {
+            const unlocked = gems >= tier.cost;
             return (
               <div
-                key={index}
+                key={i}
                 className="profile-option"
-                style={{ height: "4rem", cursor: index === 0 && isUnlocked ? "pointer" : "default" }}
-                onClick={() => handleRewardClick(tier, index)}
+                style={{
+                  height: "4rem",
+                  cursor:
+                    i === 0 && unlocked && !bonusActive
+                      ? "pointer"
+                      : "default",
+                  opacity: 1,
+                }}
+                onClick={() => handleRewardClick(tier, i)}
               >
                 <div className="option-left">
-                  {isUnlocked ? (
-                    <Gem size={20} color="#28a745" />
-                  ) : (
-                    <Gem size={20} color="#00bcd4" />
-                  )}
+                  <Gem
+                    size={20}
+                    color={unlocked ? "#28a745" : "#00bcd4"}
+                  />
                   <span className="option-text">
-                    {tier.cost} - {tier.name}
+                    {tier.cost} — {tier.name}
                   </span>
                 </div>
                 <div className="option-right">
-                  {isUnlocked ? (
-                    <span className="unlock-label">
-                      <Unlock />
-                    </span>
-                  ) : (
-                    <span className="lock-label">
-                      <Lock />
-                    </span>
-                  )}
+                  {unlocked && !bonusActive ? <Unlock color={unlocked ? "#28a745" : "#00bcd4"}/> : <Lock />}
                 </div>
               </div>
             );
@@ -141,17 +152,23 @@ export default function GemsPage() {
         </div>
       </div>
 
-      {/* Modal for Bonus Card confirmation */}
       {modalVisible && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h3>Unlock Bonus Mission?</h3>
-            <p>Would you like to open the bonus card and attempt the bonus mission?</p>
+            <p>Spend 50 gems to unlock your bonus card for 24 hours.</p>
             <div className="modal-buttons">
-              <button className="modal-btn yes-btn" onClick={handleModalYes}>
+              <button
+                className="modal-btn yes-btn"
+                onClick={handleModalYes}
+              >
                 Yes
+                <div style={{ fontSize: "0.6rem"}}>*Look out for the Gift icon on the Main screen!</div>
               </button>
-              <button className="modal-btn no-btn" onClick={handleModalNo}>
+              <button
+                className="modal-btn no-btn"
+                onClick={handleModalNo}
+              >
                 No
               </button>
             </div>
