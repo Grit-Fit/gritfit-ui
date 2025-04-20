@@ -114,7 +114,7 @@ function InternalLeftSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus
         </>
       ) : (
         <>
-          <h2 style={{ marginBottom: "1rem", marginTop: "3rem" }}>
+          <h2 style={{ marginBottom: "1rem", marginTop: "1.5rem" }}>
             It's okay! What was your biggest hurdle today?
           </h2>
 
@@ -174,7 +174,7 @@ function InternalLeftSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus
         className="doneBtn pulse-button"
         onClick={doneBtnClick}
         disabled={isLoading}
-        style={{ marginTop: "2rem" }}
+        style={{ marginTop: "1rem" }}
       >
         {isLoading ? "Updating..." : "Done"}
       </button>
