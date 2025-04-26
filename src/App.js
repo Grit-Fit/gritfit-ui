@@ -52,11 +52,13 @@ import Community from "./components/Community";
 import FriendSessionsPage from "./components/FriendSessionsPage";
 import AssistantChat from "./components/AssistantChat";
 import BonusCardView from "./components/BonusCardView";
+import AdminDashboard from "./admin/AdminDashboard";
 
 
 // New card-based UI
 import CardView from "./components/CardView";
 import GemsPage from "./components/GemsPage";
+
 
 function AppRoutes() {
   const { accessToken } = useContext(AuthContext);
@@ -144,12 +146,16 @@ function AppRoutes() {
       <Route path="/assistant" element={<AssistantChat />} />
       <Route path="/gems" element={<GemsPage />} />
       <Route path="/bonus" element={<BonusCardView />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+
 
       
 
       {/* Catch-all: if logged in but path not recognized, go to redirectPath */}
       <Route path="*" element={<Navigate to={redirectPath} replace />} />
     </Routes>
+
+    
     
   );
 }
