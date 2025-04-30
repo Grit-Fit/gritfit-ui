@@ -10,7 +10,7 @@ import upIcon from "../assets/upflick.png";
 import TabBar from "./TabBar";
 import gritfitLogo from "../assets/logo1.png";
 import logo from "../assets/logo1.png";
-import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown, Gift } from "lucide-react";
+import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown, Gift , Flame} from "lucide-react";
 
 /* 
 ----------------------------------
@@ -114,7 +114,7 @@ function InternalLeftSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus
         </>
       ) : (
         <>
-          <h2 style={{ marginBottom: "1rem", marginTop: "1.5rem" }}>
+          <h2 style={{ marginBottom: "1rem", marginTop: "3rem" }}>
             It's okay! What was your biggest hurdle today?
           </h2>
 
@@ -174,7 +174,7 @@ function InternalLeftSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus
         className="doneBtn pulse-button"
         onClick={doneBtnClick}
         disabled={isLoading}
-        style={{ marginTop: "1rem" }}
+        style={{ marginTop: "2rem" }}
       >
         {isLoading ? "Updating..." : "Done"}
       </button>
@@ -408,6 +408,10 @@ export default function CardView() {
   const [bonusAvailable, setBonusAvailable] = useState(false); //gem
 
   const [showIntro, setShowIntro] = useState(true);
+  const [feedback, setFeedback] = useState({ rating: 0, comment: "", sent: false, isLoading: false, error: null });
+  const [currentStreak, setCurrentStreak] = useState(0);
+
+
 
   // Ensure user is logged in
   useEffect(() => {
@@ -605,6 +609,35 @@ try {
     fetchGems();
   }, []);
 
+  useEffect(() => {
+    if (!accessToken) return;                      
+    (async () => {
+      try {
+        const { data } = await axios.get("/userStats", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        setCurrentStreak(data.current_streak || 0);
+      } catch (err) {
+        console.error("Failed to fetch streak:", err);
+      }
+    })();
+  }, [accessToken]);
+
+
+  
+
+  // async function fetchStats() {
+  //   try {
+  //     const { data } = await axios.get("/api/userStats", {
+  //       headers:{ Authorization:`Bearer ${accessToken}` }
+  //     });
+  //     setStats(data);
+  //   } catch (e) { console.error("Stats fetch failed", e); }
+  // }
+  
+  // useEffect(() => { if (accessToken) fetchStats(); }, [accessToken]);
+  
+
   //gem
   useEffect(() => {
     if (!accessToken) {
@@ -684,6 +717,21 @@ try {
             {gems}
           </span>
         </div>
+
+
+       
+          {/* <div onClick={goToGems} style={{ display:"flex", alignItems:"center", cursor:"pointer" }}>
+            <Gem size={28} color="#00bcd4" />
+            <span style={{ marginLeft:6, fontWeight:600 }}>{stats.gems}</span>
+          </div>
+
+         
+          <div title="Current streak" style={{ display:"flex", alignItems:"center" }}>
+            <Flame size={26} color="#ff5722" />
+            <span style={{ marginLeft:4, fontWeight:600 }}>{stats.current_streak}</span>
+          </div> */}
+
+
         <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
@@ -803,18 +851,76 @@ if (showHelpCard) {
   );
 }
 
+function sendFeedback() {
+  if (feedback.sent || feedback.isLoading) return;
+  if (feedback.rating === 0) return setFeedback(f => ({ ...f, error: "Pick a rating first!" }));
+
+  setFeedback(f => ({ ...f, isLoading: true, error: null }));
+  axios.post("/api/submitFeedback", {
+      rating: feedback.rating,
+      comment: feedback.comment.trim()
+    }, { headers: { Authorization: `Bearer ${accessToken}` } })
+    .then(() => setFeedback(f => ({ ...f, sent: true, isLoading: false })))
+    .catch(() => setFeedback(f => ({ ...f, error: "Couldn’t save—try again", isLoading: false })));
+}
+
+function Star({ filled, onClick }) {
+  return (
+    <svg onClick={onClick} width="28" height="28" style={{ cursor:"pointer", marginRight:4 }}>
+      <polygon
+        points="14,1 18,10 28,10 20,16 23,26 14,20 5,26 8,16 0,10 10,10"
+        fill={filled ? "#ffb400" : "#e0e0e0"}
+      />
+    </svg>
+  );
+}
+
 
   // Normal main card
   function renderMainCard(task) {
     if (!task) {
       return (
-        <div className="placeholder-card" style={{ background: "linear-gradient(180deg, #a2d3f2, #769fd1)" }}>
+        <div className="placeholder-card" style={{ background:"linear-gradient(180deg,#a2d3f2,#769fd1)" }}>
           <img src={gritfitLogo} alt="Logo" className="placeholder-logo" />
           <h2 className="placeholder-title">No New Tasks</h2>
-          <p className="placeholder-text">All tasks completed or unavailable!</p>
+    
+          {/* ⭐⭐⭐⭐⭐  rating row */}
+          <div style={{ display:"flex", justifyContent:"center", marginTop:"1rem" }}>
+            {[1,2,3,4,5].map(n => (
+              <Star key={n}
+                    filled={feedback.rating >= n}
+                    onClick={() => setFeedback(f => ({ ...f, rating:n }))} />
+            ))}
+          </div>
+    
+          {/* comment box */}
+          <textarea
+            placeholder="Tell us what you think of the MVP…"
+            value={feedback.comment}
+            onChange={e => setFeedback(f => ({ ...f, comment:e.target.value }))}
+            disabled={feedback.sent}
+            style={{
+              marginTop:"1rem", width:"80%", minHeight:70,
+              borderRadius:6, padding:8, resize:"vertical", color: "black"
+            }}
+          />
+    
+          {/* submit button */}
+          <button className="doneBtn"
+                  onClick={sendFeedback}
+                  disabled={feedback.isLoading || feedback.sent}
+                  style={{ marginTop:"0.8rem" }}>
+            {feedback.sent ? "Thanks! 💜" :
+             feedback.isLoading ? "Sending…" : "Submit Feedback"}
+          </button>
+    
+          {/* tiny status */}
+          {feedback.error && <p style={{ color:"red", marginTop:4 }}>{feedback.error}</p>}
         </div>
       );
     }
+
+    
 
     
     const now = new Date();
@@ -842,6 +948,10 @@ if (showHelpCard) {
             <h2 className="task-date">
               {now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
             </h2>
+            <div className="streak" style={{position: "relative", top: "1rem", left: "0rem"}}>
+          <Flame size={26} color="#ff5722" />
+          <span style={{ marginLeft: 4, fontWeight: 600 }}>{currentStreak + 1}</span>
+        </div>
             <p className="task-descrip">{task.taskdesc}</p>
             {/* <div className="swipe-hints">
               <div className="left-hint">
@@ -874,6 +984,10 @@ if (showHelpCard) {
     return (
       <div className="big-card" style={{ background: "linear-gradient(180deg, #a2d3f2, #769fd1)", left: "20px" }}>
         <h2 className="task-date">{tomorrowStr}</h2>
+        <div className="streak" style={{position: "relative", top: "1rem", left: "0rem"}}>
+          <Flame size={26} color="#ff5722" />
+          <span style={{ marginLeft: 4, fontWeight: 600 }}>{currentStreak + 1} </span>
+        </div>
         <img
           src={gritfitLogo}
           alt="Logo"
@@ -918,14 +1032,17 @@ if (showHelpCard) {
             {gems}
           </span>
         </div>
+
         <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
       </header>
+
 
 
       {loading && <p className="loading-text">Loading tasks...</p>}
       {error && <p className="error-text">{error}</p>}
 
       <div className="card-wrapper">{renderMainCard(currentTask)}
+
 
       </div>
       {bonusAvailable && (
@@ -934,8 +1051,10 @@ if (showHelpCard) {
             className="gift-icon"
             onClick={() => navigate("/bonus")}
             title="Bonus Mission"
+       
           />
         )}
+
 
       <TabBar />
 

@@ -1,14 +1,24 @@
 
-import React, { useState } from "react";
+import React, { useState , useContext , useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { hydrationTips, proteinTips, motivationLines } from "../data/assistantData";
 import { ChevronLeft, User, MessagesSquare } from "lucide-react";
 import logo from "../assets/logo1.png";
 import "../css/ChatDetail.css"; 
 import TabBar from "./TabBar";
+import { markFeatureOpen, markFeatureClose } from "../utils/featureLogger";
+import { AuthContext } from "../context/AuthContext";
 
 export default function AssistantChat() {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);                    
+  const userId = user?.userid || user?.id; 
+
+  useEffect(() => {
+    markFeatureOpen("GFit Assist");
+    return () => markFeatureClose("GFit Assist", userId);
+  }, [userId]);
+
 
 
   const [messages, setMessages] = useState([

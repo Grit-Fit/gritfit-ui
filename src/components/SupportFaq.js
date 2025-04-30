@@ -1,5 +1,5 @@
 // src/components/SupportFaq.js
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react"; 
 import "../css/SupportFaq.css";
@@ -7,13 +7,21 @@ import logo from "../assets/logo1.png";
 import faq  from "../assets/headphone.png";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import TabBar from "./TabBar";
+import { markFeatureOpen, markFeatureClose } from "../utils/featureLogger";
+import { AuthContext } from "../context/AuthContext";  
 
 export default function SupportFaq() {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);                    
+  const userId = user?.userid || user?.id;  
   const handleBackProfile = () => {
     navigate("/UserProfile");
   };
 
+  useEffect(() => {
+    markFeatureOpen("faq");
+    return () => markFeatureClose("faq", userId);
+  }, [userId]);
 
   const faqs = [
     {

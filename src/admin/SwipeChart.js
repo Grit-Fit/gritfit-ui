@@ -11,7 +11,7 @@ import {
 } from "recharts";
 
 export default function SwipeChart({ data }) {
-  if (!data) return null;               // graceful guard
+  if (!data) return null;             
 
   const chartData = [
     { name: "Right (Completed)",  value: data.Completed        ?? 0, fill: "#4ade80" }, // green

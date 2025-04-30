@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import nutritionData from "./nutritionData"; 
 import "../css/nutritionPage.css"; 
 import "../css/gFitReport.css";
@@ -16,6 +16,8 @@ import trader from "../assets/trader.png";
 import toppick from "../assets/toppick.png";
 import "../css/CardView.css";
 import { useNavigate} from "react-router-dom";
+import { markFeatureOpen, markFeatureClose } from "../utils/featureLogger";
+import { AuthContext } from "../context/AuthContext";
 
 
 const NutritionPage = () => {
@@ -25,6 +27,14 @@ const NutritionPage = () => {
 
 
   const tableRef = useRef(null);
+
+  const { user } = useContext(AuthContext);                    
+  const userId = user?.userid || user?.id;  
+
+  useEffect(() => {
+    markFeatureOpen("Top Picks");
+    return () => markFeatureClose("Top Picks", userId);
+  }, [userId]);
 
 
   useEffect(() => {

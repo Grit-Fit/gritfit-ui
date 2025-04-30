@@ -1,8 +1,10 @@
-// src/components/AdminDashboard.js
+
 import React, { useEffect, useState, useContext } from "react";
 import axios from "../axios";
 import { AuthContext } from "../context/AuthContext";
 import SwipeChart from "./SwipeChart";
+import RatingChart from "./RatingChart";
+import FeatureUsageCard from "../components/FeatureUsageCard";
 
 function Card({ title, value, onClick }) {
   return (
@@ -41,7 +43,14 @@ export default function AdminDashboard() {
   const [showUserModal, setShowUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userSummary, setUserSummary] = useState(null);
-  const [nutrition,setNutrition]=useState(null)
+  const [nutrition,setNutrition]=useState(null);
+  const [ratingFilter, setRatingFilter] = useState(""); 
+  const [feedback, setFeedback] = useState({ rows: [], counts: {} });
+  const [searchTerm, setSearchTerm] = useState("");          
+  const filteredUsers = users.filter(u =>                    
+  (u.username || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+  (u.email    || "").toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -119,6 +128,23 @@ export default function AdminDashboard() {
     }
   };
 
+  useEffect(() => {
+    if (!adminLoggedIn) return;
+  
+    const fetchFeedback = async () => {
+      try {
+        const url = ratingFilter ? `/api/admin/feedback?rating=${ratingFilter}` : "/api/admin/feedback";
+        const res  = await axios.get(url, { headers: { Authorization: `Bearer ${accessToken}` } });
+        setFeedback(res.data);
+      } catch (err) {
+        console.error("feedback fetch error:", err);
+      }
+    };
+  
+    fetchFeedback();
+  }, [adminLoggedIn, ratingFilter, accessToken]);
+  
+
   if (!adminLoggedIn) {
     return (
       <div className="p-10 max-w-md mx-auto">
@@ -187,12 +213,67 @@ export default function AdminDashboard() {
         </div>
       </ExpandableCard>
 
+      <ExpandableCard
+          title="User Feedback"
+          summary={`${feedback.rows.length} review${feedback.rows.length !== 1 ? "s" : ""}`}
+        >
+          {/* filter + chart */}
+          <div className="mb-4 flex items-center">
+            <label className="mr-2 text-sm font-medium">Filter by rating:</label>
+            <select
+              value={ratingFilter}
+              onChange={e => setRatingFilter(e.target.value)}
+              className="border rounded px-2 py-1 text-sm"
+            >
+              <option value="">All</option>
+              {[5,4,3,2,1].map(n=>(
+                <option key={n} value={n}>{n} ★</option>
+              ))}
+            </select>
+          </div>
+
+          <RatingChart counts={feedback.counts} />
+
+          {/* table */}
+          <div className="overflow-x-auto mt-6">
+            <table className="table-auto w-full border text-left text-sm">
+              <thead className="bg-gray-100 text-gray-700">
+                <tr>
+                  <th className="p-2">User</th>
+                  <th className="p-2">Rating</th>
+                  <th className="p-2">Comment</th>
+                  <th className="p-2">When</th>
+                </tr>
+              </thead>
+              <tbody>
+                {feedback.rows.map(r => (
+                  <tr key={r.id} className="border-t">
+                    <td className="p-2">{r.userprofile?.username || "—"}</td>
+                    <td className="p-2">{r.rating} ★</td>
+                    <td className="p-2">{r.comment || "—"}</td>
+                    <td className="p-2">{new Date(r.submitted_at).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </ExpandableCard>
+
+        <FeatureUsageCard accessToken={accessToken} />
+
       {/* User List Modal */}
       {showUserModal && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-xl p-6 w-full max-w-3xl h-4/5 overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">All Registered Users</h2>
+              <input
+          type="text"
+          placeholder="Search name or e-mail…"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border border-gray-300 rounded px-3 py-1 w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-sky-500"
+        />
               <button onClick={() => setShowUserModal(false)}>✕</button>
             </div>
             <table className="table-auto w-full border text-left text-sm">
@@ -200,18 +281,30 @@ export default function AdminDashboard() {
                 <tr><th className="p-2">Name</th><th className="p-2">Email</th><th className="p-2">Action</th></tr>
               </thead>
               <tbody>
-                {users.map((u, i) => (
-                  <tr key={i} className="border-t">
+                {filteredUsers.map((u, i) => (
+                  <tr key={i} className="border-t hover:bg-gray-50">
                     <td className="p-2">{u.username}</td>
                     <td className="p-2">{u.email}</td>
                     <td className="p-2">
-                      <button className="text-blue-600 underline" onClick={() => {
-                        setSelectedUser(u);
-                        fetchUserSummary(u.userid);
-                      }}>View</button>
+                      <button
+                        className="text-blue-600 underline"
+                        onClick={() => {
+                          setSelectedUser(u);
+                          fetchUserSummary(u.userid || u.uid);
+                        }}
+                      >
+                        View
+                      </button>
                     </td>
                   </tr>
                 ))}
+                {filteredUsers.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="p-4 text-center text-gray-500">
+                      No matches
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

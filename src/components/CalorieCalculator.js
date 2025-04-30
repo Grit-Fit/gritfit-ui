@@ -1,5 +1,5 @@
 // src/components/CalorieCalculator.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import logo from "../assets/logo1.png";
@@ -12,6 +12,8 @@ import "../css/CalorieCalculator.css";
 import "../css/CardView.css";
 import calc from "../assets/calc.png";
 import TabBar from "./TabBar";
+import { markFeatureOpen, markFeatureClose } from "../utils/featureLogger";
+import { AuthContext } from "../context/AuthContext"; 
 
 export default function CalorieCalculator() {
   // 1) States for user inputs
@@ -22,6 +24,8 @@ export default function CalorieCalculator() {
   const [height, setHeight] = useState("");
   const [heightUnit, setHeightUnit] = useState("feet");
   const [activity, setActivity] = useState(2);
+  const { user } = useContext(AuthContext);                    
+  const userId = user?.userid || user?.id;  
 
   // 2) Goal => "recomp", "bulk", "cut"
   const [goal, setGoal] = useState("recomp");
@@ -35,6 +39,11 @@ export default function CalorieCalculator() {
 
   const { accessToken, refreshAuthToken } = useAuth();
   const navigate = useNavigate();
+
+    useEffect(() => {
+      markFeatureOpen("Calorie Calculator");
+      return () => markFeatureClose("Calorie Calculator", userId);
+    }, [userId]);
 
   // If no token, try refreshing
   useEffect(() => {
