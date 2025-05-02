@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "../axios";
 import { useAuth } from "../context/AuthContext";
@@ -187,10 +187,13 @@ function InternalLeftSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus
  Right Swipe Sub-Component
 ----------------------------------
 */
-function InternalRightSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus }) {
+function InternalRightSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus,  onStreakChange }) {
   const { accessToken, refreshAuthToken } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentStreak, setCurrentStreak] = useState(null);
+  const [filled, setFilled] = useState(false);  
+  const prev = useRef(null);
 
   useEffect(() => {
     if (!accessToken) {
@@ -198,24 +201,58 @@ function InternalRightSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatu
     }
   }, [accessToken, refreshAuthToken]);
 
+
+useEffect(() => {
+  if (!accessToken) return;
+  (async () => {    
+    try {
+      const { data } = await axios.get("/userStats", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const db = data.current_streak ?? 0;
+      setCurrentStreak(db);          
+      setTimeout(() => {
+        setCurrentStreak(db + 1);    
+      }, 1200);
+    } catch (err) {
+      console.error("Failed to fetch streak:", err);
+    }
+  })();
+}, [accessToken]);
+
+useEffect(() => {
+  if (prev.current !== null && currentStreak !== prev.current) {
+    setFilled(true);               // stays true
+  }
+  prev.current = currentStreak;
+}, [currentStreak]);
+
+  
+
   async function doneBtnClick(e) {
     e.preventDefault();
     if (!phaseNumber || !dayNumber) {
       setError("Missing required information");
       return;
     }
+  
     setIsLoading(true);
     setError(null);
-
+  
     try {
-      await axios.post("/api/userprogressC", {
-        phaseId: parseInt(phaseNumber, 10),
-        taskId: parseInt(dayNumber, 10),
-      }, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (onUpdateStatus) onUpdateStatus();
-      if (onClose) onClose();
+      const { data } = await axios.post(
+        "/api/userprogressC",
+        {
+          phaseId: parseInt(phaseNumber, 10),
+          taskId : parseInt(dayNumber, 10),
+        },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+  
+      if (onUpdateStatus)  onUpdateStatus();
+
+  
+      if (onClose) onClose();    
     } catch (err) {
       console.error("RightSwipe error:", err);
       setError("Failed to update progress. Please try again.");
@@ -223,6 +260,7 @@ function InternalRightSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatu
       setIsLoading(false);
     }
   }
+  
 
   return (
     <div
@@ -233,10 +271,17 @@ function InternalRightSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatu
         Undo Swipe <Undo2 style={{ width: "24px", height: "24px" }} />
       </div>
 
-      <div className="body-text" style={{ marginTop: "80px", textAlign: "center" }}>
+      <div className="body-text" style={{ marginTop: "0px", textAlign: "center" }}>
         <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
           Yayy! You did it!
         </h2>
+        <br></br>
+        <div className="streak-counter">
+        {/* <AnimatedStreak value={currentStreak} /> */}
+        <Flame size={80} color="#ff5722" className={filled ? "flame-filled-perm" : ""}/>
+        {currentStreak}
+        </div>
+        
       </div>
 
       {error && (
@@ -249,7 +294,7 @@ function InternalRightSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatu
         className="doneBtnRight pulse-button"
         onClick={doneBtnClick}
         disabled={isLoading}
-        style={{ marginTop: "2rem" }}
+        style={{ marginTop: "2rem", position: "absolute", top: "22rem" }}
       >
         {isLoading ? "Updating..." : "🎯 Done"}
       </button>
@@ -791,6 +836,7 @@ try {
             dayNumber={dayNumber}
             onClose={closeSubCard}
             onUpdateStatus={fetchTasks}
+            onStreakChange={setCurrentStreak} 
           />
         </div>
         <TabBar />
@@ -948,9 +994,9 @@ function Star({ filled, onClick }) {
             <h2 className="task-date">
               {now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
             </h2>
-            <div className="streak" style={{position: "relative", top: "1rem", left: "0rem"}}>
+            <div className="streak">
           <Flame size={26} color="#ff5722" />
-          <span style={{ marginLeft: 4, fontWeight: 600 }}>{currentStreak + 1}</span>
+          <span style={{ marginLeft: 4, fontWeight: 600, fontSize: "21px" }}>{currentStreak}</span>
         </div>
             <p className="task-descrip">{task.taskdesc}</p>
             {/* <div className="swipe-hints">
@@ -984,9 +1030,9 @@ function Star({ filled, onClick }) {
     return (
       <div className="big-card" style={{ background: "linear-gradient(180deg, #a2d3f2, #769fd1)", left: "20px" }}>
         <h2 className="task-date">{tomorrowStr}</h2>
-        <div className="streak" style={{position: "relative", top: "1rem", left: "0rem"}}>
-          <Flame size={26} color="#ff5722" />
-          <span style={{ marginLeft: 4, fontWeight: 600 }}>{currentStreak + 1} </span>
+        <div className="streak">
+          <Flame size={26} color="#ff5722" style={{fill:  "#ff5722"}} />
+          <span style={{ marginLeft: 4, fontWeight: 600, fontSize: "21px" }}>{currentStreak + 1}</span>
         </div>
         <img
           src={gritfitLogo}
@@ -994,7 +1040,7 @@ function Star({ filled, onClick }) {
           className="placeholder-logo"
           style={{ marginTop: "4rem", marginBottom: "6rem" }}
         />
-        <h2 className="task-date" style={{ fontWeight: "normal" }}>
+        <h2 className="task-next" style={{ fontWeight: "normal"}}>
           Gear up for tomorrow's task!
         </h2>
       </div>
