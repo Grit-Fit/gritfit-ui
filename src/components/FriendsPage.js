@@ -11,7 +11,7 @@ import FeedbackPrompt from "../components/FeedbackPrompt";
 const API_URL =  "https://api.gritfit.site/api";
 
 export default function FriendsPage() {
-  const { accessToken } = useAuth();
+  const { accessToken, user } = useAuth();
 
   const [friends, setFriends] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
