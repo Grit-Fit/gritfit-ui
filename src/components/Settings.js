@@ -11,11 +11,13 @@ import {
   Mail,
   Bell,
   BellRing,
+  MessageCircleMore, 
 } from "lucide-react";
 import logo from "../assets/logo1.png";
 import set from "../assets/set.png";
 import TabBar from "./TabBar";
 import { useNavigate } from "react-router-dom";
+import FeedbackPrompt from "./FeedbackPrompt";  
 
 // 1) Import Pusher Beams
 import * as PusherPushNotifications from "@pusher/push-notifications-web";
@@ -34,6 +36,7 @@ export default function Settings() {
   // NEW: Track the beams_device_id from DB. If null => user unsubscribed, else subscribed
   const [beamsDeviceId, setBeamsDeviceId] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [showAppFB, setShowAppFB] = useState(false);
 
   // On mount, fetch user profile to see if beams_device_id is present
 
@@ -290,8 +293,25 @@ export default function Settings() {
             {beamsDeviceId ? "Notifications ON" : "Enable Notifications"}
           </div>
         </div>
+          {/* ★ NEW: Give Feedback */}
+          <div className="settings-card" onClick={() => setShowAppFB(true)}>
+            <MessageCircleMore className="card-icon" size={32} />
+            <div className="card-label">Give Feedback</div>
+          </div>
         </div>
       </div>
+
+      {/* ★ Feedback modal */}
+      {showAppFB && (
+        <div style={{ opacity: 0.95, zIndex: 9999 }}>
+          <FeedbackPrompt
+            feature="APP_GENERAL"
+            question="How’s your overall GritFit experience so far?"
+            placeholder="Tell us what you love or what we can improve…"
+            onClose={() => setShowAppFB(false)}
+          />
+        </div>
+      )}
 
       <TabBar />
 

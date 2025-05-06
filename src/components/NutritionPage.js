@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import nutritionData from "./nutritionData"; 
-import "../css/nutritionPage.css"; 
+// src/components/NutritionPage.js
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import nutritionData from "./nutritionData";
+import "../css/nutritionPage.css";
 import "../css/gFitReport.css";
 import "../css/CardView.css";
 import logo from "../assets/logo1.png";
@@ -14,61 +16,88 @@ import target from "../assets/target.png";
 import kroger from "../assets/kroger.png";
 import trader from "../assets/trader.png";
 import toppick from "../assets/toppick.png";
-import "../css/CardView.css";
-import { useNavigate} from "react-router-dom";
-import { markFeatureOpen, markFeatureClose } from "../utils/featureLogger";
-import { AuthContext } from "../context/AuthContext";
 
+import FeedbackPrompt from "./FeedbackPrompt";          // ★ new
 
-const NutritionPage = () => {
-  const [selectedStore, setSelectedStore] = useState(null);
-  const [isNavOpen, setIsNavOpen] = useState(false);
+/* --------------------------------------------------------- */
+/*       N U T R I T I O N   P A G E  – “Top Picks”          */
+/* --------------------------------------------------------- */
+export default function NutritionPage() {
   const navigate = useNavigate();
 
+  /* ---------------- state ---------------- */
+  const [selectedStore, setSelectedStore] = useState(null);
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  // show feedback modal?
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  // has this device already filled the Top‑Picks survey?
+  const [askedOnce, setAskedOnce] = useState(
+    localStorage.getItem("fp_top_picks") === "done"
+  );
 
   const tableRef = useRef(null);
 
-  const { user } = useContext(AuthContext);                    
-  const userId = user?.userid || user?.id;  
-
-  useEffect(() => {
-    markFeatureOpen("Top Picks");
-    return () => markFeatureClose("Top Picks", userId);
-  }, [userId]);
-
-
+  /* ---------------- smooth‑scroll to table ---------------- */
   useEffect(() => {
     if (selectedStore && tableRef.current) {
       tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [selectedStore]);
 
+  /* ---------------- click‑away listener ---------------- */
+  useEffect(() => {
+    if (!selectedStore || askedOnce) return;
 
-  const handleStoreClick = (store) => {
+    // fires when user clicks anywhere in the document
+    const handleGlobalClick = (e) => {
+      if (showFeedback) return;                      // modal already open
+
+      const insideStoreCard = e.target.closest(".store-card");
+      if (!insideStoreCard) {
+        // user is leaving the Top‑Picks section → open prompt once
+        setShowFeedback(true);
+        document.removeEventListener("click", handleGlobalClick, true);
+      }
+    };
+
+    document.addEventListener("click", handleGlobalClick, true);
+
+    // cleanup on unmount / when store deselected
+    return () => document.removeEventListener("click", handleGlobalClick, true);
+  }, [selectedStore, showFeedback, askedOnce]);
+
+  /* ---------------- helpers ---------------- */
+  const handleStoreClick = (store) =>
     setSelectedStore((prev) => (prev === store ? null : store));
-  };
-
 
   const storeLogos = {
-    "Safeway": safeway,
+    Safeway: safeway,
     "Harris Teeter": harris,
-    "Walmart": walmart,
-    "Costco": costco,
-    "Target": target,
-    "Kroger": kroger,
+    Walmart: walmart,
+    Costco: costco,
+    Target: target,
+    Kroger: kroger,
     "Trader Joe's": trader,
   };
 
-  function goToCard() {
-    navigate("/cardView");
-  }
+  const goToCard = () => navigate("/cardView");
 
+  /* ---------------- UI ---------------- */
   return (
     <>
+      {/* ─── sticky logo nav ─── */}
       <header className="gritphase-header">
-        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToCard}/>
+        <img
+          src={logo}
+          alt="Logo"
+          className="logo-gritPhases-task"
+          onClick={goToCard}
+        />
       </header>
 
+      {/* ─── section heading ─── */}
       <div className="report_header_nut">
         <div className="report_header-text">
           <img src={toppick} alt="Top Picks Icon" />
@@ -76,56 +105,74 @@ const NutritionPage = () => {
         </div>
       </div>
 
+      {/* ─── main container ─── */}
       <div className="nutrition-page-container">
         <NavBar isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
-  
-        {/* Grid of store cards */}
+
+        {/* grid of stores */}
         <div className="store-grid">
           {Object.keys(nutritionData).map((store) => (
             <div
               key={store}
-              className={`store-card ${selectedStore === store ? "active" : ""}`}
+              className={`store-card ${
+                selectedStore === store ? "active" : ""
+              }`}
               onClick={() => handleStoreClick(store)}
             >
-              <img 
-                src={storeLogos[store]} 
-                alt={store} 
-                className="store-icon"
-              />
+              <img src={storeLogos[store]} alt={store} className="store-icon" />
             </div>
           ))}
+          
         </div>
 
+            <button
+                  className="px-4 py-2 rounded bg-black text-white text-sm"
+                  onClick={() => setShowFeedback(true)}
+                >
+                  Give feedback
+                </button>
 
+        {/* macro table for selected store */}
         {selectedStore && (
           <div className="store-food-table" ref={tableRef}>
-            <h4 style={{ textAlign: 'center', fontWeight: '700', fontSize: '0.9rem' }}>
-              Best Macro friendly items at {selectedStore}
+            <h4
+              style={{
+                textAlign: "center",
+                fontWeight: 700,
+                fontSize: "0.9rem",
+              }}
+            >
+              Best macro‑friendly items at {selectedStore}
             </h4>
 
-            {['Proteins', 'Carbohydrates', 'Fats'].map((category) => (
-              <div key={category}>
-                <h5>{category}</h5>
+            {["Proteins", "Carbohydrates", "Fats"].map((cat) => (
+              <div key={cat}>
+                <h5>{cat}</h5>
                 <table>
                   <thead>
                     <tr>
                       <th>Food Item</th>
                       <th>Calories/100g</th>
                       <th>
-                        {category === 'Proteins' ? 'Protein/100g' :
-                         category === 'Carbohydrates' ? 'Carbs/100g' : 'Fat/100g'}
+                        {cat === "Proteins"
+                          ? "Protein/100g"
+                          : cat === "Carbohydrates"
+                          ? "Carbs/100g"
+                          : "Fat/100g"}
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {nutritionData[selectedStore]?.[category]?.map((food, index) => (
-                      <tr key={index}>
+                    {nutritionData[selectedStore]?.[cat]?.map((food, idx) => (
+                      <tr key={idx}>
                         <td>{food.foodItem}</td>
                         <td>{food.calories}</td>
                         <td>
-                          {category === 'Proteins' ? `${food.protein}g` :
-                           category === 'Carbohydrates' ? `${food.carbs}g` :
-                           `${food.fat}g`}
+                          {cat === "Proteins"
+                            ? `${food.protein} g`
+                            : cat === "Carbohydrates"
+                            ? `${food.carbs} g`
+                            : `${food.fat} g`}
                         </td>
                       </tr>
                     ))}
@@ -133,13 +180,39 @@ const NutritionPage = () => {
                 </table>
               </div>
             ))}
+
+            {/* fallback button (kept for manual trigger) */}
+            {!askedOnce && (
+              <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                <button
+                  className="px-4 py-2 rounded bg-black text-white text-sm"
+                  onClick={() => setShowFeedback(true)}
+                >
+                  Give feedback
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
 
+      {/* bottom navbar */}
       <TabBar />
+
+      {/* feedback modal */}
+      {showFeedback && (
+        <FeedbackPrompt
+          feature="TOP_PICKS"
+          question="How much do you like this feature?"
+          placeholder="What would make it more useful?"
+          onClose={() => setShowFeedback(false)}
+          onSubmitted={() => {
+            localStorage.setItem("fp_top_picks", "done");
+            setAskedOnce(true);
+            setShowFeedback(false);
+          }}
+        />
+      )}
     </>
   );
-};
-
-export default NutritionPage;
+}

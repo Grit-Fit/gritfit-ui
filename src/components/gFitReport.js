@@ -1,20 +1,26 @@
+
 import React, { useState, useEffect } from "react";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo1.png";
-import "../css/gFitReport.css";
-import axios from "../axios";
-import "../css/CardView.css";
-import TabBar from "./TabBar";
 import trend from "../assets/trend.png";
-import { useNavigate } from "react-router-dom";
+import "../css/gFitReport.css";
 import "../css/CardView.css";
+import axios from "../axios";
+import TabBar from "./TabBar";
+import { useNavigate } from "react-router-dom";
+import FeedbackPrompt from "../components/FeedbackPrompt";     
 
+/* ───────────────────────── Calendar component ───────────────────────── */
 const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState([]);
-  const navigate = useNavigate();
-
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   useEffect(() => {
@@ -22,60 +28,40 @@ const Calendar = ({ userProgress }) => {
   }, [currentDate]);
 
   const generateCalendarDays = () => {
-    if (!currentDate) return;
-
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-
     const startBlanks = firstDay.getDay();
     const blanksArray = Array(startBlanks).fill(null);
-
-    const daysArray = [];
-    for (let d = 1; d <= lastDay.getDate(); d++) {
-      daysArray.push(d);
-    }
-
+    const daysArray = Array.from({ length: lastDay.getDate() }, (_, i) => i + 1);
     setCalendarDays([...blanksArray, ...daysArray]);
   };
 
-  // 🔴 **Fix: Ensure Proper Date Matching**
-  function getDayClass(day) {
-    if (!day || !currentDate) return "";
-  
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const dayStr = String(day).padStart(2, "0");
-    const dateString = `${year}-${month}-${dayStr}`; // "YYYY-MM-DD" for the calendar cell
-  
-    if (userProgress && Array.isArray(userProgress)) {
-      const matchingTasks = userProgress.filter((task) => {
-        if (!task.completion_date) return false;
-        
-        // 1) Parse the UTC datetime
-        const dateObj = new Date(task.completion_date);
-  
-        // 2) Build a local date string (YYYY-MM-DD)
-        const localYear = dateObj.getFullYear();
-        const localMonth = String(dateObj.getMonth() + 1).padStart(2, "0");
-        const localDay = String(dateObj.getDate()).padStart(2, "0");
-        const localDateString = `${localYear}-${localMonth}-${localDay}`;
-  
-        // 3) Compare local date to the calendar's date
-        return localDateString === dateString;
-      });
-  
-      // 4) If matchingTasks found, prioritize statuses
-      if (matchingTasks.length > 0) {
-        if (matchingTasks.some((t) => t.taskstatus === "Completed")) return "green";
-        if (matchingTasks.some((t) => t.taskstatus === "Not Completed")) return "red";
-        if (matchingTasks.some((t) => t.taskstatus === "In Progress")) return "blue";
-      }
-    }
+  /* colour coding */
+  const getDayClass = (day) => {
+    if (!day) return "";
+    const y = currentDate.getFullYear();
+    const m = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const d = String(day).padStart(2, "0");
+    const cellDate = `${y}-${m}-${d}`;
+
+    const matches = userProgress.filter((t) => {
+      if (!t.completion_date) return false;
+      const dt = new Date(t.completion_date);
+      const loc = [
+        dt.getFullYear(),
+        String(dt.getMonth() + 1).padStart(2, "0"),
+        String(dt.getDate()).padStart(2, "0"),
+      ].join("-");
+      return loc === cellDate;
+    });
+
+    if (matches.some((t) => t.taskstatus === "Completed")) return "green";
+    if (matches.some((t) => t.taskstatus === "Not Completed")) return "red";
+    if (matches.some((t) => t.taskstatus === "In Progress")) return "blue";
     return "";
-  }
-  
+  };
 
   return (
     <div className="calendar-container">
@@ -83,13 +69,7 @@ const Calendar = ({ userProgress }) => {
         <button
           className="arrow-button"
           onClick={() =>
-            setCurrentDate(
-              new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth() - 1,
-                1
-              )
-            )
+            setCurrentDate(new Date(y => y.setMonth(currentDate.getMonth() - 1)))
           }
         >
           &lt;
@@ -101,13 +81,7 @@ const Calendar = ({ userProgress }) => {
         <button
           className="arrow-button"
           onClick={() =>
-            setCurrentDate(
-              new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth() + 1,
-                1
-              )
-            )
+            setCurrentDate(new Date(y => y.setMonth(currentDate.getMonth() + 1)))
           }
         >
           &gt;
@@ -115,18 +89,18 @@ const Calendar = ({ userProgress }) => {
       </div>
 
       <div className="days-header">
-        {dayNames.map((day) => (
-          <div key={day} className="day-name">
-            {day}
+        {dayNames.map((n) => (
+          <div key={n} className="day-name">
+            {n}
           </div>
         ))}
       </div>
 
       <div className="calendar-grid">
-        {[...Array(6)].map((_, weekIndex) => (
-          <div key={weekIndex} className="days-grid">
+        {[...Array(6)].map((_, week) => (
+          <div key={week} className="days-grid">
             {calendarDays
-              .slice(weekIndex * 7, (weekIndex + 1) * 7)
+              .slice(week * 7, (week + 1) * 7)
               .map((day, idx) => (
                 <div key={idx} className={`calendar-day ${getDayClass(day)}`}>
                   {day || ""}
@@ -139,54 +113,46 @@ const Calendar = ({ userProgress }) => {
   );
 };
 
+/* ───────────────────────── Pie‑chart component ───────────────────────── */
 const PieChartComponent = ({ userProgress }) => {
-  const predefinedCategories = [
+  const predefined = [
     "Feeling unwell",
     "Lack of motivation",
     "Cheat day",
     "Too busy",
   ];
-
   const COLORS = ["#1f32c0", "#6577fb", "#000d6b", "#3b4489", "#1991f8"];
 
-  // 1) Tally reasons
-  const reasonCounts = userProgress
-    ?.filter((task) => task.notcompletionreason)
-    .reduce((acc, task) => {
-      const reason = predefinedCategories.includes(task.notcompletionreason)
-        ? task.notcompletionreason
+  const counts = userProgress
+    ?.filter((t) => t.notcompletionreason)
+    .reduce((acc, t) => {
+      const r = predefined.includes(t.notcompletionreason)
+        ? t.notcompletionreason
         : "Other";
-      acc[reason] = (acc[reason] || 0) + 1;
+      acc[r] = (acc[r] || 0) + 1;
       return acc;
     }, {});
 
-  // 2) Convert object to array for Recharts
-  const chartData = Object.entries(reasonCounts || {}).map(([name, value]) => ({
+  const data = Object.entries(counts || {}).map(([name, value]) => ({
     name,
     value,
   }));
 
-  // 3) If no data, show a placeholder message
-  if (!chartData.length) {
+  if (!data.length) {
     return (
       <div className="pie-chart-empty">
-        <p>No incomplete tasks yet!<br /> Keep up the great work!</p>
+        <p>No incomplete tasks yet!<br />Keep up the great work!</p>
       </div>
     );
   }
 
-  // 4) Otherwise, render the PieChart
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="pie-tooltip">
-          <p className="pie-tooltip-title">{payload[0].name}</p>
-          <p className="pie-tooltip-value">{`${payload[0].value} times`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
+  const CustomTooltip = ({ active, payload }) =>
+    active && payload?.length ? (
+      <div className="pie-tooltip">
+        <p className="pie-tooltip-title">{payload[0].name}</p>
+        <p className="pie-tooltip-value">{`${payload[0].value} times`}</p>
+      </div>
+    ) : null;
 
   return (
     <div>
@@ -194,19 +160,15 @@ const PieChartComponent = ({ userProgress }) => {
         <ResponsiveContainer>
           <PieChart>
             <Pie
-              data={chartData}
+              data={data}
               cx="50%"
               cy="50%"
-              labelLine={false}
               outerRadius={100}
-              fill="#8884d8"
               dataKey="value"
+              labelLine={false}
             >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
+              {data.map((_, i) => (
+                <Cell key={i} fill={COLORS[i % COLORS.length]} />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
@@ -214,14 +176,14 @@ const PieChartComponent = ({ userProgress }) => {
         </ResponsiveContainer>
       </div>
       <div className="pie-legend">
-        {chartData.map((entry, index) => (
-          <div key={`legend-${index}`} className="legend-item">
+        {data.map((e, i) => (
+          <div key={i} className="legend-item">
             <div
               className="legend-color"
-              style={{ backgroundColor: COLORS[index % COLORS.length] }}
+              style={{ backgroundColor: COLORS[i % COLORS.length] }}
             />
             <span className="legend-text">
-              {entry.name} ({entry.value})
+              {e.name} ({e.value})
             </span>
           </div>
         ))}
@@ -230,117 +192,84 @@ const PieChartComponent = ({ userProgress }) => {
   );
 };
 
-
-
-const GFitReport = () => {
-  const [isNavOpen, setIsNavOpen] = useState(false);
+/* ───────────────────────── Main page ───────────────────────── */
+export default function GFitReport() {
   const { accessToken, refreshAuthToken } = useAuth();
-  const [taskData, setTaskData] = useState([]); // Ensure it's an empty array initially
-  const [loading, setLoading] = useState(false);
-  const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
+  const [taskData, setTaskData]     = useState([]);
+  const [loading, setLoading]       = useState(false);
+  const [showFB, setShowFB]         = useState(false);
+
+  /* track visits → show feedback on 4th view */
+  useEffect(() => {
+    const keyViews = "analyticsViews";
+    const keyAsked = "trendsFb";
+    const views = parseInt(localStorage.getItem(keyViews) || "0", 10) + 1;
+    localStorage.setItem(keyViews, views);
+    if (views >= 4 && !localStorage.getItem(keyAsked)) {
+      setShowFB(true);
+    }
+  }, []);
+
+  /* ensure token */
   useEffect(() => {
     if (!accessToken) refreshAuthToken();
   }, [accessToken, refreshAuthToken]);
 
+  /* fetch progress data */
   useEffect(() => {
-    const fetchUsername = async () => {
-      try {
-        const response = await axios.get("/api/getUserProfile", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        setUsername(response.data.username || "");
-      } catch (error) {
-        console.error("Error fetching username:", error);
-      }
-    };
-    if (accessToken) fetchUsername();
+    if (!accessToken) return;
+    setLoading(true);
+    axios
+      .post(
+        "/api/getUserProgress",
+        {},
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      )
+      .then((r) => setTaskData(r.data.data || []))
+      .catch((e) => console.error(e))
+      .finally(() => setLoading(false));
   }, [accessToken]);
 
-  const [maintenance, setMaintenance] = useState(null);
-  const [macros, setMacros] = useState(null);
-  const navigate = useNavigate();
+  const goHome = () => navigate("/cardView");
 
-  useEffect(() => {
-    const fetchUserNutrition = async () => {
-      try {
-        const response = await axios.get("/api/getUserNutrition", {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        });
-        if (response.data?.data) {
-          const userData = response.data.data;
-
-          // Suppose userData has userData.maintenance_calories, etc.
-          const m = userData.maintenance_calories;
-          setMaintenance(m);
-
-          
-          if (m) {
-            const proteinCalories = m * 0.25;
-            const carbCalories = m * 0.5;
-            const fatCalories = m * 0.25;
-            setMacros({
-              protein: Math.round(proteinCalories / 4),
-              carbs: Math.round(carbCalories / 4),
-              fats: Math.round(fatCalories / 9),
-            });
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching user data for carousel:", error);
-      }
-    };
-
-    if (accessToken) {
-      fetchUserNutrition();
-    }
-  }, [accessToken]);
-
-  useEffect(() => {
-    const fetchTaskData = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.post("/api/getUserProgress", {}, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        setTaskData(response.data.data || []); // Ensure it's never null
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (accessToken) fetchTaskData();
-  }, [accessToken]);
-
-  function goToCard() {
-    navigate("/cardView");
-  }
-
-
+  /* ─────────────── render ─────────────── */
   return (
     <>
+      {/* header */}
       <header className="gritphase-header">
-      <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToCard}/>
-                <div className="phase-row">
-                </div>
-        </header>
+        <img
+          src={logo}
+          alt="Logo"
+          className="logo-gritPhases-task"
+          onClick={goHome}
+        />
+      </header>
+
       <div className="main-content">
         <div className="fullpage-report">
           <div className="report_header">
-            <div className="report_header-text"><img src = {trend} /> GFit Report</div>
+            <div className="report_header-text">
+              <img src={trend} alt="trend" />
+              GFit Report
+            </div>
           </div>
+
           <div className="body_page">
-            {loading ? <div className="loading-message">Loading data...</div> : (
+            {loading ? (
+              <div className="loading-message">Loading data…</div>
+            ) : (
               <>
                 <div className="calendar_section">
-                <div className="pie-heading">Consistency Calendar</div>
+                  <div className="pie-heading">Consistency Calendar</div>
                   <div className="header_line">
-                    Are you team Green or Red? Get a bird's eye view of your
+                    Are you team Green or Red? Get a bird's‑eye view of your
                     consistency this month!
                   </div>
                   <Calendar userProgress={taskData} />
                 </div>
+
                 <div className="pie_section">
                   <div className="pie-heading">Inconsistency Pie</div>
                   <div className="pie-text">
@@ -351,15 +280,35 @@ const GFitReport = () => {
                   </div>
                   <PieChartComponent userProgress={taskData} />
                 </div>
-               
               </>
             )}
           </div>
+         <div style={{marginTop: "1rem", marginRight: "auto", marginLeft: "auto", display: "flex", flexDirection: "column", width: "70%"}}>
+        <button
+          className="px-4 py-2 rounded bg-black text-white text-sm"
+          onClick={() => setShowFB(true)}   
+        >
+          Give feedback
+        </button>
+        </div>
         </div>
       </div>
-    <TabBar />
+
+      {/* periodic feedback modal */}
+      {showFB && (
+        <FeedbackPrompt
+          feature="GFIT_TRENDS"
+          question="Was this page helpful?"
+          placeholder= "What would make it more useful?"
+          onClose={() => {
+            localStorage.setItem("trendsFb", "1");
+            setShowFB(false);
+          }}
+        />
+      )}
+
+
+      <TabBar />
     </>
   );
-};
-
-export default GFitReport;
+}

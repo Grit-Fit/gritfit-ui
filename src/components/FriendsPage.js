@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import TabBar from "./TabBar";
 import logo from "../assets/logo1.png";
 import "../css/FriendsPage.css";
+import FeedbackPrompt from "../components/FeedbackPrompt"; 
 
 const API_URL =  "https://api.gritfit.site/api";
 
@@ -18,6 +19,8 @@ export default function FriendsPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showFB, setShowFB] = useState(false);
+  const fbKey = `referFriendFb_${user?.userid || "anon"}`;
 
   useEffect(() => {
     fetchFriends();
@@ -112,7 +115,8 @@ export default function FriendsPage() {
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       alert("Friend request sent!");
-    } catch (err) {
+      if (!localStorage.getItem(fbKey)) setShowFB(true);
+    } catch {
       setError("Could not send friend request. Please try again.");
     } finally {
       setIsLoading(false);
@@ -200,7 +204,29 @@ export default function FriendsPage() {
         ))}
       </ul>
     </section>
+     {/* manual feedback button */}
+     <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+          <button
+            className="px-4 py-2 rounded bg-black text-white text-sm"
+            onClick={() => setShowFB(true)}
+          >
+            Give feedback
+          </button>
+        </div>
   </div>
+
+        {/* feedback modal */}
+        {showFB && (
+        <FeedbackPrompt
+          feature="REFER_FRIEND"
+          question="How easy was it to invite a friend?"
+          placeholder="What did you like or struggle with while sending a friend request?"
+          onClose={() => {
+            localStorage.setItem(fbKey, "1");
+            setShowFB(false);
+          }}
+        />
+      )}
 
   <TabBar />
 </>

@@ -11,6 +11,8 @@ import TabBar from "./TabBar";
 import gritfitLogo from "../assets/logo1.png";
 import logo from "../assets/logo1.png";
 import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown, Gift , Flame} from "lucide-react";
+import FeedbackPrompt from "../components/FeedbackPrompt";
+
 
 /* 
 ----------------------------------
@@ -240,6 +242,7 @@ useEffect(() => {
     setError(null);
   
     try {
+      /* 1️⃣  Call the API */
       const { data } = await axios.post(
         "/api/userprogressC",
         {
@@ -249,10 +252,11 @@ useEffect(() => {
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
   
+      /* 2️⃣  Update UI/state while we’re still in-scope */
       if (onUpdateStatus)  onUpdateStatus();
 
   
-      if (onClose) onClose();    
+      if (onClose) onClose();                  // close the card
     } catch (err) {
       console.error("RightSwipe error:", err);
       setError("Failed to update progress. Please try again.");
@@ -345,7 +349,7 @@ function IntroCard({ onClose }) {
  Up Swipe Sub-Component
 ----------------------------------
 */
-function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
+function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose, onHelpSent }) {
   const { accessToken } = useAuth();
   const [helpMessage, setHelpMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -369,6 +373,7 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose }) {
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       alert("Your help request was sent to friends!");
+      onHelpSent && onHelpSent(); 
       setHelpMessage("");
       if (onClose) onClose();
     } catch (err) {
@@ -455,6 +460,18 @@ export default function CardView() {
   const [showIntro, setShowIntro] = useState(true);
   const [feedback, setFeedback] = useState({ rating: 0, comment: "", sent: false, isLoading: false, error: null });
   const [currentStreak, setCurrentStreak] = useState(0);
+
+const userId = useAuth().user?.userid || "anon";
+const phaseFbKey = `phase1to2Fb_${userId}`;
+const weekFbKey  = `week1Fb_${userId}`;
+const midP3Key   = `phase3midFb_${userId}`;
+const npsFbKey   = `week1NpsFb_${userId}`;
+
+const [showPhaseFB, setShowPhaseFB] = useState(false);
+const [showWeekFB , setShowWeekFB ] = useState(false);
+const [showMidP3FB,    setShowMidP3FB]    = useState(false);
+const [showNPSFB, setShowNPSFB] = useState(false);
+const [showHelpFB, setShowHelpFB] = useState(false); 
 
 
 
@@ -731,6 +748,28 @@ try {
     );
   }
 
+  const prevPhase = useRef(null);
+  useEffect(() => {
+    if (!currentTask) return;
+    const nowPhase = currentTask.phaseid;
+    if (prevPhase.current === 1 && nowPhase === 2 && !localStorage.getItem(phaseFbKey)) {
+      setShowPhaseFB(true);
+    }
+    prevPhase.current = nowPhase;
+}, [currentTask, phaseFbKey]);
+
+useEffect(() => {
+  if (!tasks.length || localStorage.getItem(midP3Key)) return;
+
+  const completedP3 = tasks.filter(
+    (t) => t.phaseid === 3 && t.taskstatus === "Completed"
+  ).length;
+
+  if (completedP3 >= 2) {
+    setShowMidP3FB(true);
+  }
+}, [tasks, midP3Key]);
+
   // If left swipe sub-card
   if (showLeftCard) {
     return (
@@ -884,6 +923,7 @@ if (showHelpCard) {
         <InternalHelpSwipeCard
           phaseNumber={phaseNumber}
           dayNumber={dayNumber}
+          onHelpSent={() => setShowHelpFB(true)} 
           onClose={() => {
             setShowHelpCard(false);
             fetchTasks();
@@ -1032,7 +1072,7 @@ function Star({ filled, onClick }) {
         <h2 className="task-date">{tomorrowStr}</h2>
         <div className="streak">
           <Flame size={26} color="#ff5722" style={{fill:  "#ff5722"}} />
-          <span style={{ marginLeft: 4, fontWeight: 600, fontSize: "21px" }}>{currentStreak + 1}</span>
+          <span style={{ marginLeft: 4, fontWeight: 600, fontSize: "21px" }}>{currentStreak}</span>
         </div>
         <img
           src={gritfitLogo}
@@ -1090,6 +1130,7 @@ function Star({ filled, onClick }) {
       <div className="card-wrapper">{renderMainCard(currentTask)}
 
 
+
       </div>
       {bonusAvailable && (
           <Gift
@@ -1101,8 +1142,47 @@ function Star({ filled, onClick }) {
           />
         )}
 
+{showPhaseFB && (
+  <div style={{ opacity: 0.95, zIndex: 9999 }}>
+          <FeedbackPrompt
+            feature="PHASE_GP1_GP2"
+            question="How was your GritPhase 1 experience?"
+            placeholder="What helped you succeed the most?"
+            onClose={() => {
+              localStorage.setItem(phaseFbKey, "1");
+              setShowPhaseFB(false);
+            }}
+          />
+          </div>
+        )}
+
+{showMidP3FB && (
+  <div style={{ opacity: 0.95, zIndex: 9999 }}>
+  <FeedbackPrompt
+    feature="PHASE3_MID"
+    question="You’re halfway through Phase 3! How’s it going so far?"
+    placeholder="Any tweaks you’d like to see?"
+    onClose={() => {
+      localStorage.setItem(midP3Key, "1");  
+      setShowMidP3FB(false);
+    }}
+  />
+  </div>
+)}
+
+{showHelpFB && (
+  <div style={{ opacity: 0.95, zIndex: 9999 }}>
+    <FeedbackPrompt
+      feature="HELP_REQUEST"
+      question="Did this feature feel useful?"
+      placeholder="What would make this better?"
+      onClose={() => setShowHelpFB(false)}
+    />
+  </div>
+)}
 
       <TabBar />
+      
 
       {/* Render the intro card if user hasn't dismissed yet */}
       {showIntro && <IntroCard onClose={() => {
