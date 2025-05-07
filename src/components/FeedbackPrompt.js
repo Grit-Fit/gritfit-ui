@@ -10,15 +10,16 @@ export default function FeedbackPrompt({ feature, question, placeholder, onClose
 
   const handleSubmit = async () => {
     if (!rating) { alert("Please select a rating."); return; }
-
+  
     if (!accessToken) {
-      // try silent refresh
       await refreshAuthToken?.();
       if (!accessToken) {
-        alert("Session expired – please log in again."); onClose(); return;
+        alert("Session expired – please log in again.");
+        onClose();
+        return;
       }
     }
-
+  
     setSubmitting(true);
     try {
       await axios.post("/api/feedback",
@@ -26,7 +27,14 @@ export default function FeedbackPrompt({ feature, question, placeholder, onClose
         { headers: { Authorization:`Bearer ${accessToken}` } }
       );
       onSubmitted?.(); 
-      alert("Thanks for the feedback!");         
+      alert("Thanks for the feedback!");
+  
+      // 🛠️ Fix mobile zoom/pan issue globally here:
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        document.body.style.zoom = "100%";
+      }, 100);
+  
       onClose();
     } catch (err) {
       console.error("feedback error:", err);
@@ -57,6 +65,7 @@ export default function FeedbackPrompt({ feature, question, placeholder, onClose
           rows={3} placeholder={placeholder}
           value={comment} onChange={e=>setComment(e.target.value)}
           disabled={submitting}
+          style={{fontSize: "16px"}}
         />
 
         <div className="flex justify-between">

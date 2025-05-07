@@ -137,7 +137,7 @@ export default function BonusCardView() {
                  onClick={() => isLeft ? setShowLeft(false) : setShowRight(false)}>
               Undo Swipe {isLeft ? <Redo2 size={24}/> : <Undo2 size={24}/> }
             </div>
-            <p style={{ marginTop:"4rem",marginBottom:"2rem" }}>
+            <p style={{ marginTop:"9rem",marginBottom:"9rem" }}>
               {isLeft
                 ? "You stumbled today, but progress isn’t perfect. Reset. Refocus. You’ve got this."
                 : "Let’s go! 100 Gems added to your stash"}

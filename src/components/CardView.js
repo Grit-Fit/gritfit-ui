@@ -1072,7 +1072,7 @@ function Star({ filled, onClick }) {
         <h2 className="task-date">{tomorrowStr}</h2>
         <div className="streak">
           <Flame size={26} color="#ff5722" style={{fill:  "#ff5722"}} />
-          <span style={{ marginLeft: 4, fontWeight: 600, fontSize: "21px" }}>{currentStreak}</span>
+          <span style={{ marginLeft: 4, fontWeight: 600, fontSize: "21px" }}>{currentStreak + 1}</span>
         </div>
         <img
           src={gritfitLogo}

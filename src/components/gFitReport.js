@@ -207,7 +207,7 @@ export default function GFitReport() {
     const keyAsked = "trendsFb";
     const views = parseInt(localStorage.getItem(keyViews) || "0", 10) + 1;
     localStorage.setItem(keyViews, views);
-    if (views >= 4 && !localStorage.getItem(keyAsked)) {
+    if (views >= 2 && !localStorage.getItem(keyAsked)) {
       setShowFB(true);
     }
   }, []);
