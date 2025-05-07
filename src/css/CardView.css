@@ -580,7 +580,7 @@
 
 .gift-icon {
   position: absolute;
-  top: 44rem;
+  top: 41rem;
   cursor: pointer;
   animation: pulse 1.5s ease-in-out infinite alternate;
   color: #00bcd4;
