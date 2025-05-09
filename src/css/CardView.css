@@ -237,6 +237,11 @@
   stroke: #ff5722;   
 }
   
+.gem-filled-pulse {
+    fill:   #0096aa;   
+  stroke: #00bcd4; 
+  animation: pulse 1.5s infinite;
+}
 
   .swipe-hints {
     display: flex;

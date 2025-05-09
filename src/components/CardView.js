@@ -10,8 +10,9 @@ import upIcon from "../assets/upflick.png";
 import TabBar from "./TabBar";
 import gritfitLogo from "../assets/logo1.png";
 import logo from "../assets/logo1.png";
-import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown, Gift , Flame} from "lucide-react";
+import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown, Gift , Flame, Bell} from "lucide-react";
 import FeedbackPrompt from "../components/FeedbackPrompt";
+import confetti from "canvas-confetti";
 
 
 /* 
@@ -74,7 +75,7 @@ function InternalLeftSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus
 
       // Refresh tasks, close card
       if (onUpdateStatus) onUpdateStatus();
-      if (onClose) onClose();
+      if (onClose) onClose(true);
     } catch (err) {
       console.error("LeftSwipe error:", err);
       setError("Failed to update. Please try again!");
@@ -95,7 +96,7 @@ function InternalLeftSwipeCard({ phaseNumber, dayNumber, onClose, onUpdateStatus
       className="big-card fade-in"
       style={{ background: "linear-gradient(180deg, #EFB034FF 0%, #EF5634FF 47%)", left: "20px" }}
     >
-      <div className="undo-left" onClick={onClose}>
+      <div className="undo-left" onClick={() => onClose(false)}>
         Undo Swipe <Redo2 style={{ width: "24px", height: "24px" }} />
       </div>
 
@@ -256,7 +257,7 @@ useEffect(() => {
       if (onUpdateStatus)  onUpdateStatus();
 
   
-      if (onClose) onClose();                  // close the card
+      if (onClose) onClose(true);                  // close the card
     } catch (err) {
       console.error("RightSwipe error:", err);
       setError("Failed to update progress. Please try again.");
@@ -271,7 +272,7 @@ useEffect(() => {
       className="big-card fade-in"
       style={{ background: "linear-gradient(180deg, #1DD75BFF 0%, #D79D1DFF 100%)", left: "20px" }}
     >
-      <div className="undo" onClick={onClose}>
+      <div className="undo" onClick={() => onClose(false)}>
         Undo Swipe <Undo2 style={{ width: "24px", height: "24px" }} />
       </div>
 
@@ -430,6 +431,201 @@ function InternalHelpSwipeCard({ phaseNumber, dayNumber, onClose, onHelpSent }) 
   );
 }
 
+/* --------------------------------------------------------
+   SHADOW  RIGHT  SWIPE  CARD   (analytics only)
+---------------------------------------------------------*/
+function ShadowRightSwipeCard({ taskObj, onClose }) {
+  const { accessToken } = useAuth();
+  const [saving, setSaving] = useState(false);
+  const [filled, setFilled] = useState(false);
+
+  async function done(e) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await axios.post("/api/logShadowSwipe",
+        { taskdetailsId: taskObj.taskdetailsid, swipeDirection: "right" },
+        { headers:{ Authorization:`Bearer ${accessToken}` } }
+      );
+
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#00bcd4", "#ffffff", "#91f1ff"],
+        zIndex: 9999
+      });
+
+      onClose(true);          
+    } catch (err) {
+      console.error("shadow right log err:", err);
+    } finally { setSaving(false); }
+  }
+
+  useEffect(() => {
+  const timer = setTimeout(() => setFilled(true), 1200);
+  return () => clearTimeout(timer);
+}, []);
+
+  return (
+    <div className="big-card fade-in"
+         style={{ background:"linear-gradient(180deg,#1DD75B,#D79D1D)", left:"20px" }}>
+      <div className="undo" onClick={() => onClose(false)}> Undo Swipe <Undo2 style={{ width: "24px", height: "24px" }} /></div>
+
+    <div className="body-text" style={{ marginTop: "0px", textAlign: "center" }}>
+      <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>Awesome!</h2>
+      </div>
+      <div style={{ textAlign: "center", marginTop: "2.5rem" , position:"relative", top:"-4rem"}}>
+  <Gem
+    size={90}
+    color="#00bcd4"
+    className={filled ? "gem-filled-pulse" : ""}
+  />
+</div>
+      <button className="doneBtnRight pulse-button"
+              disabled={saving}
+              onClick={done}
+              style={{ marginTop: "2rem", position: "absolute", top: "22rem" }}>
+        {saving ? "Saving…" : "🎯 Done"}
+      </button>
+
+            {/* <button
+        className="doneBtnRight pulse-button"
+        onClick={doneBtnClick}
+        disabled={isLoading}
+        style={{ marginTop: "2rem", position: "absolute", top: "22rem" }}
+      >
+        {isLoading ? "Updating..." : "🎯 Done"}
+      </button> */}
+
+            {/* <div className="body-text" style={{ marginTop: "0px", textAlign: "center" }}>
+        <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
+          Yayy! You did it!
+        </h2> */}
+    </div>
+  );
+}
+
+/* --------------------------------------------------------
+   SHADOW  LEFT  SWIPE  CARD   (analytics only, Phase-1)
+---------------------------------------------------------*/
+function ShadowLeftSwipeCard({ taskObj, onClose }) {
+  const { accessToken } = useAuth();
+
+  /* same local state as your main card */
+  const [selectedButton, setSelectedButton] = useState(null);
+  const [otherReason,   setOtherReason]   = useState("");
+  const [isLoading,     setIsLoading]     = useState(false);
+  const [error,         setError]         = useState(null);
+
+  const getReasonText = () =>
+    selectedButton?.name === "sick"            ? "Feeling unwell" :
+    selectedButton?.name === "less_motivation" ? "Lack of motivation" :
+    selectedButton?.name === "cheatDay"        ? "Cheat day" :
+    selectedButton?.name === "busy"            ? "Too busy" :
+    selectedButton?.name === "other"           ? otherReason.trim() :
+    "";
+
+  async function doneBtnClick(e) {
+    e.preventDefault();
+    if (!selectedButton) { setError("Pick a reason first."); return; }
+    if (selectedButton.name === "other" && !otherReason.trim()) {
+      setError("Please enter your reason.");
+      return;
+    }
+    setIsLoading(true); setError(null);
+    try {
+      await axios.post(
+        "/api/logShadowSwipe",
+        {
+          taskdetailsId : taskObj.taskdetailsid,
+          swipeDirection: "left",
+          reason        : getReasonText(),
+        },
+        { headers:{ Authorization:`Bearer ${accessToken}` } }
+      );
+      onClose(true);              // saved
+    } catch(err) {
+      console.error("shadow left log err:", err);
+      setError("Couldn’t save. Try again.");
+    } finally { setIsLoading(false); }
+  }
+
+  /* identical markup copied from your main left-card */
+  return (
+    <div className="big-card fade-in"
+         style={{ background:"linear-gradient(180deg,#EFB034,#EF5634)", left:"20px" }}>
+      {/* Undo button */}
+      <div className="undo-left" onClick={() => onClose(false)}>
+        Undo Swipe <Redo2 style={{ width: "24px", height: "24px" }} />
+      </div>
+
+      {error && <p style={{ color:"red" }}>{error}</p>}
+
+      {/* Phase-1 never asks goal; jump straight to reasons */}
+      <h2 style={{ marginBottom:"1rem", marginTop:"3rem" }}>
+        It's okay! What was your biggest hurdle today?
+      </h2>
+
+      {!selectedButton ? (
+        <div className="body_images" style={{ marginTop:"1rem", gap:"15px" }}>
+          <div className="reason-card"
+               onClick={()=>setSelectedButton({ name:"sick", image:require("../assets/sickk.png") })}>
+            <img src={require("../assets/sickk.png")} alt="Sick" className="reason-icon"/>
+            <span className="reason-label">Sick</span>
+          </div>
+          <div className="reason-card"
+               onClick={()=>setSelectedButton({ name:"less_motivation", image:require("../assets/loww.png") })}>
+            <img src={require("../assets/loww.png")} alt="Low Motivation" className="reason-icon"/>
+            <span className="reason-label">Low Motivation</span>
+          </div>
+          <div className="reason-card"
+               onClick={()=>setSelectedButton({ name:"cheatDay", image:require("../assets/cheatt.png") })}>
+            <img src={require("../assets/cheatt.png")} alt="Cheat Day" className="reason-icon"/>
+            <span className="reason-label">CheatDay</span>
+          </div>
+          <div className="reason-card"
+               onClick={()=>setSelectedButton({ name:"busy", image:require("../assets/busyy.png") })}>
+            <img src={require("../assets/busyy.png")} alt="Busy" className="reason-icon"/>
+            <span className="reason-label">Busy</span>
+          </div>
+          <div className="reason-card"
+               onClick={()=>setSelectedButton({ name:"other", image:require("../assets/otherr.png") })}>
+            <img src={require("../assets/otherr.png")} alt="Other" className="reason-icon"/>
+            <span className="reason-label">Other</span>
+          </div>
+        </div>
+      ) : (
+        <div className="selected-button-container"
+             style={{ marginTop:"1rem", marginBottom:"1.5rem" }}>
+          {selectedButton.name !== "other" && (
+            <img src={selectedButton.image} alt={selectedButton.name}
+                 className="selected-button" style={{ marginBottom:"1rem" }}/>
+          )}
+          {selectedButton.name === "other" ? (
+            <div className="other-reason-container">
+              <input type="text" value={otherReason}
+                     onChange={e=>setOtherReason(e.target.value)}
+                     placeholder="Please specify your reason..."
+                     className="other-reason-input" autoFocus />
+            </div>
+          ) : (
+            <p>That's OK! Let us try again tomorrow!</p>
+          )}
+        </div>
+      )}
+
+      <button className="doneBtn pulse-button"
+              onClick={doneBtnClick}
+              disabled={isLoading}
+              style={{ marginTop:"2rem" }}>
+        {isLoading ? "Saving…" : "Done"}
+      </button>
+    </div>
+  );
+}
+
+
 
 
 /* 
@@ -461,6 +657,11 @@ export default function CardView() {
   const [feedback, setFeedback] = useState({ rating: 0, comment: "", sent: false, isLoading: false, error: null });
   const [currentStreak, setCurrentStreak] = useState(0);
 
+  const [showShadowCard, setShowShadowCard] = useState(false);
+  const [shadowTask,     setShadowTask]     = useState(null);
+  const [showShadowRight, setShowShadowRight] = useState(false);
+const [showShadowLeft,  setShowShadowLeft]  = useState(false);
+
 const userId = useAuth().user?.userid || "anon";
 const phaseFbKey = `phase1to2Fb_${userId}`;
 const weekFbKey  = `week1Fb_${userId}`;
@@ -472,6 +673,7 @@ const [showWeekFB , setShowWeekFB ] = useState(false);
 const [showMidP3FB,    setShowMidP3FB]    = useState(false);
 const [showNPSFB, setShowNPSFB] = useState(false);
 const [showHelpFB, setShowHelpFB] = useState(false); 
+const [filled, setFilled] = useState(false);
 
 
 
@@ -632,11 +834,22 @@ try {
   }
 
   // Close sub-cards
-  function closeSubCard() {
+  function closeSubCard(statusSaved) {
     setShowLeftCard(false);
     setShowRightCard(false);
-    fetchTasks();
+    fetchTasks();                
+
+    if (statusSaved && phaseNumber === 2 && dayNumber) {
+      const p1 = tasks.find(
+        (t) => t.phaseid === 1 && t.taskid === dayNumber
+      );
+      if (p1) {
+        setShadowTask(p1);
+        setShowShadowCard(true);  
+      }
+    }
   }
+  
 
   function goToGFitReport() {
     navigate("/gFitReport");
@@ -649,6 +862,28 @@ try {
   function goToGems() {
     navigate("/gems");
   }
+
+  async function handleShadowSwipe(direction, taskObj) {
+    if (direction === "right") {
+      setShowShadowCard(false);
+      setShowShadowRight(true);
+      setShadowTask(taskObj);
+    } else if (direction === "left") {
+      setShowShadowCard(false);
+      setShowShadowLeft(true);
+      setShadowTask(taskObj);
+    } else {
+      // Up-swipe: just log quickly
+      try {
+        await axios.post("/api/logShadowSwipe",
+          { taskdetailsId: taskObj.taskdetailsid, swipeDirection:"up" },
+          { headers:{ Authorization:`Bearer ${accessToken}` } });
+      } catch(e){ console.error("shadow up log",e); }
+      setShowShadowCard(false);
+    }
+  }
+  
+  
 
  
   useEffect(() => {
@@ -936,6 +1171,149 @@ if (showHelpCard) {
     </div>
   );
 }
+
+/* ========== SHADOW — RIGHT-SWIPE CONFIRMATION ========== */
+if (showShadowRight && shadowTask) {
+  return (
+    <div className="cardview-container">
+      {/*  same header block you use everywhere  */}
+      <header className="gritphase-header">
+        <img src={logo} alt="Logo" className="logo-gritPhases-task"
+             onClick={goToBirdView} />
+        <div className="phase-row">
+          <span className="phase-title">
+            GritPhase {currentTask ? currentTask.phaseid : "?"}
+          </span>
+          <div className="progress-bar-container">
+            <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
+          </div>
+        </div>
+        <div className="gems-display" onClick={goToGems}
+             style={{ display:"flex", alignItems:"center", cursor:"pointer",
+                      position:"absolute", right:"60px" }}>
+          <Gem size={30} color="#00bcd4" />
+          <span style={{ marginLeft:"0.5rem", fontWeight:"bold",
+                         fontSize:"1.2rem" }}>{gems}</span>
+        </div>
+        <ChartNoAxesColumn size={36} onClick={goToGFitReport}
+                           className="grid-icon" />
+      </header>
+
+      <div className="card-wrapper">
+        <ShadowRightSwipeCard
+          taskObj={shadowTask}
+          onClose={(saved)=> {
+            setShowShadowRight(false);
+            /* 🔄  if user pressed Undo → restore the Phase-1 card */
+            if (!saved) { setShowShadowCard(true); }
+          }}
+        />
+      </div>
+      <TabBar />
+    </div>
+  );
+}
+
+/* ========== SHADOW — LEFT-SWIPE CONFIRMATION ========== */
+if (showShadowLeft && shadowTask) {
+  return (
+    <div className="cardview-container">
+      <header className="gritphase-header">
+        <img src={logo} alt="Logo" className="logo-gritPhases-task"
+             onClick={goToBirdView} />
+        <div className="phase-row">
+          <span className="phase-title">
+            GritPhase {currentTask ? currentTask.phaseid : "?"}
+          </span>
+          <div className="progress-bar-container">
+            <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
+          </div>
+        </div>
+        <div className="gems-display" onClick={goToGems}
+             style={{ display:"flex", alignItems:"center", cursor:"pointer",
+                      position:"absolute", right:"60px" }}>
+          <Gem size={30} color="#00bcd4" />
+          <span style={{ marginLeft:"0.5rem", fontWeight:"bold",
+                         fontSize:"1.2rem" }}>{gems}</span>
+        </div>
+        <ChartNoAxesColumn size={36} onClick={goToGFitReport}
+                           className="grid-icon" />
+      </header>
+
+      <div className="card-wrapper">
+        <ShadowLeftSwipeCard
+          taskObj={shadowTask}
+          onClose={(saved)=> {
+            setShowShadowLeft(false);
+            if (!saved) { setShowShadowCard(true); }
+          }}
+        />
+      </div>
+      <TabBar />
+    </div>
+  );
+}
+
+
+if (showShadowCard && shadowTask) {
+  return (
+    <div className="cardview-container">
+      <header className="gritphase-header">
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToBirdView} />
+        <div className="phase-row">
+          <span className="phase-title">
+            GritPhase {currentTask ? currentTask.phaseid : "?"}
+          </span>
+          <div className="progress-bar-container">
+            <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
+          </div>
+        </div>
+        <div
+          className="gems-display"
+          onClick={goToGems}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            position: "absolute",
+            right: "60px",
+            // marginLeft: "auto",
+          }}
+        >
+          <Gem size={30} color="#00bcd4" />
+          <span style={{ marginLeft: "0.5rem", fontWeight: "bold", fontSize: "1.2rem" }}>
+            {gems}
+          </span>
+        </div>
+        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+      </header>
+
+      <div className="card-wrapper">
+        <SwipeImageWithSpring
+          phaseNumber={1}
+          dayNumber={shadowTask.taskid}
+          onSwipe={(dir) => handleShadowSwipe(dir, shadowTask)}
+        >
+          <div className="big-card">
+            <h2 className="task-date" style={{display:"flex", alignItems:"center"}}>
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                month:   "long",
+                day:     "numeric",
+              })}
+              <Bell size={26} style={{position:"relative", left:"6.5rem", fill:"#ffffff"}} />
+            </h2>
+            <div className="shadow-card" style={{ position: "relative", top: "3rem", fontSize: "24px", fontWeight: 600 }} >Reminder</div>
+            <p className="task-descrip">{shadowTask.taskdesc}</p>
+          </div>
+        </SwipeImageWithSpring>
+      </div>
+
+      <TabBar />
+    </div>
+  );
+}
+
 
 function sendFeedback() {
   if (feedback.sent || feedback.isLoading) return;
