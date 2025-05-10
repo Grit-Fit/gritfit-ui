@@ -681,6 +681,22 @@ footer::before {
   align-items: center !important;
 }
 
+.testimonial-card {
+  background: #1e1e1e;
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  transition: none;
+  pointer-events: none;        /* prevents click effects */
+}
+
+.testimonial-card * {
+  pointer-events: auto;        /* keeps text/select working */
+}
 
 /* Responsive media queries */
 @media (max-width: 768px) {

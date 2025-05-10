@@ -101,6 +101,14 @@ function Landing() {
     centerPadding: "0",    
   };
 
+  const testimonials = [
+  {
+    name: "Naishadh",
+    review: "GritFit has made it so much easier to stay on top of my health goals. The app features a clean, user-friendly design that’s simple to navigate, and the daily tasks are achievable & effective. I really appreciate how it focuses on key habits like tracking water and protein intake. These simple reminders keep me consistent and motivated without feeling overwhelmed. GritFit makes healthy living feel achievable, one task at a time.",
+  }
+];
+
+
 
   return (
     <>
@@ -354,6 +362,33 @@ function Landing() {
           </Slider>
           </div>
       </section>
+
+<section className="dark-section">
+  <h2 className="landingh2 animate-fadeInUp">What People Are Saying</h2>
+  <div className="slider-wrapper">
+    <Slider
+      dots={true}
+      infinite={false} // prevent looping and duplicate slides
+      speed={500}
+      slidesToShow={1}
+      slidesToScroll={1}
+      centerMode={true}
+      centerPadding="0"
+    >
+      {testimonials.map((t, idx) => (
+        <div className="feature-card-wrapper" key={idx}>
+          <div className="feature-card">
+            <p style={{ fontStyle: "italic" }}>
+              "{t.review}"
+            </p>
+            <h4 style={{ marginTop: "1rem", color: "#00e6e6" }}>{t.name}</h4>
+          </div>
+        </div>
+      ))}
+    </Slider>
+  </div>
+</section>
+
 
 
       <section id="contact" className="dark-section">
