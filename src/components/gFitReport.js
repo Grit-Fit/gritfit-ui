@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   PieChart,
@@ -15,9 +14,8 @@ import "../css/CardView.css";
 import axios from "../axios";
 import TabBar from "./TabBar";
 import { useNavigate } from "react-router-dom";
-import FeedbackPrompt from "../components/FeedbackPrompt";     
+import FeedbackPrompt from "../components/FeedbackPrompt";
 
-/* ───────────────────────── Calendar component ───────────────────────── */
 const Calendar = ({ userProgress }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState([]);
@@ -38,7 +36,6 @@ const Calendar = ({ userProgress }) => {
     setCalendarDays([...blanksArray, ...daysArray]);
   };
 
-  /* colour coding */
   const getDayClass = (day) => {
     if (!day) return "";
     const y = currentDate.getFullYear();
@@ -68,44 +65,31 @@ const Calendar = ({ userProgress }) => {
       <div className="calendar-header">
         <button
           className="arrow-button"
-          onClick={() =>
-            setCurrentDate(new Date(y => y.setMonth(currentDate.getMonth() - 1)))
-          }
+          onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))}
         >
           &lt;
         </button>
         <h2>
-          {currentDate.toLocaleString("default", { month: "long" })}{" "}
-          {currentDate.getFullYear()}
+          {currentDate.toLocaleString("default", { month: "long" })} {currentDate.getFullYear()}
         </h2>
         <button
           className="arrow-button"
-          onClick={() =>
-            setCurrentDate(new Date(y => y.setMonth(currentDate.getMonth() + 1)))
-          }
+          onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))}
         >
           &gt;
         </button>
       </div>
-
       <div className="days-header">
         {dayNames.map((n) => (
-          <div key={n} className="day-name">
-            {n}
-          </div>
+          <div key={n} className="day-name">{n}</div>
         ))}
       </div>
-
       <div className="calendar-grid">
         {[...Array(6)].map((_, week) => (
           <div key={week} className="days-grid">
-            {calendarDays
-              .slice(week * 7, (week + 1) * 7)
-              .map((day, idx) => (
-                <div key={idx} className={`calendar-day ${getDayClass(day)}`}>
-                  {day || ""}
-                </div>
-              ))}
+            {calendarDays.slice(week * 7, (week + 1) * 7).map((day, idx) => (
+              <div key={idx} className={`calendar-day ${getDayClass(day)}`}>{day || ""}</div>
+            ))}
           </div>
         ))}
       </div>
@@ -113,30 +97,22 @@ const Calendar = ({ userProgress }) => {
   );
 };
 
-/* ───────────────────────── Pie‑chart component ───────────────────────── */
-const PieChartComponent = ({ userProgress }) => {
-  const predefined = [
-    "Feeling unwell",
-    "Lack of motivation",
-    "Cheat day",
-    "Too busy",
-  ];
+const PieChartComponent = ({ userProgress, shadowSwipes }) => {
+  const predefined = ["Feeling unwell", "Lack of motivation", "Cheat day", "Too busy"];
   const COLORS = ["#1f32c0", "#6577fb", "#000d6b", "#3b4489", "#1991f8"];
 
-  const counts = userProgress
-    ?.filter((t) => t.notcompletionreason)
-    .reduce((acc, t) => {
-      const r = predefined.includes(t.notcompletionreason)
-        ? t.notcompletionreason
-        : "Other";
-      acc[r] = (acc[r] || 0) + 1;
-      return acc;
-    }, {});
+  const allReasons = [
+    ...(userProgress?.filter(t => t.notcompletionreason).map(t => t.notcompletionreason) || []),
+    ...(shadowSwipes?.map(s => s.reason) || [])
+  ];
 
-  const data = Object.entries(counts || {}).map(([name, value]) => ({
-    name,
-    value,
-  }));
+  const counts = allReasons.reduce((acc, reason) => {
+    const r = predefined.includes(reason) ? reason : "Other";
+    acc[r] = (acc[r] || 0) + 1;
+    return acc;
+  }, {});
+
+  const data = Object.entries(counts || {}).map(([name, value]) => ({ name, value }));
 
   if (!data.length) {
     return (
@@ -178,13 +154,8 @@ const PieChartComponent = ({ userProgress }) => {
       <div className="pie-legend">
         {data.map((e, i) => (
           <div key={i} className="legend-item">
-            <div
-              className="legend-color"
-              style={{ backgroundColor: COLORS[i % COLORS.length] }}
-            />
-            <span className="legend-text">
-              {e.name} ({e.value})
-            </span>
+            <div className="legend-color" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+            <span className="legend-text">{e.name} ({e.value})</span>
           </div>
         ))}
       </div>
@@ -192,16 +163,15 @@ const PieChartComponent = ({ userProgress }) => {
   );
 };
 
-/* ───────────────────────── Main page ───────────────────────── */
 export default function GFitReport() {
   const { accessToken, refreshAuthToken } = useAuth();
   const navigate = useNavigate();
 
-  const [taskData, setTaskData]     = useState([]);
-  const [loading, setLoading]       = useState(false);
-  const [showFB, setShowFB]         = useState(false);
+  const [taskData, setTaskData] = useState([]);
+  const [shadowSwipes, setShadowSwipes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showFB, setShowFB] = useState(false);
 
-  /* track visits → show feedback on 4th view */
   useEffect(() => {
     const keyViews = "analyticsViews";
     const keyAsked = "trendsFb";
@@ -212,39 +182,29 @@ export default function GFitReport() {
     }
   }, []);
 
-  /* ensure token */
   useEffect(() => {
     if (!accessToken) refreshAuthToken();
   }, [accessToken, refreshAuthToken]);
 
-  /* fetch progress data */
   useEffect(() => {
     if (!accessToken) return;
     setLoading(true);
     axios
-      .post(
-        "/api/getUserProgress",
-        {},
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      )
-      .then((r) => setTaskData(r.data.data || []))
+      .post("/api/getUserProgress", {}, { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then((r) => {
+        setTaskData(r.data.data || []);
+        setShadowSwipes(r.data.shadowSwipes || []);
+      })
       .catch((e) => console.error(e))
       .finally(() => setLoading(false));
   }, [accessToken]);
 
   const goHome = () => navigate("/cardView");
 
-  /* ─────────────── render ─────────────── */
   return (
     <>
-      {/* header */}
       <header className="gritphase-header">
-        <img
-          src={logo}
-          alt="Logo"
-          className="logo-gritPhases-task"
-          onClick={goHome}
-        />
+        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goHome} />
       </header>
 
       <div className="main-content">
@@ -264,8 +224,7 @@ export default function GFitReport() {
                 <div className="calendar_section">
                   <div className="pie-heading">Consistency Calendar</div>
                   <div className="header_line">
-                    Are you team Green or Red? Get a bird's‑eye view of your
-                    consistency this month!
+                    Are you team Green or Red? Get a bird's‑eye view of your consistency this month!
                   </div>
                   <Calendar userProgress={taskData} />
                 </div>
@@ -273,40 +232,36 @@ export default function GFitReport() {
                 <div className="pie_section">
                   <div className="pie-heading">Inconsistency Pie</div>
                   <div className="pie-text">
-                    Discover what's been keeping you from hitting your daily
-                    goals. Hover over each part of the pie to see which reasons
-                    have been the biggest and smallest hurdles on your journey
-                    to a healthier lifestyle!
+                    Discover what's been keeping you from hitting your daily goals. Hover over each part of the pie to see which reasons have been the biggest and smallest hurdles on your journey to a healthier lifestyle!
                   </div>
-                  <PieChartComponent userProgress={taskData} />
+                  <PieChartComponent userProgress={taskData} shadowSwipes={shadowSwipes} />
                 </div>
               </>
             )}
           </div>
-         <div style={{marginTop: "1rem", marginRight: "auto", marginLeft: "auto", display: "flex", flexDirection: "column", width: "70%"}}>
-        <button
-          className="px-4 py-2 rounded bg-black text-white text-sm"
-          onClick={() => setShowFB(true)}   
-        >
-          Give feedback
-        </button>
-        </div>
+
+          <div style={{ marginTop: "1rem", marginRight: "auto", marginLeft: "auto", display: "flex", flexDirection: "column", width: "70%" }}>
+            <button
+              className="px-4 py-2 rounded bg-black text-white text-sm"
+              onClick={() => setShowFB(true)}
+            >
+              Give feedback
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* periodic feedback modal */}
       {showFB && (
         <FeedbackPrompt
           feature="GFIT_TRENDS"
           question="Was this page helpful?"
-          placeholder= "What would make it more useful?"
+          placeholder="What would make it more useful?"
           onClose={() => {
             localStorage.setItem("trendsFb", "1");
             setShowFB(false);
           }}
         />
       )}
-
 
       <TabBar />
     </>
