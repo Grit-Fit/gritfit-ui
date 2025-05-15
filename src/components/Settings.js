@@ -12,6 +12,7 @@ import {
   Bell,
   BellRing,
   MessageCircleMore, 
+  Calendar,
 } from "lucide-react";
 import logo from "../assets/logo1.png";
 import set from "../assets/set.png";
@@ -235,6 +236,61 @@ export default function Settings() {
     navigate("/UserProfile");
   };
 
+  const handleAddCalendarReminder = async () => {
+  try {
+    const now = new Date();
+    const tenPM = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      22, 0, 0
+    );
+    const end = new Date(tenPM.getTime() + 30 * 60 * 1000);
+
+    const formatDate = (date) =>
+      date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+
+    const calendarData = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:GritFit Daily Reminder
+DESCRIPTION:Stay consistent with GritFit! Open the app daily.
+DTSTART:${formatDate(tenPM)}
+DTEND:${formatDate(end)}
+RRULE:FREQ=DAILY;COUNT=14
+LOCATION:gritfit.app
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([calendarData], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "gritfit_reminder.ics";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    if (!accessToken) {
+      alert("Session expired – please log in again.");
+      return;
+    }
+
+    await axios.post(
+      "/api/awardGems",
+      { reason: "calendar_reminder", amount: 5 },
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+
+    alert("📅 Calendar Reminder added for 10 PM local time!\n💎 You've been awarded 5 gems!");
+  } catch (err) {
+    console.error("Calendar reminder error:", err);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
+
+
   return (
     <>
       <header className="gritphase-header">
@@ -283,7 +339,7 @@ export default function Settings() {
 
           {/* NEW: Notifications Card */}
         {/* Notifications card that only enables notifications */}
-        <div className="settings-card" onClick={handleNotificationsClick}>
+        {/* <div className="settings-card" onClick={handleNotificationsClick}>
           {beamsDeviceId ? (
             <BellRing className="card-icon" size={32} />
           ) : (
@@ -292,11 +348,17 @@ export default function Settings() {
           <div className="card-label">
             {beamsDeviceId ? "Notifications ON" : "Enable Notifications"}
           </div>
-        </div>
+        </div> */}
           {/* ★ NEW: Give Feedback */}
           <div className="settings-card" onClick={() => setShowAppFB(true)}>
             <MessageCircleMore className="card-icon" size={32} />
             <div className="card-label">Give Feedback</div>
+          </div>
+
+          {/* 📅 Add Calendar Reminder */}
+          <div className="settings-card" onClick={handleAddCalendarReminder}>
+            <Bell className="card-icon" size={32} />
+            <div className="card-label">Add Calendar Reminder</div>
           </div>
         </div>
       </div>
