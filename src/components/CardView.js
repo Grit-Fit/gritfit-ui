@@ -13,6 +13,7 @@ import logo from "../assets/logo1.png";
 import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown, Gift , Flame, Bell} from "lucide-react";
 import FeedbackPrompt from "../components/FeedbackPrompt";
 import confetti from "canvas-confetti";
+import SupportButton from "./SupportButton";
 
 
 /* 
@@ -1496,6 +1497,7 @@ function Star({ filled, onClick }) {
             {gems}
           </span>
         </div>
+        <SupportButton token={accessToken} />
 
         <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
       </header>
