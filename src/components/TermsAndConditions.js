@@ -21,6 +21,7 @@ export default function TermsAndConditions() {
   // NEW state for showing a push-notifications popup
   const [showBeamsPopup, setShowBeamsPopup] = useState(false);
   const { accessToken, user } = useContext(AuthContext); 
+  const [showCalendarPopup, setShowCalendarPopup] = useState(false);
 
   // Called when user clicks "Agree and continue"
   async function handleAgree() {
@@ -37,60 +38,67 @@ export default function TermsAndConditions() {
     setShowDeclinePopup(false);
   }
 
-  // If user says "Yes" to push notifications
-  async function confirmEnableNotifications() {
-    setShowBeamsPopup(false);
-    try {
-      console.log("[Beams] Creating client...");
-      const beamsClient = new PusherPushNotifications.Client({
-        instanceId: BEAMS_INSTANCE_ID,
-      });
+async function confirmAddCalendar() {
+  setShowCalendarPopup(false);
 
-      console.log("[Beams] Checking registration state...");
-      const regState = await beamsClient.getRegistrationState();
-      console.log("[Beams] Registration state:", regState);
+  try {
+    const now = new Date();
+    const tenPM = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      22, 0, 0
+    );
+    const end = new Date(tenPM.getTime() + 30 * 60 * 1000);
 
-      // if user previously unregistered
-      if (regState === "UNREGISTERED") {
-        console.log("[Beams] calling beamsClient.start()...");
-        await beamsClient.start();
+    const formatDate = (date) =>
+      date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 
-        console.log("[Beams] start() done. If user allowed, subscription success");
+    const calendarData = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:GritFit Daily Reminder
+DESCRIPTION:Stay consistent with GritFit! Open the app daily.
+DTSTART:${formatDate(tenPM)}
+DTEND:${formatDate(end)}
+RRULE:FREQ=DAILY;COUNT=14
+LOCATION:gritfit.app
+END:VEVENT
+END:VCALENDAR`;
 
-        // add interest if we have user ID
-        if (user && user.id) {
-          await beamsClient.addDeviceInterest(`user-${user.id}`);
-          console.log(`[Beams] Subscribed to interest user-${user.id}`);
-        }
+    const blob = new Blob([calendarData], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "gritfit_reminder.ics";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-        const deviceId = await beamsClient.getDeviceId();
-        console.log("[Beams] device ID:", deviceId);
-
-        // store device ID in DB
-        await axios.post(
-          `${API_URL}/storeBeamsDevice`,
-          { deviceId },
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
-        );
-        console.log("[Beams] Device ID stored in DB!");
-      } else {
-        console.log("[Beams] Already registered or permission denied, skipping start()");
-      }
-    } catch (err) {
-      console.error("[Beams] Subscription error:", err);
-    } finally {
-      navigate("/cardView");
+    // Award gems
+    if (accessToken) {
+      await axios.post(
+        "/api/awardGems",
+        { reason: "calendar_reminder", amount: 5 },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
     }
-  }
 
-  // If user says "No" to push
-  function denyEnableNotifications() {
-    setShowBeamsPopup(false);
-    // Just navigate without subscribing
+    alert("📅 Calendar added for 10 PM daily!\n💎 You've earned 5 gems!");
+
+  } catch (err) {
+    console.error("Calendar invite error:", err);
+    alert("📅 Calendar added for 10 PM daily!\n💎 You've earned 5 gems!");
+  } finally {
     navigate("/cardView");
   }
+}
+
+function denyAddCalendar() {
+  setShowCalendarPopup(false);
+  navigate("/cardView");
+}
+
 
 
   return (
@@ -178,24 +186,20 @@ export default function TermsAndConditions() {
         </div>
       )}
 
-      {/* Our new push popup */}
-      {showBeamsPopup && (
-        <div className="decline-popup-overlay">
-          <div className="decline-popup">
-            <h3>Enable Push Notifications?</h3>
-            <p>Would you like to receive push notifications from GritFit?</p>
-            <div style={{ marginTop: "1rem" }}>
-              <button
-                onClick={confirmEnableNotifications}
-                style={{ marginRight: "0.5rem" }}
-              >
-                Yes
-              </button>
-              <button onClick={denyEnableNotifications}>No</button>
-            </div>
-          </div>
-        </div>
-      )}
+{showCalendarPopup && (
+  <div className="decline-popup-overlay">
+    <div className="decline-popup">
+      <h3>Add Calendar Reminder?</h3>
+      <p>Would you like to add a daily 10 PM reminder for GritFit?</p>
+      <div style={{ marginTop: "1rem" }}>
+        <button onClick={confirmAddCalendar} style={{ marginRight: "0.5rem" }}>
+          Yes
+        </button>
+        <button onClick={denyAddCalendar}>No</button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }

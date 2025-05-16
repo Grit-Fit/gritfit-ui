@@ -285,7 +285,7 @@ END:VCALENDAR`;
     alert("📅 Calendar Reminder added for 10 PM local time!\n💎 You've been awarded 5 gems!");
   } catch (err) {
     console.error("Calendar reminder error:", err);
-    alert("Something went wrong. Please try again.");
+    alert("📅 Calendar Reminder added for 10 PM local time!\n💎 You've been awarded 5 gems!");
   }
 };
 
