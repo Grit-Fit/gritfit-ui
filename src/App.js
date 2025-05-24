@@ -53,6 +53,10 @@ import FriendSessionsPage from "./components/FriendSessionsPage";
 import AssistantChat from "./components/AssistantChat";
 import BonusCardView from "./components/BonusCardView";
 import AdminDashboard from "./admin/AdminDashboard";
+import NewsPage from "./components/NewsPage";
+import Onboarding from "./components/Onboarding";
+import CalendarReminder from "./components/CalendarReminder"; 
+import FeedbackWizardPage from "./components/FeedbackWizardPage";
 
 
 // New card-based UI
@@ -134,6 +138,7 @@ function AppRoutes() {
       <Route path="/nutrition" element={<NutritionPage />} />
       <Route path="/UserProfile" element={<UserProfile />} />
       <Route path="/introVideo" element={<IntroVideoPage />} />
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/finalSteps" element={<FinalStepsPage />} />
       <Route path="/terms" element={<TermsAndConditions />} />
       <Route path="/friends" element={<FriendsPage />} />
@@ -144,9 +149,13 @@ function AppRoutes() {
       <Route path="/friendSessions" element={<FriendSessionsPage />} />
       <Route path="/chat/:sessionId" element={<ChatDetail />} />
       <Route path="/assistant" element={<AssistantChat />} />
+      <Route path="/news" element={<NewsPage />} />
       <Route path="/gems" element={<GemsPage />} />
       <Route path="/bonus" element={<BonusCardView />} />
       <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/calendarReminder" element={<CalendarReminder />} />
+      <Route path="/postJourney" element={<FeedbackWizardPage />} />
+
 
 
       
