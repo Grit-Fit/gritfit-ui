@@ -23,10 +23,8 @@ export default function TermsAndConditions() {
   const { accessToken, user } = useContext(AuthContext); 
   const [showCalendarPopup, setShowCalendarPopup] = useState(false);
 
-  // Called when user clicks "Agree and continue"
   async function handleAgree() {
-    // Instead of navigating immediately, show a second popup for push
-    setShowBeamsPopup(true);
+    navigate("/cardView");
   }
 
   // If user clicks "Decline" for T&C

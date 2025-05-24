@@ -115,6 +115,8 @@
   color: #333;
 }
 
+
+
 /* Media queries for responsiveness */
 @media (max-width: 375px) {
   .chat-head {

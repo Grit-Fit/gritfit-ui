@@ -105,6 +105,10 @@ function Landing() {
   {
     name: "Naishadh",
     review: "GritFit has made it so much easier to stay on top of my health goals. The app features a clean, user-friendly design that’s simple to navigate, and the daily tasks are achievable & effective. I really appreciate how it focuses on key habits like tracking water and protein intake. These simple reminders keep me consistent and motivated without feeling overwhelmed. GritFit makes healthy living feel achievable, one task at a time.",
+  },
+    {
+    name: "Dhanvin",
+    review: " Gritfit stands out because of its UI and Help-a-friend feature. As a newbie in the world of fitness, I needed guidance on how to proceed with consistency and that's where Gritfit helped me.",
   }
 ];
 

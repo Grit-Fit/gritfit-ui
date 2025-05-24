@@ -10,10 +10,12 @@ import upIcon from "../assets/upflick.png";
 import TabBar from "./TabBar";
 import gritfitLogo from "../assets/logo1.png";
 import logo from "../assets/logo1.png";
-import { Gem, Undo2, ChartNoAxesColumn, Redo2,MoveDown, Gift , Flame, Bell} from "lucide-react";
+import { Gem, Undo2, ClipboardCheck, Redo2,MoveDown, Gift , Flame, Bell} from "lucide-react";
 import FeedbackPrompt from "../components/FeedbackPrompt";
 import confetti from "canvas-confetti";
 import SupportButton from "./SupportButton";
+import WhatsNewBanner from "./WhatsNewBanner";
+import FeedbackWizard from "../components/FeedbackWizard";
 
 
 /* 
@@ -675,6 +677,9 @@ const [showMidP3FB,    setShowMidP3FB]    = useState(false);
 const [showNPSFB, setShowNPSFB] = useState(false);
 const [showHelpFB, setShowHelpFB] = useState(false); 
 const [filled, setFilled] = useState(false);
+const [latestUpdate, setLatestUpdate] = useState(null);
+const [showBanner,   setShowBanner]   = useState(false);
+const [showWizard, setShowWizard] = useState(false);
 
 
 
@@ -1006,6 +1011,35 @@ useEffect(() => {
   }
 }, [tasks, midP3Key]);
 
+useEffect(() => {
+  (async () => {
+    try {
+      const { data } = await axios.get("/api/whatsNew");
+      if (data && data.key) {
+        setLatestUpdate(data);
+        const seen = localStorage.getItem(`whatsNewSeen_${data.key}`);
+        if (!seen) {
+          setShowBanner(true);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch whatsNew:", err);
+    }
+  })();
+}, []);
+
+
+function handleBannerClose() {
+  if (latestUpdate && latestUpdate.key) {
+    localStorage.setItem(
+      `whatsNewSeen_${latestUpdate.key}`,
+      "1"
+    );
+  }
+  setShowBanner(false);
+}
+
+
   // If left swipe sub-card
   if (showLeftCard) {
     return (
@@ -1052,7 +1086,7 @@ useEffect(() => {
           </div> */}
 
 
-        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+        <ClipboardCheck size={32} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
         <div className="card-wrapper">
@@ -1102,7 +1136,7 @@ useEffect(() => {
             {gems}
           </span>
         </div>
-        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+        <ClipboardCheck size={32} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
         <div className="card-wrapper">
@@ -1152,7 +1186,7 @@ if (showHelpCard) {
             {gems}
           </span>
         </div>
-        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+        <ClipboardCheck size={32} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
       <div className="card-wrapper">
@@ -1196,7 +1230,7 @@ if (showShadowRight && shadowTask) {
           <span style={{ marginLeft:"0.5rem", fontWeight:"bold",
                          fontSize:"1.2rem" }}>{gems}</span>
         </div>
-        <ChartNoAxesColumn size={36} onClick={goToGFitReport}
+        <ClipboardCheck size={32} onClick={goToGFitReport}
                            className="grid-icon" />
       </header>
 
@@ -1237,7 +1271,7 @@ if (showShadowLeft && shadowTask) {
           <span style={{ marginLeft:"0.5rem", fontWeight:"bold",
                          fontSize:"1.2rem" }}>{gems}</span>
         </div>
-        <ChartNoAxesColumn size={36} onClick={goToGFitReport}
+        <ClipboardCheck size={32} onClick={goToGFitReport}
                            className="grid-icon" />
       </header>
 
@@ -1286,7 +1320,7 @@ if (showShadowCard && shadowTask) {
             {gems}
           </span>
         </div>
-        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+        <ClipboardCheck size={32} onClick={goToGFitReport} className="grid-icon" />
       </header>
 
       <div className="card-wrapper">
@@ -1344,45 +1378,61 @@ function Star({ filled, onClick }) {
   // Normal main card
   function renderMainCard(task) {
     if (!task) {
-      return (
-        <div className="placeholder-card" style={{ background:"linear-gradient(180deg,#a2d3f2,#769fd1)" }}>
-          <img src={gritfitLogo} alt="Logo" className="placeholder-logo" />
-          <h2 className="placeholder-title">No New Tasks</h2>
+      // return (
+      //   <div className="placeholder-card" style={{ background:"linear-gradient(180deg,#a2d3f2,#769fd1)" }}>
+      //     <img src={gritfitLogo} alt="Logo" className="placeholder-logo" />
+      //     <h2 className="placeholder-title">No New Tasks</h2>
+            
+      //     {/* ⭐⭐⭐⭐⭐  rating row */}
+      //     <div style={{ display:"flex", justifyContent:"center", marginTop:"1rem" }}>
+      //       {[1,2,3,4,5].map(n => (
+      //         <Star key={n}
+      //               filled={feedback.rating >= n}
+      //               onClick={() => setFeedback(f => ({ ...f, rating:n }))} />
+      //       ))}
+      //     </div>
     
-          {/* ⭐⭐⭐⭐⭐  rating row */}
-          <div style={{ display:"flex", justifyContent:"center", marginTop:"1rem" }}>
-            {[1,2,3,4,5].map(n => (
-              <Star key={n}
-                    filled={feedback.rating >= n}
-                    onClick={() => setFeedback(f => ({ ...f, rating:n }))} />
-            ))}
+      //     {/* comment box */}
+      //     <textarea
+      //       placeholder="Tell us what you think of the MVP…"
+      //       value={feedback.comment}
+      //       onChange={e => setFeedback(f => ({ ...f, comment:e.target.value }))}
+      //       disabled={feedback.sent}
+      //       style={{
+      //         marginTop:"1rem", width:"80%", minHeight:70,
+      //         borderRadius:6, padding:8, resize:"vertical", color: "black"
+      //       }}
+      //     />
+    
+      //     {/* submit button */}
+      //     <button className="doneBtn"
+      //             onClick={sendFeedback}
+      //             disabled={feedback.isLoading || feedback.sent}
+      //             style={{ marginTop:"0.8rem" }}>
+      //       {feedback.sent ? "Thanks! 💜" :
+      //        feedback.isLoading ? "Sending…" : "Submit Feedback"}
+      //     </button>
+    
+      //     {/* tiny status */}
+      //     {feedback.error && <p style={{ color:"red", marginTop:4 }}>{feedback.error}</p>}
+      //   </div>
+      // );
+        return (
+          <div className="placeholder-card"
+              style={{ background:"linear-gradient(180deg,#a2d3f2,#769fd1)" }}>
+            <img src={gritfitLogo} alt="Logo" className="placeholder-logo" />
+            <h2 className="placeholder-title">That’s all for now! 🎉</h2>
+            <p style={{ margin:"0 32px" }}>
+               We’ve got&nbsp;<strong>three quick steps</strong>&nbsp;that help shape the
+  future of&nbsp;GritFit – it takes less than a minute!
+            </p>
+            <button className="welcome-next-btn" style={{ marginTop:32, position:"relative", top:"-3rem" }}
+                    onClick={() => navigate("/postJourney")}>
+              Sure – let’s do it
+            </button>
           </div>
-    
-          {/* comment box */}
-          <textarea
-            placeholder="Tell us what you think of the MVP…"
-            value={feedback.comment}
-            onChange={e => setFeedback(f => ({ ...f, comment:e.target.value }))}
-            disabled={feedback.sent}
-            style={{
-              marginTop:"1rem", width:"80%", minHeight:70,
-              borderRadius:6, padding:8, resize:"vertical", color: "black"
-            }}
-          />
-    
-          {/* submit button */}
-          <button className="doneBtn"
-                  onClick={sendFeedback}
-                  disabled={feedback.isLoading || feedback.sent}
-                  style={{ marginTop:"0.8rem" }}>
-            {feedback.sent ? "Thanks! 💜" :
-             feedback.isLoading ? "Sending…" : "Submit Feedback"}
-          </button>
-    
-          {/* tiny status */}
-          {feedback.error && <p style={{ color:"red", marginTop:4 }}>{feedback.error}</p>}
-        </div>
-      );
+        );
+
     }
 
     
@@ -1470,37 +1520,66 @@ function Star({ filled, onClick }) {
 
   return (
     <div className="cardview-container">
-      <header className="gritphase-header">
-        <img src={logo} alt="Logo" className="logo-gritPhases-task" onClick={goToBirdView} />
-        <div className="phase-row">
-          <span className="phase-title">
-            GritPhase {currentTask ? currentTask.phaseid : "?"}
-          </span>
-          <div className="progress-bar-container">
-            <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
-          </div>
-        </div>
-        <div
-          className="gems-display"
-          onClick={goToGems}
+<header className="gritphase-header">
+  {/* Logo & Phase Title (unchanged) */}
+  <img
+    src={logo}
+    alt="Logo"
+    className="logo-gritPhases-task"
+    onClick={goToBirdView}
+  />
+  <div className="phase-row">
+    <span className="phase-title">
+      GritPhase {currentTask ? currentTask.phaseid : "?"}
+    </span>
+    <div className="progress-bar-container">
+      <div
+        className="progress-bar-fill"
+        style={{ width: `${phaseProgress}%` }}
+      />
+    </div>
+  </div>
+
+  {/* ← Here’s the swapper: gift replaces gem+count */}
+  <div
+    onClick={bonusAvailable ? () => navigate("/bonus") : goToGems}
+    style={{
+      position: "absolute",
+      right: "60px",
+      display: "flex",
+      alignItems: "center",
+      cursor: "pointer",
+    }}
+  >
+    {bonusAvailable ? (
+      /* Active bonus: only gift icon */
+      <Gift size={35} color="#00bcd4" fill="#00bcd4" />
+    ) : (
+      /* No bonus: show gem and count */
+      <>
+        <Gem size={30} color="#00bcd4" />
+        <span
           style={{
-            display: "flex",
-            alignItems: "center",
-            cursor: "pointer",
-            position: "absolute",
-            right: "60px",
-            // marginLeft: "auto",
+            marginLeft: "0.5rem",
+            fontWeight: "bold",
+            fontSize: "1.2rem",
           }}
         >
-          <Gem size={30} color="#00bcd4" />
-          <span style={{ marginLeft: "0.5rem", fontWeight: "bold", fontSize: "1.2rem" }}>
-            {gems}
-          </span>
-        </div>
-        <SupportButton token={accessToken} />
+          {gems}
+        </span>
+      </>
+    )}
+  </div>
 
-        <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
-      </header>
+
+  <ClipboardCheck
+    size={32}
+    onClick={goToGFitReport}
+    className="grid-icon"
+  />
+
+  <SupportButton token={accessToken} />
+</header>
 
 
 
@@ -1512,7 +1591,7 @@ function Star({ filled, onClick }) {
 
 
       </div>
-      {bonusAvailable && (
+      {/* {bonusAvailable && (
           <Gift
             size={32}
             className="gift-icon"
@@ -1520,7 +1599,10 @@ function Star({ filled, onClick }) {
             title="Bonus Mission"
        
           />
-        )}
+        )} */}
+        
+
+
 
 {showPhaseFB && (
   <div style={{ opacity: 0.95, zIndex: 9999 }}>
@@ -1560,6 +1642,18 @@ function Star({ filled, onClick }) {
     />
   </div>
 )}
+
+{showBanner && latestUpdate && (
+  <WhatsNewBanner onClose={handleBannerClose}>
+    <h3 style={{ marginTop: 0 }}>{latestUpdate.title}</h3>
+    <ul style={{ paddingLeft: 20 }}>
+      {latestUpdate.bullets.map((b, i) => (
+        <li key={i}>{b}</li>
+      ))}
+    </ul>
+  </WhatsNewBanner>
+)}
+
 
       <TabBar />
       

@@ -1,0 +1,122 @@
+/*──────────────── LAYOUT - timeline + copy side-by-side ────────────────*/
+.fw-row {
+  display: flex;                /* put timeline and text in one row   */
+  gap: 20px;                    /* distance between them               */
+  align-items: flex-start;
+}
+
+/* timeline column must not shrink */
+.fw-row .fw-timeline { flex: 0 0 52px; }
+
+/* copy column fills the rest */
+ .fw-copy1 {
+   flex: 1 1 auto;
+   position: relative;
+    top: -23.2rem; 
+    left: 3rem;
+    padding-right: 2rem;
+  }
+
+ .fw-copy2 {
+   flex: 1 1 auto;
+   position: relative;
+    top: -19.5rem; 
+    left: 3rem;
+    padding-right: 2rem;
+  }  
+
+ .fw-copy3 {
+   flex: 1 1 auto;
+   position: relative;
+    top: -13.8rem;
+    left: 3rem;
+    padding-right: 2rem; 
+  } 
+
+/* reset margins so the text hugs the top dot nicely */
+.fw-copy p { margin: 0 0 24px; line-height: 1.45; }
+
+/*──────────────── make the dots + line align with the new layout ───────*/
+.fw-timeline {
+  position: relative;
+  padding-top: 4px;             /* small top offset so line touches dot */
+}
+
+.fw-line1 {
+  position: absolute;
+  left: 13px;                   /* ≈ half of .fw-dot width */
+  top: 32px;                    /* start below first dot    */
+  width: 2px;
+  height: calc(100% - 182px);    /* runs until just above last dot */
+  background: #00cfe6;
+}
+
+.fw-line2 {
+  position: absolute;
+  left: 13px;                   /* ≈ half of .fw-dot width */
+  top: 155px;                    /* start below first dot    */
+  width: 2px;
+  height: calc(100% - 181px);    /* runs until just above last dot */
+  background: #00cfe6;
+}
+
+.fw-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #00cfe6;
+  text-align: center;
+  line-height: 24px;           /* 28-4 border = 24 inside */
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 96px;
+  color: #00cfe6;
+  background: #fff;
+}
+
+.fw-dot.done { background:#00cfe6; color:#fff; }
+
+/*──────────────── button row spacing ───────────────*/
+.fw-btn-row {
+   gap: 12px;
+   display: flex; 
+  }
+
+/* main teal button inherits from .app-button you already defined */
+.app-button {
+  padding: 10px 22px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+/*──────────────── progress bar tweaks ───────────────*/
+.welcome-progress-bar { margin: 40px 0 4px; }
+.welcome-progress-fill { transition: width .35s ease; }
+
+/*──────────────── container tweak so everything is centred nicely ───────*/
+.nextStepsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100vh;            /* let Done button sit above safe-area */
+  box-sizing: border-box;
+}
+
+.done-btn {
+    width: 90%;
+    max-width: 320px;
+    padding: 14px;
+    background: #24DAEBFF;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    /* margin-bottom: 16px; */
+    margin-top: 4rem !important;
+    position: relative;
+    top: -12rem;
+    left: 1rem;
+}

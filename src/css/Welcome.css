@@ -140,11 +140,33 @@
     max-width: 320px;
     margin: 0 auto;
   }
+
+  .option-row {
+  margin: .4rem 0;
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  font-size: 17px;
+}
+
+.options-wrapper {
+  text-align: left;
+  margin: 0 auto 1.5rem;
+  max-width: 260px;
+}
+
+.calender-content{
+  margin-top: -1rem;
+  text-align: center;
+  font-size: 17px;
+  height: 425px !important;
+
+}
   
   /* Responsive for smaller screens */
   @media (max-width: 480px) {
     .welcome-container {
-      padding: 0px;
+      padding: 20px;
     }
     .welcome-back-button {
       top: 16px;

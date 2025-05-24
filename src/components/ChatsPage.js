@@ -1,4 +1,4 @@
-// src/pages/ChatsPage.js
+
 import React, { useEffect, useState } from "react";
 import axios from "../axios";
 import { useAuth } from "../context/AuthContext";
@@ -17,6 +17,7 @@ export default function ChatsPage() {
 
   useEffect(() => {
     fetchMySessions();
+    // eslint-disable-next-line
   }, []);
 
   async function fetchMySessions() {
@@ -26,14 +27,16 @@ export default function ChatsPage() {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       const allSessions = resp.data.sessions || [];
+      console.log("Fetched sessions:", allSessions);
 
-      // Group sessions by friendId
+      // Group sessions by friendId.
       const grouped = {};
       allSessions.forEach((sess) => {
-        const friendId = (sess.user_a === user.id) ? sess.user_b : sess.user_a;
-        const friendName = (sess.user_a === user.id)
-          ? sess.user_b_profile?.username
-          : sess.user_a_profile?.username;
+        const friendId = sess.user_a === user.id ? sess.user_b : sess.user_a;
+        const friendName =
+          sess.user_a === user.id
+            ? sess.user_b_profile?.username
+            : sess.user_a_profile?.username;
 
         if (!grouped[friendId]) {
           grouped[friendId] = {
@@ -52,12 +55,25 @@ export default function ChatsPage() {
     }
   }
 
-  function toggleFriend(friendId) {
-    setExpandedFriendId((prev) => (prev === friendId ? null : friendId));
+  // When opening a chat, first mark its messages as read.
+  async function openChat(sessionId) {
+    try {
+      // Call an API endpoint to mark messages as read for this session.
+      // (Implement /api/markChatAsRead on your backend to update messages as read)
+      await axios.post(
+        "/api/markChatAsRead",
+        { sessionId },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+    } catch (err) {
+      console.error("Error marking chat as read:", err);
+      // Even if marking as read fails, navigate to the chat.
+    }
+    navigate(`/chat/${sessionId}`);
   }
 
-  function openChat(sessionId) {
-    navigate(`/chat/${sessionId}`);
+  function toggleFriend(friendId) {
+    setExpandedFriendId((prev) => (prev === friendId ? null : friendId));
   }
 
   function getAvatarColorClass(friendId) {
@@ -71,11 +87,12 @@ export default function ChatsPage() {
     return colors[index];
   }
 
-  /***************************************
-   * NEW: open the GFit Assistant
-   ***************************************/
   function openAssistant() {
     navigate("/assistant");
+  }
+
+    function openNews() {
+    navigate("/news");
   }
 
   return (
@@ -83,16 +100,32 @@ export default function ChatsPage() {
       <div className="chats-container">
         {error && <p className="error-text">{error}</p>}
 
-        {/* PERMANENT GFIT ASSIST ROW */}
+        {/* Permanent GFit Assist row */}
         <div className="friend-group-card">
           <div className="friend-group-header" onClick={openAssistant}>
-            <div className="friend-avatar" style={{background: "white"}}>
-              <img src={logo} alt="Logo" className="logo-gritPhases-task" />
+            <div className="friend-avatar" style={{ background: "white" }}>
+              <img
+                src={logo}
+                alt="Logo"
+                className="logo-gritPhases-task"
+              />
             </div>
             GFit Assist
           </div>
         </div>
-        {/* END OF PERMANENT ASSIST */}
+
+          <div className="friend-group-card">
+            <div className="friend-group-header" onClick={openNews}>
+            <div className="friend-avatar" style={{ background: "white" }}>
+              <img
+                src={logo}
+                alt="Logo"
+                className="logo-gritPhases-task"
+              />
+            </div>
+              GFit News
+            </div>
+          </div>
 
         {friendGroups.map((group) => {
           const avatarColorClass = getAvatarColorClass(group.friendId || "");
@@ -101,33 +134,48 @@ export default function ChatsPage() {
               <div
                 className="friend-group-header"
                 onClick={() => toggleFriend(group.friendId)}
+                style={{ position: "relative" }}
               >
                 <div className={`friend-avatar ${avatarColorClass}`}>
                   <UsersRound />
                 </div>
                 {group.friendName}
+                {/* Friend-level unread dot: if any session in this group is unread */}
+                {group.sessions.some(sess => {
+                  const lastMsg = sess.last_message;
+                  return lastMsg && lastMsg.sender_id !== user.id && lastMsg.is_read === false;
+                }) && (
+                  <span className="friend-unread-badge"></span>
+                )}
               </div>
 
               {expandedFriendId === group.friendId && (
                 <div className="friend-group-sessions">
                   {group.sessions.map((sess) => {
-                    const isMyRequest = sess.user_a === user.id;
-                    const label = isMyRequest
+                    // Compute the last message (using last_message field; if missing, fallback to messages array)
+                    const lastMsg = sess.last_message || (sess.messages && sess.messages[sess.messages.length - 1]);
+                    // Unread if last message exists, and it was sent by friend and is not read.
+                    const isUnread = lastMsg && lastMsg.sender_id !== user.id && lastMsg.is_read === false;
+                    
+                    const label = (sess.user_a === user.id)
                       ? "You asked for help"
                       : `${group.friendName} asked you for help`;
-
                     const taskDesc = sess.taskdetails?.taskdesc || "(No task desc)";
-
                     return (
                       <div
                         key={sess.id}
                         className="session-card"
                         onClick={() => openChat(sess.id)}
                       >
-                        <p className="session-label">{label}</p>
-                        <p className="session-taskdesc">
-                          <strong>Task:</strong> {taskDesc}
-                        </p>
+                        <div className="session-card-content">
+                          <p className="session-label">{label}</p>
+                          <p className="session-taskdesc">
+                            <strong>Task:</strong> {taskDesc}
+                          </p>
+                        </div>
+                        {isUnread && (
+                          <span className="session-unread-badge"></span>
+                        )}
                       </div>
                     );
                   })}

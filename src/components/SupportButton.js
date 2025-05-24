@@ -1,7 +1,6 @@
-// src/components/SupportButton.js
 import React, { useState } from "react";
 import axios from "../axios";
-import { LifeBuoy } from "lucide-react";
+import { Headset } from "lucide-react";
 import DOMPurify from "dompurify";
 
 export default function SupportButton({ token }) {
@@ -53,7 +52,7 @@ export default function SupportButton({ token }) {
           </>
         ) : (
           <>
-            <h3 style={{marginTop:0}}>Need Help?</h3>
+            <h3 style={{marginTop:0}}>Report an Issue? Tell Us</h3>
             <input
               value={subject}
               onChange={e=>setSubject(e.target.value)}
@@ -89,12 +88,12 @@ export default function SupportButton({ token }) {
       <div
         onClick={()=>setOpen(true)}
         style={{
-          position:"fixed", bottom:90, right:24, zIndex:9999,
+          position:"fixed", bottom:90, right:14, zIndex:9999,
           width:58, height:58, borderRadius:"50%", background:"#00bcd4",
           display:"flex", alignItems:"center", justifyContent:"center",
           boxShadow:"0 3px 8px rgba(0,0,0,.3)", cursor:"pointer"
         }}>
-        <LifeBuoy size={26} color="#fff" />
+        <Headset size={26} color="#fff" />
       </div>
 
       {open && modal}

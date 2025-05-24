@@ -6,7 +6,7 @@ import axios from "../axios";
 import "../css/CardView.css";
 import SwipeImageWithSpring from "./SwipeImageWithSpring";
 import logo from "../assets/logo1.png";
-import { Gem, Undo2, Redo2, ChartNoAxesColumn, RectangleVertical } from "lucide-react";
+import { Gem, Undo2, Redo2, ClipboardCheck, RectangleVertical } from "lucide-react";
 import TabBar from "./TabBar";
 import rightIcon from "../assets/rightf.png";
 import leftIcon  from "../assets/leftf.png";
@@ -63,12 +63,12 @@ export default function BonusCardView() {
       <div className="phase-row" style={{ marginTop: 84 }}>
         <span className="phase-title">Bonus Card</span>
       </div>
-      <div className="gems-display" onClick={() => navigate("/gems")}
-           style={{ position:"absolute", right:60, display:"flex", cursor:"pointer" }}>
-        <Gem size={30} color="#00bcd4" />
-        <span style={{ marginLeft:8,fontWeight:"bold",fontSize:"1.2rem" }}>{gems}</span>
+      <div className="gems-display" onClick={() => navigate("/cardView")}
+           style={{ position:"absolute", right:60, display:"flex", cursor:"pointer",color: "#00bcd4" }}>
+          <RectangleVertical  size={32} fill="#00bcd4"
+                         onClick={() => navigate("/cardView")} />
       </div>
-      <ChartNoAxesColumn size={36} onClick={() => navigate("/gFitReport")}
+      <ClipboardCheck size={32} onClick={() => navigate("/gFitReport")}
                          className="grid-icon" />
     </header>
   );
@@ -201,8 +201,7 @@ export default function BonusCardView() {
         )}
       </div>
 
-      <RectangleVertical className="gift-icon" size={32} fill="#00bcd4"
-                         onClick={() => navigate("/cardView")} />
+
 
  
       {showFB && (

@@ -14,13 +14,14 @@ export default function IntroVideoPage() {
   }
 
   function handleNext() {
-    navigate("/finalSteps");
+    navigate("/calendarReminder");
   }
 
   return (
     <div className="intro-container">
 
-      <ChevronLeft className="intro-back-button" onClick={handleBack} size={40}/> 
+      <ChevronLeft className="intro-back-button" onClick={handleBack} size={40}/>
+
 
       <img src={logo} alt="GritFit Logo" className="intro-logo" />
 

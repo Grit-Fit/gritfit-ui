@@ -56,7 +56,7 @@ export default function WelcomePage() {
       setMessage(response.data.message || "");
 
   
-      navigate("/introVideo");
+      navigate("/onboarding");
     } catch (error) {
       console.error("Error updating username:", error);
       setMessage(
