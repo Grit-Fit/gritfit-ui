@@ -650,12 +650,15 @@ footer::before {
   z-index: 2;
   width: 40px;
   height: 40px;
+  display: none;
 }
 .slick-prev {
   left: 20px !important; 
+  display: none;
 }
 .slick-next {
   right: 20px !important;
+  display: none;
 }
 
 .slick-prev:before,
@@ -753,12 +756,15 @@ footer::before {
   z-index: 2;
   width: 40px;
   height: 40px;
+  display: none;
 }
 .slick-prev {
   left: -19px !important; 
+  display: none !important;
 }
 .slick-next {
   right: -19px !important;
+  display: none !important;
 }
 
 }

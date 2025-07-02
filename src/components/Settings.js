@@ -319,11 +319,7 @@ END:VCALENDAR`;
             <div className="card-label">Log Out</div>
           </div>
 
-          {/* Delete Account */}
-          <div className="settings-card" onClick={handleDeleteAccountClick}>
-            <UserX className="card-icon" size={32} />
-            <div className="card-label">Delete Account</div>
-          </div>
+
 
           {/* Restart Journey */}
           <div className="settings-card" onClick={handleRestartJourneyClick}>
@@ -360,6 +356,13 @@ END:VCALENDAR`;
             <Bell className="card-icon" size={32} />
             <div className="card-label">Add Calendar Reminder</div>
           </div>
+
+                    {/* Delete Account */}
+          <div className="settings-card" onClick={handleDeleteAccountClick}>
+            <UserX className="card-icon" size={32} />
+            <div className="card-label">Delete Account</div>
+          </div>
+          
         </div>
       </div>
 

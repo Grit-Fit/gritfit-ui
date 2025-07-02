@@ -1,156 +1,163 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import axios from "../axios";
-import "../css/FeedbackWizard.css";   
-import "../css/Welcome.css";     
+import Slider from "react-slick";
+import { ChevronLeft, Lightbulb } from "lucide-react";
 import logo from "../assets/GritFit_Full.png";
-import { ChevronLeft, Lightbulb } from 'lucide-react';   
-import "../css/NextStepsCarousel.css";
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "../css/FeedbackWizard.css";
 
-export default function FeedbackWizard({ onClose }) {
-  const [step, setStep]       = useState(1);   
-  const [progress, setProg]   = useState(0);   
-    const navigate = useNavigate();
-    const { accessToken } = useAuth();
+export default function FeedbackWizardPage() {
+  const navigate = useNavigate();
+  const sliderRef = useRef(null);
 
-  /* keep a consistent teal for buttons */
+  // Go back handler
+  const handleBack = () => navigate(-1);
+
+  // BUTTON STYLE
   const tealBtn = {
-    background:"#00d0e6",
-    border:"none",
-    color:"#fff",
-    fontWeight:600,
-    padding:"10px 14px",
-    borderRadius:4,
-    cursor:"pointer"
+    background: "#00d0e6",
+    border: "none",
+    color: "#fff",
+    fontWeight: 600,
+    padding: "10px 20px",
+    borderRadius: 6,
+    cursor: "pointer",
   };
 
-  /* advance helper */
-  const next = () => {
-    setStep(s => Math.min(s + 1, 3));
-    setProg(p => p + 50);        // goes 0 → 50 → 100
-  };
-
-  /* ------------- individual cards ------------- */
-  const Step1 = () => (
-    <>
-      <p>
-        If you got value using <strong>GritFit</strong>, please leave us a tiny
-        testimonial. It encourages us to keep building &amp; improving the app.
-      </p>
-      <div className="fw-btn-row">
-        <button style={tealBtn} onClick={() => {
-          window.open("https://forms.gle/gritfit-testimonial", "_blank");
-          next();
-        }}>Write</button>
-        <button className="fw-skip" onClick={next}>Skip</button>
-      </div>
-    </>
-  );
-
-const Step2 = () => {
-  const [showInfo, setShowInfo] = useState(false);
-
-  return (
-    <>
-      <p>
-        We really appreciate your participation and want to invite you to our
-        <strong> Strategy Squad</strong>. Interested?
-      </p>
-      <div className="fw-btn-row">
-        <button className="app-button" onClick={() => {
-          window.open("https://chat.whatsapp.com/gritfit-strategy", "_blank");
-          next();
-        }}>
-          Tell me more!
-        </button>
-        <Lightbulb
-          size={40}
-          style={{ marginLeft: "10px", cursor: "pointer" }}
-          onClick={() => setShowInfo(prev => !prev)}
-          color="#4facfe"
-        />
-      </div>
-      {showInfo && (
-        <div className="strategy-info-bubble">
-          Strategy Squad is a small, invite-only WhatsApp group where you help shape GritFit's future. No commitment — just honest input on new ideas!
+  // STRATEGY SLIDE
+  const StrategySlide = () => {
+    const [showInfo, setShowInfo] = useState(false);
+    return (
+      <div className="fw-slide-content">
+        <p>
+          We really appreciate your participation and want to invite you to our
+          <strong> Strategy Squad</strong>. Interested?
+        </p>
+        <div className="fw-btn-row">
+          <button
+            style={tealBtn}
+            onClick={() => {
+              window.open(
+                "https://chat.whatsapp.com/gritfit-strategy",
+                "_blank"
+              );
+              sliderRef.current.slickNext();
+            }}
+          >
+            Tell me more!
+          </button>
+          <Lightbulb
+            size={24}
+            style={{ marginLeft: 10, cursor: "pointer" }}
+            onClick={() => setShowInfo((p) => !p)}
+            color="#4facfe"
+          />
         </div>
-      )}
-    </>
-  );
-};
+        {showInfo && (
+          <div className="strategy-info-bubble">
+            Strategy Squad is a small, invite-only WhatsApp group where you help
+            shape GritFit’s future. No commitment — just honest feedback!
+          </div>
+        )}
+      </div>
+    );
+  };
 
+  // SLIDES DATA
+  const slides = [
+    {
+      id: 1,
+      content: (
+        <div className="fw-slide-content">
+          <p>
+            If you got value using <strong>GritFit</strong>, please leave us a
+            tiny testimonial. It encourages us to keep building & improving the
+            app.
+          </p>
+          <div className="fw-btn-row">
+            <button
+              style={tealBtn}
+              onClick={() => {
+                window.open(
+                  "https://forms.gle/gritfit-testimonial",
+                  "_blank"
+                );
+                sliderRef.current.slickNext();
+              }}
+            >
+              Write
+            </button>
+            <button
+              className="fw-skip"
+              onClick={() => sliderRef.current.slickNext()}
+            >
+              Skip
+            </button>
+          </div>
+        </div>
+      ),
+    },
+    { id: 2, content: <StrategySlide /> },
+    {
+      id: 3,
+      content: (
+        <div className="fw-slide-content">
+          <p>
+            We’d love to connect with you to learn about your experience – pick
+            any slot that works:
+          </p>
+          <button
+            style={tealBtn}
+            onClick={() =>
+              window.open("https://calendly.com/gritfit/brief-call", "_blank")
+            }
+          >
+            20-min call with the Founder
+          </button>
+        </div>
+      ),
+    },
+  ];
 
-  const Step3 = () => (
-    <>
-      <p>
-        We’d love to connect with you to learn about your experience – pick any
-        slot that works:
-      </p>
-      <button style={tealBtn} onClick={() => {
-        window.open("https://calendly.com/gritfit/brief-call", "_blank");
-        setProg(100);
-      }}>20 min brief call with Founder</button>
-    </>
-  );
+  // SLIDER SETTINGS
+  const sliderSettings = {
+    dots: true,
+    infinite: false,
+    speed: 400,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    adaptiveHeight: true,
+  };
 
-      function handleBack() {
-    navigate(-1);
-  }
+  // CURRENT SLIDE
+  const current = sliderRef.current?.innerSlider?.state.currentSlide ?? 0;
 
-  /* ------------- main render ------------- */
   return (
-    <>
-            <img src={logo} alt="GritFit Logo" className="welcome-logo" style={{marginBottom: "0rem"}} />
-            <ChevronLeft className="intro-back-button" onClick={handleBack} size={40}/>
-            <h3 className="welcome-prompt" style={{textAlign: "center"}}>{step.prompt}</h3>
+    <div className="fw-page">
+      {/* HEADER */}
+      <div className="fw-header">
+        <ChevronLeft className="fw-back" onClick={handleBack} size={28} />
+        <img src={logo} alt="GritFit Logo" className="fw-header-logo" />
+      </div>
 
-      <div style={{ textAlign:"left", marginTop:24, maxWidth:300 }}>
-
-        <div className="fw-timeline">
-          {[1,2,3].map(n => (
-            <div key={n} className={n<=step ? "fw-dot done" : "fw-dot"}>{n}</div>
+      {/* CARD */}
+      <div className="fw-card">
+        <Slider ref={sliderRef} {...sliderSettings}>
+          {slides.map((s) => (
+            <div key={s.id} className="fw-slide">
+              {s.content}
+            </div>
           ))}
-          <div className="fw-line1"/>
-          <div className="fw-line2"/>
-        </div>
+        </Slider>
 
-{/* step content */}
-{step===1 && (
-  <>
-    <div className="fw-timeline">
-      {/* dots + line already rendered above */}
-    </div>
-
-    <div className="fw-copy1">
-      <Step1/>
-    </div>
-  </>
-)}
-{step===2 && (
-  <>
-    <div className="fw-timeline"/>
-    <div className="fw-copy2"><Step2/></div>
-  </>
-)}
-{step===3 && (
-  <>
-    <div className="fw-timeline"/>
-    <div className="fw-copy3"><Step3/></div>
-  </>
-)}
-
-
-
-        {/* Done button */}
-        {progress===100 && (
-          <button className="done-btn" style={{ marginTop:20 }}
-                  onClick={onClose}>
-            Done!
+        {current === slides.length - 1 && (
+          <button className="done-btn" onClick={() => navigate("/cardView", { replace: true })}>
+            Done
           </button>
         )}
       </div>
-      </>
+    </div>
   );
 }
