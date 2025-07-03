@@ -116,7 +116,7 @@ export default function FeedbackWizardPage() {
           <button
             style={test}
             onClick={() =>
-              window.open("https://calendly.com/gritfit/brief-call", "_blank")
+              window.open("https://calendly.com/jbshah2000/gritfit-interview", "_blank")
             }
           >
             20-min call with the Founder

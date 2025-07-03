@@ -12,7 +12,7 @@ import axios from "../axios";
 import "../css/NutritionTheory.css";
 import "../css/contactUs.css";
 import "../css/CardView.css";
-import { ChartNoAxesColumn } from "lucide-react";
+import { ClipboardCheck} from "lucide-react";
 import TabBar from "./TabBar";
 
 const GritPhase = () => {
@@ -288,7 +288,7 @@ const GritPhase = () => {
               <div className="progress-bar-fill" style={{ width: `${phaseProgress}%` }} />
             </div>
           </div>
-          <ChartNoAxesColumn size={36} onClick={goToGFitReport} className="grid-icon" />
+          <ClipboardCheck size={36} onClick={goToGFitReport} className="grid-icon" />
         </header>
 
         <div className={`main-content ${isNavOpen ? "nav-open" : ""}`}>
